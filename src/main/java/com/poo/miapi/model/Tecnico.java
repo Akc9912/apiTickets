@@ -39,10 +39,7 @@ public class Tecnico extends Usuario {
         return new ArrayList<>(ticketsAtendidos);
     }
 
-    /**
-     * Toma un ticket si no está bloqueado y no ha superado el límite de tickets
-     * activos.
-     */
+    // Toma un ticket si no está bloqueado y no ha superado el límite de tickets
     public void tomarTicket(Ticket ticket) {
         if (bloqueado) {
             throw new IllegalStateException("El técnico está bloqueado y no puede tomar tickets.");
@@ -60,9 +57,7 @@ public class Tecnico extends Usuario {
         ticketsAtendidos.add(ticket);
     }
 
-    /**
-     * Marca un ticket como resuelto.
-     */
+    // Marca un ticket como resuelto.
     public void resolverTicket(Ticket ticket) {
         if (!ticketsAtendidos.contains(ticket)) {
             throw new IllegalArgumentException("Este ticket no está siendo atendido por el técnico.");
@@ -71,9 +66,7 @@ public class Tecnico extends Usuario {
         ticket.marcarResuelto();
     }
 
-    /**
-     * Devuelve un ticket (renuncia a resolverlo), lo que genera una marca o falla.
-     */
+    // Devuelve un ticket (renuncia a resolverlo), lo que genera una marca o falla.
     public void devolverTicket(Ticket ticket) {
         if (!ticketsAtendidos.contains(ticket)) {
             throw new IllegalArgumentException("El técnico no está atendiendo este ticket.");
@@ -94,9 +87,7 @@ public class Tecnico extends Usuario {
         }
     }
 
-    /**
-     * Se llama cuando resuelve correctamente un ticket reabierto.
-     */
+    // Se llama cuando resuelve correctamente un ticket reabierto.
     public void limpiarFalla() {
         if (this.fallas > 0) {
             this.fallas--;

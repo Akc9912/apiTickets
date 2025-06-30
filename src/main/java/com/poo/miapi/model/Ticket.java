@@ -110,7 +110,6 @@ public class Ticket {
         this.estado = EstadoTicket.REABIERTO;
     }
 
-    // sobreescribo metodo toString
     @Override
     public String toString() {
         return "Ticket #" + id + ": " + titulo + " (" + estado + ")";

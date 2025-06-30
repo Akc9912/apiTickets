@@ -16,9 +16,7 @@ public class Trabajador extends Usuario {
         return "Trabajador";
     }
 
-    /**
-     * Crea un nuevo ticket asociado a este trabajador.
-     */
+    // Crea un nuevo ticket asociado a este trabajador.
     public Ticket crearTicket(String titulo, String descripcion) {
         if (titulo == null || titulo.isBlank()) {
             throw new IllegalArgumentException("El título no puede estar vacío.");
@@ -32,9 +30,7 @@ public class Trabajador extends Usuario {
         return nuevo;
     }
 
-    /**
-     * Devuelve la lista de tickets del trabajador que aún no están finalizados.
-     */
+    // Devuelve la lista de tickets del trabajador que aún no están finalizados.
     public List<Ticket> verTicketsActivos() {
         List<Ticket> activos = new ArrayList<>();
         for (Ticket t : misTickets) {
@@ -45,9 +41,7 @@ public class Trabajador extends Usuario {
         return activos;
     }
 
-    /**
-     * El trabajador confirma si el ticket fue realmente resuelto.
-     */
+    // El trabajador confirma si el ticket fue realmente resuelto.
     public void confirmarResolucion(Ticket ticket, boolean fueResuelto) {
         if (!misTickets.contains(ticket)) {
             throw new IllegalArgumentException("Este ticket no pertenece al trabajador.");
