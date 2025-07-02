@@ -33,7 +33,7 @@ public class Trabajador extends Usuario {
             throw new IllegalArgumentException("El ticket no puede ser nulo.");
         }
         misTickets.add(ticket);
-        ticket.setCreador(this);
+        ticket.setCreador(this); // servicio
     }
 
     // Crea un nuevo ticket asociado a este trabajador
