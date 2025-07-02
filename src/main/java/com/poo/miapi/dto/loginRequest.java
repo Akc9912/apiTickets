@@ -1,6 +1,6 @@
 package com.poo.miapi.dto;
 
-public class loginRequest {
+public class LoginRequest {
     private int id;
     private String password;
 

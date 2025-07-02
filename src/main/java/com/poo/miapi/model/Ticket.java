@@ -1,16 +1,35 @@
 package com.poo.miapi.model;
 
-public class Ticket {
-    private static int contadorIds = 1;
+import jakarta.persistence.*;
 
+@Entity
+public class Ticket {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String titulo;
     private String descripcion;
+
+    @Enumerated(EnumType.STRING)
     private EstadoTicket estado;
 
+    @ManyToOne
+    @JoinColumn(name = "id_creador")
     private Trabajador creador;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tecnico_actual")
     private Tecnico tecnicoActual;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tecnico_anterior")
     private Tecnico tecnicoAnterior;
+
+    public Ticket() {
+        // Requerido por JPA
+    }
 
     public Ticket(String titulo, String descripcion, Trabajador creador) {
         if (titulo == null || titulo.isBlank()) {
@@ -20,7 +39,6 @@ public class Ticket {
             throw new IllegalArgumentException("La descripción no puede estar vacía.");
         }
 
-        this.id = contadorIds++;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.creador = creador;

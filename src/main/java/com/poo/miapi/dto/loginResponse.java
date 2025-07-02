@@ -1,11 +1,11 @@
 package com.poo.miapi.dto;
 
-public class loginResponse {
+public class LoginResponse {
     private String nombre;
     private String tipoUsuario;
     private boolean requiereCambioPassword;
 
-    public loginResponse(String nombre, String tipoUsuario, boolean requiereCambioPassword) {
+    public LoginResponse(String nombre, String tipoUsuario, boolean requiereCambioPassword) {
         this.nombre = nombre;
         this.tipoUsuario = tipoUsuario;
         this.requiereCambioPassword = requiereCambioPassword;

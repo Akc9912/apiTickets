@@ -1,23 +1,31 @@
 package com.poo.miapi.model;
 
-import java.lang.String;
+import jakarta.persistence.*;
 
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_usuario")
+@Entity
 public abstract class Usuario {
-    private static int contadorIds = 1; // Contador estático para generar IDs únicos
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String nombre;
     private String password;
     private boolean cambiarPass;
+
+    public Usuario() {
+        // Requerido por JPA
+    }
 
     public Usuario(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío.");
         }
 
-        this.id = contadorIds++;
         this.nombre = nombre;
-        this.password = String.valueOf(this.id);// La contraseña inicial es igual al ID → forzar cambio en primer login
+        this.password = null; // se define externamente (ej. en post-constructor o por servicio)
         this.cambiarPass = true;
     }
 
@@ -46,8 +54,6 @@ public abstract class Usuario {
         this.nombre = unNombre;
     }
 
-    // Método reservado para uso interno (ej. administrador).
-    // Modifica directamente la contraseña sin alterar cambiarPass.
     public void setPassword(String unPass) {
         if (unPass == null || unPass.isBlank()) {
             throw new IllegalArgumentException("La contraseña no puede estar vacía.");
@@ -68,8 +74,6 @@ public abstract class Usuario {
         return intento != null && this.password.equals(intento);
     }
 
-    // Cambia la contraseña del usuario y marca que ya no necesita cambiarla.
-    // Se usa cuando el usuario realiza un cambio voluntario desde el sistema.
     public void cambiarPassword(String nuevaPassword) {
         if (nuevaPassword == null || nuevaPassword.isBlank()) {
             throw new IllegalArgumentException("La nueva contraseña no puede estar vacía.");
@@ -85,19 +89,15 @@ public abstract class Usuario {
         this.cambiarPass = false;
     }
 
-    // Reinicia la contraseña al valor del ID.
-    // Forzado normalmente por un administrador (blanqueo).
     public void reiniciarPassword() {
         this.password = String.valueOf(this.id);
         this.cambiarPass = true;
     }
 
-    // Método abstracto para obtener el tipo de usuario (Admin, Técnico,
-    // Trabajador).
     public abstract String getTipoUsuario();
 
     @Override
     public String toString() {
-        return "[" + getTipoUsuario() + "] " + nombre + " (ID: " + id + ")"; // para usar en depuracion
+        return "[" + getTipoUsuario() + "] " + nombre + " (ID: " + id + ")";
     }
 }

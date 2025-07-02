@@ -1,10 +1,8 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.Tecnico;
-import com.poo.miapi.model.Trabajador;
-import com.poo.miapi.model.Usuario;
+import com.poo.miapi.model.*;
 import com.poo.miapi.service.AdminService;
-import com.poo.miapi.service.gestorDeUsuarios;
+import com.poo.miapi.service.GestorDeUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +14,7 @@ public class AdminController {
     private AdminService adminService;
 
     @Autowired
-    private gestorDeUsuarios gestorUsuarios;
+    private GestorDeUsuarios gestorUsuarios;
 
     @PostMapping("/crear-trabajador")
     public Trabajador crearTrabajador(@RequestParam String nombre) {

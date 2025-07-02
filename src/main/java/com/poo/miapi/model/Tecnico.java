@@ -1,21 +1,26 @@
 package com.poo.miapi.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@DiscriminatorValue("TECNICO")
 public class Tecnico extends Usuario {
 
-    private List<Ticket> ticketsAtendidos;
-    private int fallas;
-    private int marcas;
-    private boolean bloqueado;
+    @OneToMany(mappedBy = "tecnicoActual", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsAtendidos = new ArrayList<>();
+
+    private int fallas = 0;
+    private int marcas = 0;
+    private boolean bloqueado = false;
+
+    public Tecnico() {
+        super(); // Constructor requerido por JPA
+    }
 
     public Tecnico(String nombre) {
         super(nombre);
-        this.ticketsAtendidos = new ArrayList<>();
-        this.fallas = 0;
-        this.marcas = 0;
-        this.bloqueado = false;
     }
 
     @Override
@@ -39,7 +44,18 @@ public class Tecnico extends Usuario {
         return new ArrayList<>(ticketsAtendidos);
     }
 
-    // Toma un ticket si no está bloqueado y no ha superado el límite de tickets
+    public void setBloqueado(boolean valor) {
+        this.bloqueado = valor;
+    }
+
+    public void reiniciarFallas() {
+        this.fallas = 0;
+    }
+
+    public void reiniciarMarcas() {
+        this.marcas = 0;
+    }
+
     public void tomarTicket(Ticket ticket) {
         if (bloqueado) {
             throw new IllegalStateException("El técnico está bloqueado y no puede tomar tickets.");
@@ -57,7 +73,6 @@ public class Tecnico extends Usuario {
         ticketsAtendidos.add(ticket);
     }
 
-    // Marca un ticket como resuelto.
     public void resolverTicket(Ticket ticket) {
         if (!ticketsAtendidos.contains(ticket)) {
             throw new IllegalArgumentException("Este ticket no está siendo atendido por el técnico.");
@@ -66,7 +81,6 @@ public class Tecnico extends Usuario {
         ticket.marcarResuelto();
     }
 
-    // Devuelve un ticket (renuncia a resolverlo), lo que genera una marca o falla.
     public void devolverTicket(Ticket ticket) {
         if (!ticketsAtendidos.contains(ticket)) {
             throw new IllegalArgumentException("El técnico no está atendiendo este ticket.");
@@ -87,22 +101,9 @@ public class Tecnico extends Usuario {
         }
     }
 
-    // Se llama cuando resuelve correctamente un ticket reabierto.
     public void limpiarFalla() {
         if (this.fallas > 0) {
             this.fallas--;
         }
-    }
-
-    public void setBloqueado(boolean valor) {
-        this.bloqueado = valor;
-    }
-
-    public void reiniciarFallas() {
-        this.fallas = 0;
-    }
-
-    public void reiniciarMarcas() {
-        this.marcas = 0;
     }
 }

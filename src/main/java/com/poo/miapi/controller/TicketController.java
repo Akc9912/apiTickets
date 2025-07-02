@@ -1,8 +1,8 @@
 package com.poo.miapi.controller;
 
 import com.poo.miapi.model.*;
-import com.poo.miapi.service.gestorDeTickets;
-import com.poo.miapi.service.gestorDeUsuarios;
+import com.poo.miapi.service.GestorDeTickets;
+import com.poo.miapi.service.GestorDeUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +13,10 @@ import java.util.List;
 public class TicketController {
 
     @Autowired
-    private gestorDeTickets gestorTickets;
+    private GestorDeTickets gestorTickets;
 
     @Autowired
-    private gestorDeUsuarios gestorUsuarios;
+    private GestorDeUsuarios gestorUsuarios;
 
     // -------------------- Trabajador --------------------
 

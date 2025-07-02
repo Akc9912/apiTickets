@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class gestorDeTickets {
+public class GestorDeTickets {
     private final List<Ticket> tickets = new ArrayList<>();
 
     public void registrarTicket(Ticket t) {

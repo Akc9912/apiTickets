@@ -4,21 +4,21 @@ import com.poo.miapi.model.*;
 import com.poo.miapi.service.GestorDeTickets;
 import com.poo.miapi.service.GestorDeUsuarios;
 import com.poo.miapi.service.NotificacionService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tecnico")
 public class TecnicoController {
-    @Autowired
-    private NotificacionService notificacionService;
 
     @Autowired
     private GestorDeUsuarios gestorUsuarios;
 
     @Autowired
     private GestorDeTickets gestorTickets;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
     @PutMapping("/tomar-ticket/{idTicket}")
     public String tomarTicket(@PathVariable int idTicket,
@@ -32,6 +32,7 @@ public class TecnicoController {
         }
 
         tecnico.tomarTicket(t);
+        notificacionService.notificarTicketTomado(tecnico, t);
         return "Ticket tomado.";
     }
 
@@ -47,6 +48,7 @@ public class TecnicoController {
         }
 
         tecnico.resolverTicket(t);
+        notificacionService.notificarTicketResuelto(tecnico, t);
         return "Ticket resuelto.";
     }
 
@@ -62,6 +64,7 @@ public class TecnicoController {
         }
 
         tecnico.devolverTicket(t);
+        notificacionService.notificarTicketDevuelto(tecnico, t);
         return "Ticket devuelto.";
     }
 }

@@ -1,10 +1,19 @@
 package com.poo.miapi.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
 import java.util.List;
 
-public class admin extends Usuario {
+@Entity
+@DiscriminatorValue("ADMIN")
+public class Admin extends Usuario {
 
-    public admin(String nombre) {
+    public Admin() {
+        super(); // Constructor requerido por JPA
+    }
+
+    public Admin(String nombre) {
         super(nombre);
     }
 
@@ -24,16 +33,22 @@ public class admin extends Usuario {
     }
 
     public void bloquearTecnico(Tecnico tecnico) {
-        tecnico.setBloqueado(true);
+        if (tecnico != null) {
+            tecnico.setBloqueado(true);
+        }
     }
 
     public void desbloquearTecnico(Tecnico tecnico) {
-        tecnico.setBloqueado(false);
-        tecnico.reiniciarFallas();
+        if (tecnico != null) {
+            tecnico.setBloqueado(false);
+            tecnico.reiniciarFallas();
+        }
     }
 
     public void blanquearPassword(Usuario usuario) {
-        usuario.reiniciarPassword();
+        if (usuario != null) {
+            usuario.reiniciarPassword();
+        }
     }
 
     public void reabrirTicket(Ticket ticket, Tecnico tecnicoQueLoPide) {
@@ -42,7 +57,6 @@ public class admin extends Usuario {
         }
     }
 
-    // Listar tickets por estado (filtrado externo)
     public List<Ticket> filtrarTicketsPorEstado(List<Ticket> tickets, EstadoTicket estado) {
         return tickets.stream()
                 .filter(t -> t.getEstado() == estado)

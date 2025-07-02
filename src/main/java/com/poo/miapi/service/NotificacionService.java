@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotificacionService {
-
     public void notificarTicketTomado(Tecnico tecnico, Ticket ticket) {
         System.out.println("🔔 [NOTIFICACIÓN] Técnico " + tecnico.getNombre() +
                 " tomó el ticket #" + ticket.getId() + ": " + ticket.getTitulo());

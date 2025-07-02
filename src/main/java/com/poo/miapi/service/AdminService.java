@@ -6,15 +6,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminService {
-
+    @Autowired
+    private GestorDeUsuarios gestorUsuarios;
+    @Autowired
+    private GestorDeTickets gestorTickets;
     @Autowired
     private NotificacionService notificacionService;
-
-    @Autowired
-    private gestorDeUsuarios gestorUsuarios;
-
-    @Autowired
-    private gestorDeTickets gestorTickets;
 
     public Trabajador crearTrabajador(String nombre) {
         Trabajador trabajador = new Trabajador(nombre);
@@ -50,9 +47,9 @@ public class AdminService {
     public void reabrirTicket(int idTicket, int idTecnico) {
         Ticket t = gestorTickets.buscarPorId(idTicket);
         Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-
         if (t != null && u instanceof Tecnico tecnico) {
             t.reabrir(tecnico);
+            notificacionService.notificarTicketReabierto(t);
         }
     }
 }

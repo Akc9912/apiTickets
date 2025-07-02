@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class gestorDeUsuarios {
+public class GestorDeUsuarios {
     private final List<Usuario> usuarios = new ArrayList<>();
 
     public void agregarUsuario(Usuario u) {
