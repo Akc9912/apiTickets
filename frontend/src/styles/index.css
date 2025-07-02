@@ -1,9 +1,0 @@
-@import "tailwindcss";
-
-
-/*ESTO ELIMINA LA EQUIZ CUANDO ESCRIBIS DE TODOS LOS INPUT DE TIPO SEARCH*/
-input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
