@@ -59,4 +59,63 @@ public class TecnicoService {
         return ticketRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Ticket no encontrado"));
     }
+
+    public void reiniciarFallas() {
+        this.fallas = 0;
+    }
+
+    public void reiniciarMarcas() {
+        this.marcas = 0;
+    }
+
+    public void tomarTicket(Ticket ticket) {
+        if (bloqueado) {
+            throw new IllegalStateException("El técnico está bloqueado y no puede tomar tickets.");
+        }
+
+        if (ticketsAtendidos.size() >= 3) {
+            throw new IllegalStateException("No se pueden atender más de 3 tickets simultáneamente.");
+        }
+
+        if (!ticket.puedeSerTomado()) {
+            throw new IllegalStateException("El ticket no está disponible para ser tomado.");
+        }
+
+        ticket.asignarTecnico(this);
+        ticketsAtendidos.add(ticket);
+    }
+
+    public void resolverTicket(Ticket ticket) {
+        if (!ticketsAtendidos.contains(ticket)) {
+            throw new IllegalArgumentException("Este ticket no está siendo atendido por el técnico.");
+        }
+
+        ticket.marcarResuelto();
+    }
+
+    public void devolverTicket(Ticket ticket) {
+        if (!ticketsAtendidos.contains(ticket)) {
+            throw new IllegalArgumentException("El técnico no está atendiendo este ticket.");
+        }
+
+        ticketsAtendidos.remove(ticket);
+        ticket.desasignarTecnico();
+
+        if (this.marcas > 0) {
+            this.marcas--;
+            this.fallas++;
+        } else {
+            this.marcas++;
+        }
+
+        if (this.fallas >= 3) {
+            this.bloqueado = true;
+        }
+    }
+
+    public void limpiarFalla() {
+        if (this.fallas > 0) {
+            this.fallas--;
+        }
+    }
 }

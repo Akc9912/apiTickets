@@ -1,6 +1,9 @@
 package com.poo.miapi.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Ticket {
@@ -19,32 +22,26 @@ public class Ticket {
     @JoinColumn(name = "id_creador")
     private Trabajador creador;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tecnico_actual")
-    private Tecnico tecnicoActual;
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "id_tecnico_anterior")
-    private Tecnico tecnicoAnterior;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCreacion;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaUltimaActualizacion;
+
+    // Constructor requerido por JPA
     public Ticket() {
-        // Requerido por JPA
     }
 
     public Ticket(String titulo, String descripcion, Trabajador creador) {
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("El título no puede estar vacío.");
-        }
-        if (descripcion == null || descripcion.isBlank()) {
-            throw new IllegalArgumentException("La descripción no puede estar vacía.");
-        }
-
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.creador = creador;
         this.estado = EstadoTicket.NO_ATENDIDO;
-        this.tecnicoActual = null;
-        this.tecnicoAnterior = null;
+        this.fechaCreacion = new Date();
+        this.fechaUltimaActualizacion = new Date();
     }
 
     // Getters
@@ -68,71 +65,41 @@ public class Ticket {
         return creador;
     }
 
-    public Tecnico getTecnicoActual() {
-        return tecnicoActual;
+    public Date getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public Tecnico getTecnicoAnterior() {
-        return tecnicoAnterior;
+    public Date getFechaUltimaActualizacion() {
+        return fechaUltimaActualizacion;
+    }
+
+    public List<TecnicoPorTicket> getHistorialTecnicos() {
+        return historialTecnicos;
     }
 
     // Setters
     public void setCreador(Trabajador creador) {
-        if (creador == null) {
-            throw new IllegalArgumentException("El creador no puede ser null.");
-        }
         this.creador = creador;
     }
 
-    // Métodos funcionales
-    public boolean puedeSerTomado() {
-        return this.estado == EstadoTicket.NO_ATENDIDO;
+    public void setEstado(EstadoTicket estado) {
+        this.estado = estado;
     }
 
-    public void asignarTecnico(Tecnico tecnico) {
-        if (!puedeSerTomado()) {
-            throw new IllegalStateException("El ticket ya está siendo atendido.");
-        }
-        this.tecnicoActual = tecnico;
-        this.estado = EstadoTicket.ATENDIDO;
+    public void setFechaUltimaActualizacion(Date fechaUltimaActualizacion) {
+        this.fechaUltimaActualizacion = fechaUltimaActualizacion;
     }
 
-    public void desasignarTecnico() {
-        this.tecnicoAnterior = this.tecnicoActual;
-        this.tecnicoActual = null;
-        this.estado = EstadoTicket.NO_ATENDIDO;
+    public void agregarEntradaHistorial(TecnicoPorTicket entrada) {
+        historialTecnicos.add(entrada);
+        entrada.setTicket(this);
     }
 
-    public void marcarResuelto() {
-        if (this.estado != EstadoTicket.ATENDIDO) {
-            throw new IllegalStateException("Solo se pueden resolver tickets en estado 'ATENDIDO'.");
-        }
-        this.estado = EstadoTicket.RESUELTO;
-    }
-
-    public void marcarFinalizado() {
-        if (this.estado != EstadoTicket.RESUELTO) {
-            throw new IllegalStateException("Solo se pueden finalizar tickets en estado 'RESUELTO'.");
-        }
-        this.estado = EstadoTicket.FINALIZADO;
-    }
-
-    public void marcarReabierto() {
-        if (this.estado != EstadoTicket.RESUELTO) {
-            throw new IllegalStateException("Solo se pueden reabrir tickets en estado 'RESUELTO'.");
-        }
-        this.tecnicoAnterior = this.tecnicoActual;
-        this.tecnicoActual = null;
-        this.estado = EstadoTicket.REABIERTO;
-    }
-
-    public void reabrir(Tecnico tecnicoQueLoPide) {
-        if (!tecnicoQueLoPide.equals(this.tecnicoActual)) {
-            throw new IllegalArgumentException("Solo el técnico actual puede pedir la reapertura.");
-        }
-        this.tecnicoAnterior = this.tecnicoActual;
-        this.tecnicoActual = null;
-        this.estado = EstadoTicket.REABIERTO;
+    // Utilidades
+    public Tecnico getTecnicoActual() {
+        if (historialTecnicos.isEmpty())
+            return null;
+        return historialTecnicos.get(historialTecnicos.size() - 1).getTecnico();
     }
 
     @Override

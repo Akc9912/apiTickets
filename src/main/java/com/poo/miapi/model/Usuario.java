@@ -12,21 +12,26 @@ public abstract class Usuario {
     private int id;
 
     private String nombre;
+    private String apellido;
+    private String email;
     private String password;
     private boolean cambiarPass;
+    private boolean activo;
+    private boolean bloqueado;
 
+    // constructor vacio requerido por JPA
     public Usuario() {
-        // Requerido por JPA
     }
 
-    public Usuario(String nombre) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-
+    // constructor para uso interno del service
+    public Usuario(String nombre, String apellido, String email) {
         this.nombre = nombre;
-        this.password = null; // se define externamente (ej. en post-constructor o por servicio)
+        this.apellido = apellido;
+        this.email = email;
+        this.password = null; // se define por servicio
         this.cambiarPass = true;
+        this.activo = true;
+        this.bloqueado = false;
     }
 
     // Getters
@@ -38,64 +43,63 @@ public abstract class Usuario {
         return this.nombre;
     }
 
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
     public String getPassword() {
         return this.password;
     }
 
-    public boolean getCambiarPass() {
+    public boolean isCambiarPass() {
         return this.cambiarPass;
+    }
+
+    public boolean isActivo() {
+        return this.activo;
+    }
+
+    public boolean isBloqueado() {
+        return this.bloqueado;
     }
 
     // Setters
     public void setNombre(String unNombre) {
-        if (unNombre == null || unNombre.isBlank()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
         this.nombre = unNombre;
     }
 
-    public void setPassword(String unPass) {
-        if (unPass == null || unPass.isBlank()) {
-            throw new IllegalArgumentException("La contraseña no puede estar vacía.");
-        }
-        if (unPass.equals(String.valueOf(this.id))) {
-            throw new IllegalArgumentException("La contraseña no puede ser igual al ID del usuario.");
-        }
-        this.password = unPass;
+    public void setApellido(String unApellido) {
+        this.apellido = unApellido;
+    }
+
+    public void setEmail(String unEmail) {
+        this.email = unEmail;
+    }
+
+    public void setPassword(String hashedPassword) {
+        this.password = hashedPassword;
     }
 
     public void setCambiarPass(boolean valor) {
         this.cambiarPass = valor;
     }
 
-    // Métodos funcionales
-
-    public boolean verificarPassword(String intento) {
-        return intento != null && this.password.equals(intento);
+    public void setActivo(boolean valor) {
+        this.activo = valor;
     }
 
-    public void cambiarPassword(String nuevaPassword) {
-        if (nuevaPassword == null || nuevaPassword.isBlank()) {
-            throw new IllegalArgumentException("La nueva contraseña no puede estar vacía.");
-        }
-        if (nuevaPassword.equals(String.valueOf(this.id))) {
-            throw new IllegalArgumentException("No podés usar tu ID como contraseña.");
-        }
-        if (nuevaPassword.equals(this.password)) {
-            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior.");
-        }
-
-        this.password = nuevaPassword;
-        this.cambiarPass = false;
+    public void setBloqueado(boolean valor) {
+        this.bloqueado = valor;
     }
 
-    public void reiniciarPassword() {
-        this.password = String.valueOf(this.id);
-        this.cambiarPass = true;
-    }
-
+    // metodos abstractos
     public abstract String getTipoUsuario();
 
+    // sobreescritura de metodos
     @Override
     public String toString() {
         return "[" + getTipoUsuario() + "] " + nombre + " (ID: " + id + ")";

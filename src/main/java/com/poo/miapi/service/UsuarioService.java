@@ -80,4 +80,43 @@ public class UsuarioService {
                 .map(u -> (Admin) u)
                 .collect(Collectors.toList());
     }
+
+    public boolean verificarPassword(String intento) {
+        return intento != null && this.password.equals(intento);
+    }
+
+    public void cambiarEmail(String nuevoEmail) {
+        if (nuevoEmail == null || nuevoEmail.isBlank()) {
+            throw new IllegalArgumentException("El email no puede estar vacio");
+        }
+        this.email = nuevoEmail;
+    }
+
+    public void bajaLogica() {
+        this.activo = false;
+    }
+
+    public void altaLogica() {
+        this.activo = true;
+    }
+
+    public void cambiarPassword(String nuevaPassword) {
+        if (nuevaPassword == null || nuevaPassword.isBlank()) {
+            throw new IllegalArgumentException("La nueva contraseña no puede estar vacía.");
+        }
+        if (nuevaPassword.equals(String.valueOf(this.id))) {
+            throw new IllegalArgumentException("No podés usar tu ID como contraseña.");
+        }
+        if (nuevaPassword.equals(this.password)) {
+            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior.");
+        }
+
+        this.password = nuevaPassword;
+        this.cambiarPass = false;
+    }
+
+    public void reiniciarPassword() {
+        this.password = String.valueOf(this.id);
+        this.cambiarPass = true;
+    }
 }

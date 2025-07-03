@@ -84,4 +84,45 @@ public class AdminService {
                 .filter(Tecnico::estaBloqueado)
                 .collect(Collectors.toList());
     }
+
+    // Métodos funcionales
+
+    public Trabajador crearTrabajador(String nombre, String apellido, String email) {
+        return new Trabajador(nombre, apellido, email);
+    }
+
+    public Tecnico crearTecnico(String nombre, String apellido, String email) {
+        return new Tecnico(nombre, apellido, email);
+    }
+
+    public void bloquearTecnico(Tecnico tecnico) {
+        if (tecnico != null) {
+            tecnico.setBloqueado(true);
+        }
+    }
+
+    public void desbloquearTecnico(Tecnico tecnico) {
+        if (tecnico != null) {
+            tecnico.setBloqueado(false);
+            tecnico.reiniciarFallas();
+        }
+    }
+
+    public void blanquearPassword(Usuario usuario) {
+        if (usuario != null) {
+            usuario.reiniciarPassword();
+        }
+    }
+
+    public void reabrirTicket(Ticket ticket, Tecnico tecnicoQueLoPide) {
+        if (ticket != null && tecnicoQueLoPide != null) {
+            ticket.reabrir(tecnicoQueLoPide);
+        }
+    }
+
+    public List<Ticket> filtrarTicketsPorEstado(List<Ticket> tickets, EstadoTicket estado) {
+        return tickets.stream()
+                .filter(t -> t.getEstado() == estado)
+                .toList();
+    }
 }
