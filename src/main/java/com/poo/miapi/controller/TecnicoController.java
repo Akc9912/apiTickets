@@ -1,70 +1,40 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.*;
-import com.poo.miapi.service.GestorDeTickets;
-import com.poo.miapi.service.GestorDeUsuarios;
-import com.poo.miapi.service.NotificacionService;
+import com.poo.miapi.model.Ticket;
+import com.poo.miapi.service.TecnicoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/tecnico")
+@RequestMapping("/api/tecnicos")
 public class TecnicoController {
 
     @Autowired
-    private GestorDeUsuarios gestorUsuarios;
+    private TecnicoService tecnicoService;
 
-    @Autowired
-    private GestorDeTickets gestorTickets;
-
-    @Autowired
-    private NotificacionService notificacionService;
-
-    @PutMapping("/tomar-ticket/{idTicket}")
-    public String tomarTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (!(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.tomarTicket(t);
-        notificacionService.notificarTicketTomado(tecnico, t);
-        return "Ticket tomado.";
+    @PostMapping("/{idTecnico}/tomar/{idTicket}")
+    public ResponseEntity<?> tomarTicket(@PathVariable int idTecnico, @PathVariable int idTicket) {
+        tecnicoService.tomarTicket(idTecnico, idTicket);
+        return ResponseEntity.ok("Ticket tomado exitosamente");
     }
 
-    @PutMapping("/resolver-ticket/{idTicket}")
-    public String resolverTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (!(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.resolverTicket(t);
-        notificacionService.notificarTicketResuelto(tecnico, t);
-        return "Ticket resuelto.";
+    @PostMapping("/{idTecnico}/resolver/{idTicket}")
+    public ResponseEntity<?> resolverTicket(@PathVariable int idTecnico, @PathVariable int idTicket) {
+        tecnicoService.resolverTicket(idTecnico, idTicket);
+        return ResponseEntity.ok("Ticket marcado como resuelto");
     }
 
-    @PutMapping("/devolver-ticket/{idTicket}")
-    public String devolverTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
+    @PostMapping("/{idTecnico}/devolver/{idTicket}")
+    public ResponseEntity<?> devolverTicket(@PathVariable int idTecnico, @PathVariable int idTicket) {
+        tecnicoService.devolverTicket(idTecnico, idTicket);
+        return ResponseEntity.ok("Ticket devuelto");
+    }
 
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (!(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.devolverTicket(t);
-        notificacionService.notificarTicketDevuelto(tecnico, t);
-        return "Ticket devuelto.";
+    @GetMapping("/{idTecnico}/tickets")
+    public ResponseEntity<List<Ticket>> verTicketsAsignados(@PathVariable int idTecnico) {
+        return ResponseEntity.ok(tecnicoService.verTicketsAsignados(idTecnico));
     }
 }

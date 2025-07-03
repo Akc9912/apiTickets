@@ -76,8 +76,15 @@ public class Ticket {
         return tecnicoAnterior;
     }
 
-    // Métodos funcionales
+    // Setters
+    public void setCreador(Trabajador creador) {
+        if (creador == null) {
+            throw new IllegalArgumentException("El creador no puede ser null.");
+        }
+        this.creador = creador;
+    }
 
+    // Métodos funcionales
     public boolean puedeSerTomado() {
         return this.estado == EstadoTicket.NO_ATENDIDO;
     }

@@ -1,117 +1,43 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.*;
-import com.poo.miapi.service.GestorDeTickets;
-import com.poo.miapi.service.GestorDeUsuarios;
+import com.poo.miapi.model.EstadoTicket;
+import com.poo.miapi.model.Ticket;
+import com.poo.miapi.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/tickets")
+@RequestMapping("/api/tickets")
 public class TicketController {
 
     @Autowired
-    private GestorDeTickets gestorTickets;
-
-    @Autowired
-    private GestorDeUsuarios gestorUsuarios;
-
-    // -------------------- Trabajador --------------------
-
-    @PostMapping("/crear")
-    public Ticket crearTicket(@RequestParam int idTrabajador,
-            @RequestParam String titulo,
-            @RequestParam String descripcion) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTrabajador);
-        if (u == null || !(u instanceof Trabajador trabajador)) {
-            throw new RuntimeException("Trabajador no válido.");
-        }
-
-        Ticket nuevo = trabajador.crearTicket(titulo, descripcion);
-        gestorTickets.registrarTicket(nuevo);
-        return nuevo;
-    }
-
-    @PutMapping("/{idTicket}/confirmar-resolucion")
-    public String confirmarResolucion(@PathVariable int idTicket,
-            @RequestParam int idTrabajador,
-            @RequestParam boolean fueResuelto) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTrabajador);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (u == null || !(u instanceof Trabajador trabajador) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        trabajador.confirmarResolucion(t, fueResuelto);
-        return fueResuelto ? "Ticket finalizado." : "Ticket reabierto.";
-    }
-
-    // -------------------- Técnico --------------------
-
-    @PutMapping("/{idTicket}/tomar")
-    public String tomarTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (u == null || !(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.tomarTicket(t);
-        return "Ticket tomado.";
-    }
-
-    @PutMapping("/{idTicket}/resolver")
-    public String resolverTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (u == null || !(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.resolverTicket(t);
-        return "Ticket resuelto.";
-    }
-
-    @PutMapping("/{idTicket}/devolver")
-    public String devolverTicket(@PathVariable int idTicket,
-            @RequestParam int idTecnico) {
-
-        Usuario u = gestorUsuarios.buscarPorId(idTecnico);
-        Ticket t = gestorTickets.buscarPorId(idTicket);
-
-        if (u == null || !(u instanceof Tecnico tecnico) || t == null) {
-            return "Datos inválidos.";
-        }
-
-        tecnico.devolverTicket(t);
-        return "Ticket devuelto.";
-    }
-
-    // -------------------- Consultas generales --------------------
+    private TicketService ticketService;
 
     @GetMapping
-    public List<Ticket> getTodos() {
-        return gestorTickets.obtenerTodos();
-    }
-
-    @GetMapping("/estado")
-    public List<Ticket> getPorEstado(@RequestParam EstadoTicket estado) {
-        return gestorTickets.filtrarPorEstado(estado);
+    public ResponseEntity<List<Ticket>> listarTodos() {
+        return ResponseEntity.ok(ticketService.obtenerTodos());
     }
 
     @GetMapping("/{id}")
-    public Ticket getPorId(@PathVariable int id) {
-        return gestorTickets.buscarPorId(id);
+    public ResponseEntity<Ticket> buscarPorId(@PathVariable int id) {
+        return ResponseEntity.ok(ticketService.buscarPorId(id));
+    }
+
+    @GetMapping("/estado")
+    public ResponseEntity<List<Ticket>> buscarPorEstado(@RequestParam EstadoTicket estado) {
+        return ResponseEntity.ok(ticketService.obtenerPorEstado(estado));
+    }
+
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<Ticket>> ticketsSinAsignar() {
+        return ResponseEntity.ok(ticketService.obtenerDisponibles());
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Ticket>> buscarPorTitulo(@RequestParam String titulo) {
+        return ResponseEntity.ok(ticketService.buscarPorTitulo(titulo));
     }
 }

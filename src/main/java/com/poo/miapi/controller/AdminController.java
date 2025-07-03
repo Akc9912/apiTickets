@@ -1,55 +1,63 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.*;
+import com.poo.miapi.model.EstadoTicket;
+import com.poo.miapi.model.Tecnico;
+import com.poo.miapi.model.Ticket;
 import com.poo.miapi.service.AdminService;
-import com.poo.miapi.service.GestorDeUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     @Autowired
     private AdminService adminService;
 
-    @Autowired
-    private GestorDeUsuarios gestorUsuarios;
-
     @PostMapping("/crear-trabajador")
-    public Trabajador crearTrabajador(@RequestParam String nombre) {
-        return adminService.crearTrabajador(nombre);
+    public ResponseEntity<?> crearTrabajador(@RequestParam String nombre) {
+        return ResponseEntity.ok(adminService.crearTrabajador(nombre));
     }
 
     @PostMapping("/crear-tecnico")
-    public Tecnico crearTecnico(@RequestParam String nombre) {
-        return adminService.crearTecnico(nombre);
+    public ResponseEntity<?> crearTecnico(@RequestParam String nombre) {
+        return ResponseEntity.ok(adminService.crearTecnico(nombre));
     }
 
-    @PutMapping("/blanquear-password/{id}")
-    public String blanquearPassword(@PathVariable int id) {
-        Usuario u = gestorUsuarios.buscarPorId(id);
-        if (u == null)
-            return "Usuario no encontrado.";
-        adminService.blanquearPassword(u);
-        return "Contraseña blanqueada.";
-    }
-
-    @PutMapping("/bloquear-tecnico/{id}")
-    public String bloquearTecnico(@PathVariable int id) {
+    @PostMapping("/bloquear-tecnico/{id}")
+    public ResponseEntity<?> bloquearTecnico(@PathVariable int id) {
         adminService.bloquearTecnico(id);
-        return "Técnico bloqueado.";
+        return ResponseEntity.ok("Técnico bloqueado");
     }
 
-    @PutMapping("/desbloquear-tecnico/{id}")
-    public String desbloquearTecnico(@PathVariable int id) {
+    @PostMapping("/desbloquear-tecnico/{id}")
+    public ResponseEntity<?> desbloquearTecnico(@PathVariable int id) {
         adminService.desbloquearTecnico(id);
-        return "Técnico desbloqueado.";
+        return ResponseEntity.ok("Técnico desbloqueado");
     }
 
-    @PutMapping("/reabrir-ticket")
-    public String reabrirTicket(@RequestParam int idTicket, @RequestParam int idTecnico) {
+    @PostMapping("/blanquear-password/{idUsuario}")
+    public ResponseEntity<?> blanquearPassword(@PathVariable int idUsuario) {
+        adminService.blanquearPassword(idUsuario);
+        return ResponseEntity.ok("Contraseña blanqueada");
+    }
+
+    @PostMapping("/reabrir-ticket")
+    public ResponseEntity<?> reabrirTicket(@RequestParam int idTicket, @RequestParam int idTecnico) {
         adminService.reabrirTicket(idTicket, idTecnico);
-        return "Ticket reabierto.";
+        return ResponseEntity.ok("Ticket reabierto correctamente");
+    }
+
+    @GetMapping("/tickets/estado")
+    public ResponseEntity<List<Ticket>> filtrarPorEstado(@RequestParam EstadoTicket estado) {
+        return ResponseEntity.ok(adminService.filtrarPorEstado(estado));
+    }
+
+    @GetMapping("/tecnicos-bloqueados")
+    public ResponseEntity<List<Tecnico>> obtenerTecnicosBloqueados() {
+        return ResponseEntity.ok(adminService.obtenerTecnicosBloqueados());
     }
 }

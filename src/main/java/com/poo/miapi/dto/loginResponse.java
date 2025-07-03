@@ -1,26 +1,37 @@
 package com.poo.miapi.dto;
 
 public class LoginResponse {
+    private int id;
     private String nombre;
-    private String tipoUsuario;
-    private boolean requiereCambioPassword;
+    private String tipo;
 
-    public LoginResponse(String nombre, String tipoUsuario, boolean requiereCambioPassword) {
+    public LoginResponse(int id, String nombre, String tipo) {
+        this.id = id;
         this.nombre = nombre;
-        this.tipoUsuario = tipoUsuario;
-        this.requiereCambioPassword = requiereCambioPassword;
+        this.tipo = tipo;
     }
 
-    // Getters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
-    public String getTipoUsuario() {
-        return tipoUsuario;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public boolean isRequiereCambioPassword() {
-        return requiereCambioPassword;
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
