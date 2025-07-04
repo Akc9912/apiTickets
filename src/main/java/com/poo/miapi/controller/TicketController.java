@@ -1,7 +1,7 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.EstadoTicket;
-import com.poo.miapi.model.Ticket;
+import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

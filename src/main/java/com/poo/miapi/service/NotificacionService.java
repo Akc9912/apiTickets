@@ -1,7 +1,8 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.model.Tecnico;
-import com.poo.miapi.model.Ticket;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Ticket;
+
 import org.springframework.stereotype.Service;
 
 @Service

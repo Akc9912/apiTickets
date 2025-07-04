@@ -1,6 +1,10 @@
 package com.poo.miapi.controller;
 
 import com.poo.miapi.model.*;
+import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.service.GestorDeTickets;
 import com.poo.miapi.service.GestorDeUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;

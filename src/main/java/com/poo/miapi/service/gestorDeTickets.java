@@ -1,7 +1,7 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.model.EstadoTicket;
-import com.poo.miapi.model.Ticket;
+import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.core.Ticket;
 
 import org.springframework.stereotype.Service;
 

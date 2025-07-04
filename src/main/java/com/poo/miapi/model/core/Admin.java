@@ -1,4 +1,4 @@
-package com.poo.miapi.model;
+package com.poo.miapi.model.core;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

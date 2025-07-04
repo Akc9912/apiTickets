@@ -5,7 +5,7 @@ public class LoginRequest {
     private String password;
 
     // Getters y setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 

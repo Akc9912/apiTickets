@@ -2,7 +2,7 @@ package com.poo.miapi.controller;
 
 import com.poo.miapi.dto.LoginRequest;
 import com.poo.miapi.dto.LoginResponse;
-import com.poo.miapi.model.Usuario;
+import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

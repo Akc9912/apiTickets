@@ -1,25 +1,24 @@
 package com.poo.miapi.repository;
 
-import com.poo.miapi.model.Usuario;
-import com.poo.miapi.model.Tecnico;
-import com.poo.miapi.model.Trabajador;
+import com.poo.miapi.model.core.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
-    Optional<Usuario> findByNombre(String nombre);
+    Optional<Usuario> findByEmail(String email);
 
-    // Buscar por nombre e ID (para login por ejemplo)
-    Optional<Usuario> findByIdAndPassword(int id, String password);
+    boolean existsByEmail(String email);
 
-    // Si querés filtrar por tipo de usuario (herencia)
-    @Query("SELECT t FROM Tecnico t WHERE t.bloqueado = true")
-    List<Tecnico> findTecnicosBloqueados();
+    List<Usuario> findByActivoTrue();
 
-    @Query("SELECT tr FROM Trabajador tr")
-    List<Trabajador> findAllTrabajadores();
+    List<Usuario> findByBloqueadoTrue();
+
+    long countByActivoTrue();
+
+    List<Usuario> findByNombreContainingIgnoreCase(String nombre);
 }

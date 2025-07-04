@@ -1,4 +1,4 @@
-package com.poo.miapi.model;
+package com.poo.miapi.model.core;
 
 public enum EstadoTicket {
     NO_ATENDIDO("No atendido"),

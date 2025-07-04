@@ -1,7 +1,7 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.model.Usuario;
-import com.poo.miapi.model.Tecnico;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Usuario;
 
 import org.springframework.stereotype.Service;
 

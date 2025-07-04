@@ -1,9 +1,11 @@
-package com.poo.miapi.model;
+package com.poo.miapi.model.core;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.poo.miapi.model.historial.TecnicoPorTicket;
 
 @Entity
 public class Ticket {
@@ -23,7 +25,7 @@ public class Ticket {
     private Trabajador creador;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
+    private List<TecnicoPorTicket> historialTecnicos;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
@@ -39,6 +41,7 @@ public class Ticket {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.creador = creador;
+        this.historialTecnicos = new ArrayList<>();
         this.estado = EstadoTicket.NO_ATENDIDO;
         this.fechaCreacion = new Date();
         this.fechaUltimaActualizacion = new Date();

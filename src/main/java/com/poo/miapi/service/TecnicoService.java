@@ -1,6 +1,8 @@
 package com.poo.miapi.service;
 
 import com.poo.miapi.model.*;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.TicketRepository;
 import com.poo.miapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
