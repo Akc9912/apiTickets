@@ -3,8 +3,8 @@ package com.poo.miapi.model.core;
 public enum EstadoTicket {
     NO_ATENDIDO("No atendido"),
     ATENDIDO("Atendido"),
-    RESUELTO("Resuelto"),
     FINALIZADO("Finalizado"),
+    RESUELTO("Resuelto"),
     REABIERTO("Reabierto");
 
     private final String label;

@@ -1,29 +1,38 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-
+import com.poo.miapi.model.notificacion.Notificacion;
+import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.repository.NotificacionRepository;
+import com.poo.miapi.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class NotificacionService {
-    public void notificarTicketTomado(Tecnico tecnico, Ticket ticket) {
-        System.out.println("🔔 [NOTIFICACIÓN] Técnico " + tecnico.getNombre() +
-                " tomó el ticket #" + ticket.getId() + ": " + ticket.getTitulo());
+
+    @Autowired
+    private NotificacionRepository notificacionRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    public Notificacion enviarNotificacion(int idUsuario, String mensaje) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+        Notificacion n = new Notificacion(usuario, mensaje);
+        return notificacionRepository.save(n);
     }
 
-    public void notificarTicketResuelto(Tecnico tecnico, Ticket ticket) {
-        System.out.println("✅ [NOTIFICACIÓN] Técnico " + tecnico.getNombre() +
-                " resolvió el ticket #" + ticket.getId());
+    public List<Notificacion> obtenerNotificaciones(int idUsuario) {
+        return notificacionRepository.findByUsuarioId(idUsuario);
     }
 
-    public void notificarTicketDevuelto(Tecnico tecnico, Ticket ticket) {
-        System.out.println("↩️ [NOTIFICACIÓN] Técnico " + tecnico.getNombre() +
-                " devolvió el ticket #" + ticket.getId());
-    }
-
-    public void notificarTicketReabierto(Ticket ticket) {
-        System.out.println("🚨 [NOTIFICACIÓN] El ticket #" + ticket.getId() +
-                " fue reabierto por el administrador.");
+    public void eliminarTodasDelUsuario(int idUsuario) {
+        List<Notificacion> notificaciones = obtenerNotificaciones(idUsuario);
+        notificacionRepository.deleteAll(notificaciones);
     }
 }

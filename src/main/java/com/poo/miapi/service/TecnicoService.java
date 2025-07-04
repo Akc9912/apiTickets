@@ -1,123 +1,118 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.model.*;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.historial.*;
+import com.poo.miapi.repository.TecnicoRepository;
 import com.poo.miapi.repository.TicketRepository;
-import com.poo.miapi.repository.UsuarioRepository;
+import com.poo.miapi.repository.TecnicoPorTicketRepository;
+import com.poo.miapi.repository.IncidenteTecnicoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class TecnicoService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private TecnicoRepository tecnicoRepository;
 
     @Autowired
     private TicketRepository ticketRepository;
 
-    // Tomar un ticket
+    @Autowired
+    private TecnicoPorTicketRepository tecnicoPorTicketRepository;
+
+    @Autowired
+    private IncidenteTecnicoRepository incidenteTecnicoRepository;
+
+    public Tecnico buscarPorId(int id) {
+        return tecnicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
+    }
+
+    public void marcarFalla(int idTecnico, String motivo, Ticket ticket) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        tecnico.sumarFalla();
+
+        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
+                motivo);
+        incidenteTecnicoRepository.save(incidente);
+        tecnicoRepository.save(tecnico);
+    }
+
+    public void marcarMarca(int idTecnico, String motivo, Ticket ticket) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        tecnico.sumarMarca();
+
+        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.MARCA,
+                motivo);
+        incidenteTecnicoRepository.save(incidente);
+        tecnicoRepository.save(tecnico);
+    }
+
+    public void reiniciarFallasYMarcas(int idTecnico) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        tecnico.reiniciarFallasYMarcas();
+        tecnicoRepository.save(tecnico);
+    }
+
     public void tomarTicket(int idTecnico, int idTicket) {
-        Tecnico tecnico = getTecnicoPorId(idTecnico);
-        Ticket ticket = getTicketPorId(idTicket);
-        tecnico.tomarTicket(ticket);
+        Tecnico tecnico = buscarPorId(idTecnico);
+        Ticket ticket = ticketRepository.findById(idTicket)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+
+        if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO)) {
+            throw new IllegalStateException("El ticket ya está siendo atendido");
+        }
+
+        ticket.setEstado(EstadoTicket.ATENDIDO);
+        TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, EstadoTicket.NO_ATENDIDO,
+                EstadoTicket.ATENDIDO);
+        tecnicoPorTicketRepository.save(historial);
         ticketRepository.save(ticket);
     }
 
-    // Resolver un ticket
     public void resolverTicket(int idTecnico, int idTicket) {
-        Tecnico tecnico = getTecnicoPorId(idTecnico);
-        Ticket ticket = getTicketPorId(idTicket);
-        tecnico.resolverTicket(ticket);
+        Tecnico tecnico = buscarPorId(idTecnico);
+        Ticket ticket = ticketRepository.findById(idTicket)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+
+        if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
+            throw new IllegalStateException("El ticket no está en estado ATENDIDO");
+        }
+
+        ticket.setEstado(EstadoTicket.RESUELTO);
         ticketRepository.save(ticket);
     }
 
-    // Devolver un ticket
-    public void devolverTicket(int idTecnico, int idTicket) {
-        Tecnico tecnico = getTecnicoPorId(idTecnico);
-        Ticket ticket = getTicketPorId(idTicket);
-        tecnico.devolverTicket(ticket);
+    public void devolverTicket(int idTecnico, int idTicket, String motivo) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        Ticket ticket = ticketRepository.findById(idTicket)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+
+        if (ticket.getTecnicoActual().getId() != tecnico.getId()) {
+            throw new IllegalArgumentException("Este ticket no pertenece a este técnico");
+        }
+
+        if (ticket.getEstado() != EstadoTicket.ATENDIDO) {
+            throw new IllegalStateException("Solo se pueden devolver tickets en estado ASIGNADO");
+        }
+
+        ticket.setEstado(EstadoTicket.REABIERTO);
+
+        marcarMarca(tecnico.getId(), motivo, ticket);
+
         ticketRepository.save(ticket);
-        usuarioRepository.save(tecnico);
     }
 
-    // Ver tickets activos del técnico
-    public List<Ticket> verTicketsAsignados(int idTecnico) {
-        Tecnico tecnico = getTecnicoPorId(idTecnico);
-        return ticketRepository.findByTecnicoActual(tecnico);
+    public List<IncidenteTecnico> obtenerHistorialIncidentes(int idTecnico) {
+        return incidenteTecnicoRepository.findByTecnicoId(idTecnico);
     }
 
-    // Métodos internos de validación y carga
-    private Tecnico getTecnicoPorId(int id) {
-        return (Tecnico) usuarioRepository.findById(id)
-                .filter(u -> u instanceof Tecnico)
-                .orElseThrow(() -> new IllegalArgumentException("Técnico no encontrado"));
-    }
-
-    private Ticket getTicketPorId(int id) {
-        return ticketRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ticket no encontrado"));
-    }
-
-    public void reiniciarFallas() {
-        this.fallas = 0;
-    }
-
-    public void reiniciarMarcas() {
-        this.marcas = 0;
-    }
-
-    public void tomarTicket(Ticket ticket) {
-        if (bloqueado) {
-            throw new IllegalStateException("El técnico está bloqueado y no puede tomar tickets.");
-        }
-
-        if (ticketsAtendidos.size() >= 3) {
-            throw new IllegalStateException("No se pueden atender más de 3 tickets simultáneamente.");
-        }
-
-        if (!ticket.puedeSerTomado()) {
-            throw new IllegalStateException("El ticket no está disponible para ser tomado.");
-        }
-
-        ticket.asignarTecnico(this);
-        ticketsAtendidos.add(ticket);
-    }
-
-    public void resolverTicket(Ticket ticket) {
-        if (!ticketsAtendidos.contains(ticket)) {
-            throw new IllegalArgumentException("Este ticket no está siendo atendido por el técnico.");
-        }
-
-        ticket.marcarResuelto();
-    }
-
-    public void devolverTicket(Ticket ticket) {
-        if (!ticketsAtendidos.contains(ticket)) {
-            throw new IllegalArgumentException("El técnico no está atendiendo este ticket.");
-        }
-
-        ticketsAtendidos.remove(ticket);
-        ticket.desasignarTecnico();
-
-        if (this.marcas > 0) {
-            this.marcas--;
-            this.fallas++;
-        } else {
-            this.marcas++;
-        }
-
-        if (this.fallas >= 3) {
-            this.bloqueado = true;
-        }
-    }
-
-    public void limpiarFalla() {
-        if (this.fallas > 0) {
-            this.fallas--;
-        }
+    public List<Tecnico> listarTodos() {
+        return tecnicoRepository.findAll();
     }
 }

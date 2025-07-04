@@ -36,6 +36,35 @@ public class Tecnico extends Usuario {
         return incidentes;
     }
 
+    public void setFallas(int valor) {
+        this.fallas = valor;
+    }
+
+    public void setMarcas(int valor) {
+        this.marcas = valor;
+    }
+
+    public void sumarFalla() {
+        this.fallas++;
+    }
+
+    public void sumarMarca() {
+        this.marcas++;
+    }
+
+    public void descontarFalla() {
+        this.fallas--;
+    }
+
+    public void descontarMarca() {
+        this.marcas--;
+    }
+
+    public void reiniciarFallasYMarcas() {
+        setFallas(0);
+        setMarcas(0);
+    }
+
     @Override
     public String getTipoUsuario() {
         return "TECNICO";

@@ -43,6 +43,14 @@ public class TecnicoPorTicket {
         this.fechaAsignacion = LocalDateTime.now();
     }
 
+    public TecnicoPorTicket(Ticket ticket, Tecnico tecnico, EstadoTicket estadoInicial, EstadoTicket estadoFinal) {
+        this.fechaAsignacion = LocalDateTime.now();
+        this.ticket = ticket;
+        this.tecnico = tecnico;
+        this.estadoInicial = estadoInicial;
+        this.estadoFinal = estadoFinal;
+    }
+
     // Getters y Setters
 
     public Long getId() {
