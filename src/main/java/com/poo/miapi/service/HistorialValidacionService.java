@@ -13,11 +13,19 @@ public class HistorialValidacionService {
     @Autowired
     private HistorialValidacionRepository historialValidacionRepository;
 
-    public List<HistorialValidacionTrabajador> listarTodos() {
-        return historialValidacionRepository.findAll();
-    }
-
     public void registrarValidacion(HistorialValidacionTrabajador validacion) {
         historialValidacionRepository.save(validacion);
+    }
+
+    public List<HistorialValidacionTrabajador> listarPorTrabajador(int trabajadorId) {
+        return historialValidacionRepository.findByTrabajadorId(trabajadorId);
+    }
+
+    public List<HistorialValidacionTrabajador> listarPorTicket(int ticketId) {
+        return historialValidacionRepository.findByTicketId(ticketId);
+    }
+
+    public List<HistorialValidacionTrabajador> listarTodos() {
+        return historialValidacionRepository.findAll();
     }
 }

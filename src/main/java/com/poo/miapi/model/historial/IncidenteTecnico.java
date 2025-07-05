@@ -24,7 +24,7 @@ public class IncidenteTecnico {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "id_ticket")
-    private Ticket ticket; // puede ser null si es una falla general
+    private Ticket ticket;
 
     @Enumerated(EnumType.STRING)
     private TipoIncidente tipo;

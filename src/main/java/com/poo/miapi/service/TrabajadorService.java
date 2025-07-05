@@ -1,9 +1,11 @@
 package com.poo.miapi.service;
 
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
 import com.poo.miapi.repository.TrabajadorRepository;
 import com.poo.miapi.repository.TecnicoRepository;
 import com.poo.miapi.repository.TicketRepository;
+import com.poo.miapi.repository.HistorialValidacionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class TrabajadorService {
 
     @Autowired
     private TecnicoService tecnicoService;
+
+    @Autowired
+    private HistorialValidacionRepository historialValidacionRepository;
 
     public Trabajador buscarPorId(int id) {
         return trabajadorRepository.findById(id)
@@ -62,6 +67,10 @@ public class TrabajadorService {
         }
 
         ticketRepository.save(ticket);
+
+        HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
+                trabajador, ticket, fueResuelto, fueResuelto ? "Resuelto correctamente" : motivoFalla);
+        historialValidacionRepository.save(validacion);
     }
 
     public List<Ticket> verTicketsActivos(int idTrabajador) {

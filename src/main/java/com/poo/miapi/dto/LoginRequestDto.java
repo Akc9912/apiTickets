@@ -1,16 +1,16 @@
 package com.poo.miapi.dto;
 
-public class LoginRequest {
-    private int id;
+public class LoginRequestDto {
+    private String email;
     private String password;
 
     // Getters y setters
-    public int getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
