@@ -9,8 +9,6 @@ import com.poo.miapi.repository.IncidenteTecnicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -76,7 +74,7 @@ public class TecnicoService {
     }
 
     public void resolverTicket(int idTecnico, int idTicket) {
-        Tecnico tecnico = buscarPorId(idTecnico);
+        //Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 

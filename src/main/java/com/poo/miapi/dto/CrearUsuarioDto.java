@@ -4,6 +4,7 @@ public class CrearUsuarioDto {
     private String nombre;
     private String apellido;
     private String email;
+    private String tipo; // ver si agrego atributo a usuario o lo manejo con el front en el json
 
     // Getters y setters
     public String getNombre() {
@@ -28,5 +29,13 @@ public class CrearUsuarioDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
