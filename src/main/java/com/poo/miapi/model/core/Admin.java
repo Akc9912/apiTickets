@@ -9,10 +9,12 @@ public class Admin extends Usuario {
 
     public Admin() {
         super();
+        this.setRol("ADMIN");
     }
 
     public Admin(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
+        this.setRol("ADMIN");
     }
 
     @Override

@@ -15,6 +15,7 @@ public abstract class Usuario {
     private String apellido;
     private String email;
     private String password;
+    private String rol;
     private boolean cambiarPass;
     private boolean activo;
     private boolean bloqueado;
@@ -55,6 +56,10 @@ public abstract class Usuario {
         return this.password;
     }
 
+    public String getRol() {
+        return this.rol;
+    }
+
     public boolean isCambiarPass() {
         return this.cambiarPass;
     }
@@ -82,6 +87,10 @@ public abstract class Usuario {
 
     public void setPassword(String hashedPassword) {
         this.password = hashedPassword;
+    }
+
+    public void setRol(String unRol) {
+        this.rol = unRol;
     }
 
     public void setCambiarPass(boolean valor) {

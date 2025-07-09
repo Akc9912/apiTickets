@@ -3,7 +3,7 @@ package com.poo.miapi.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class CrearUsuarioDto {
+public class EditarUsuarioDto {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
@@ -14,11 +14,7 @@ public class CrearUsuarioDto {
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    private String password;
-
-    @NotBlank(message = "El rol es obligatorio")
-    private String rol;
+    // Agrega otros campos editables si es necesario
 
     // Getters y setters
     public String getNombre() {
@@ -45,19 +41,13 @@ public class CrearUsuarioDto {
         this.email = email;
     }
 
-    public String getRol() {
-        return rol;
+    public Object getRol() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRol'");
     }
 
-    public void setRol(String tipo) {
-        this.rol = tipo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public Object getPassword() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
     }
 }

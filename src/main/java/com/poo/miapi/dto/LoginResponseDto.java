@@ -1,7 +1,12 @@
 package com.poo.miapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginResponseDto {
+    @NotBlank(message = "El token es obligatorio")
     private String token;
+
+    @NotBlank(message = "El usuario es obligatorio")
     private UsuarioResponseDto usuario;
 
     public LoginResponseDto(String token, UsuarioResponseDto usuario) {

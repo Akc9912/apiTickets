@@ -1,10 +1,9 @@
 package com.poo.miapi.model.core;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 
 @Entity
@@ -28,10 +27,10 @@ public class Ticket {
     private List<TecnicoPorTicket> historialTecnicos;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaUltimaActualizacion;
+    private LocalDateTime fechaUltimaActualizacion;
 
     // Constructor requerido por JPA
     public Ticket() {
@@ -43,8 +42,8 @@ public class Ticket {
         this.creador = creador;
         this.historialTecnicos = new ArrayList<>();
         this.estado = EstadoTicket.NO_ATENDIDO;
-        this.fechaCreacion = new Date();
-        this.fechaUltimaActualizacion = new Date();
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaUltimaActualizacion = LocalDateTime.now();
     }
 
     // Getters
@@ -68,11 +67,11 @@ public class Ticket {
         return creador;
     }
 
-    public Date getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public Date getFechaUltimaActualizacion() {
+    public LocalDateTime getFechaUltimaActualizacion() {
         return fechaUltimaActualizacion;
     }
 
@@ -89,7 +88,7 @@ public class Ticket {
         this.estado = estado;
     }
 
-    public void setFechaUltimaActualizacion(Date fechaUltimaActualizacion) {
+    public void setFechaUltimaActualizacion(LocalDateTime fechaUltimaActualizacion) {
         this.fechaUltimaActualizacion = fechaUltimaActualizacion;
     }
 
@@ -109,4 +108,5 @@ public class Ticket {
     public String toString() {
         return "Ticket #" + id + ": " + titulo + " (" + estado + ")";
     }
+
 }

@@ -14,11 +14,13 @@ public class Trabajador extends Usuario {
     public Trabajador() {
         super(); // Constructor vacío requerido por JPA
         this.misTickets = new ArrayList<>();
+        this.setRol("TRABAJADOR");
     }
 
     public Trabajador(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
         this.misTickets = new ArrayList<>();
+        this.setRol("TRABAJADOR");
     }
 
     public List<Ticket> getMisTickets() {

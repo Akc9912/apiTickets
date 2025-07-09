@@ -26,14 +26,37 @@ public class TecnicoService {
     @Autowired
     private IncidenteTecnicoRepository incidenteTecnicoRepository;
 
-    public Tecnico buscarPorId(int id) {
-        return tecnicoRepository.findById(id)
+    public Tecnico buscarPorId(int idTecnico) {
+        return tecnicoRepository.findById(idTecnico)
                 .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
+    }
+
+    public void sumarFalla(Tecnico tecnico) {
+        tecnico.setFallas(tecnico.getFallas() + 1);
+        if (tecnico.getFallas() >= 3) {
+            tecnico.setBloqueado(true);
+        }
+        tecnicoRepository.save(tecnico);
+    }
+
+    public void sumarMarca(Tecnico tecnico) {
+        tecnico.setFallas(tecnico.getMarcas() + 1);
+        if (tecnico.getMarcas() >= 3) {
+            sumarFalla(tecnico);
+        }
+        tecnicoRepository.save(tecnico);
+    }
+
+    public void reiniciarFallasYMarcas(Tecnico tecnico) {
+        tecnico.setFallas(0);
+        tecnico.setMarcas(0);
+        tecnico.setBloqueado(false);
+        tecnicoRepository.save(tecnico);
     }
 
     public void marcarFalla(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        tecnico.sumarFalla();
+        sumarFalla(tecnico);
 
         IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
                 motivo);
@@ -43,7 +66,7 @@ public class TecnicoService {
 
     public void marcarMarca(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        tecnico.sumarMarca();
+        sumarMarca(tecnico);
 
         IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.MARCA,
                 motivo);
@@ -53,7 +76,7 @@ public class TecnicoService {
 
     public void reiniciarFallasYMarcas(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        tecnico.reiniciarFallasYMarcas();
+        reiniciarFallasYMarcas(tecnico);
         tecnicoRepository.save(tecnico);
     }
 
@@ -74,7 +97,7 @@ public class TecnicoService {
     }
 
     public void resolverTicket(int idTecnico, int idTicket) {
-        //Tecnico tecnico = buscarPorId(idTecnico);
+        // Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -101,7 +124,7 @@ public class TecnicoService {
 
         ticket.setEstado(EstadoTicket.REABIERTO);
 
-        marcarMarca(tecnico.getId(), motivo, ticket);
+        marcarMarca((int) tecnico.getId(), motivo, ticket);
 
         ticketRepository.save(ticket);
     }
@@ -112,5 +135,12 @@ public class TecnicoService {
 
     public List<Tecnico> listarTodos() {
         return tecnicoRepository.findAll();
+    }
+
+    public List<Ticket> verTicketsAsignados(int idTecnico) {
+        Tecnico tecnico = tecnicoRepository.findById(idTecnico)
+                .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
+
+        return ticketRepository.findByTecnicoActual(tecnico);
     }
 }

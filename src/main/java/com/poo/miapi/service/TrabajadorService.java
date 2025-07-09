@@ -80,6 +80,11 @@ public class TrabajadorService {
                 .toList();
     }
 
+    public List<Ticket> verTodosMisTickets(int idTrabajador) {
+        Trabajador trabajador = buscarPorId(idTrabajador);
+        return trabajador.getMisTickets().stream().toList();
+    }
+
     public List<Trabajador> listarTodos() {
         return trabajadorRepository.findAll();
     }

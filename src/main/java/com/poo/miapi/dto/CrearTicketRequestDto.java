@@ -1,8 +1,16 @@
 package com.poo.miapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class CrearTicketRequestDto {
+    @NotNull(message = "El idTrabajador no puede ser nulo")
     private int idTrabajador;
+
+    @NotBlank(message = "El título es obligatorio")
     private String titulo;
+
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
     // Getters y setters

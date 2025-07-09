@@ -1,11 +1,20 @@
 package com.poo.miapi.dto;
 
 import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class HistorialValidacionDto {
+    @NotNull(message = "El idTicket no puede ser nulo")
     private int idTicket;
+
+    @NotNull(message = "El estado de resolución no puede ser nulo")
     private boolean fueResuelto;
+
+    @NotBlank(message = "El comentario es obligatorio")
     private String comentario;
+
+    @NotNull(message = "La fecha no puede ser nula")
     private LocalDateTime fecha;
 
     public HistorialValidacionDto(int idTicket, boolean fueResuelto, String comentario, LocalDateTime fecha) {

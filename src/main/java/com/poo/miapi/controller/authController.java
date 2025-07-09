@@ -5,11 +5,12 @@ import com.poo.miapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
 
 @RestController
+@ControllerAdvice
 @RequestMapping("/api/auth")
+
 public class AuthController {
 
     @Autowired

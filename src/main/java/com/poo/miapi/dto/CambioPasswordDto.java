@@ -1,15 +1,21 @@
 package com.poo.miapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class CambioPasswordDto {
-    private int idUsuario;
+    @NotNull(message = "El idUsuario es obligatorio")
+    private Integer idUsuario;
+
+    @NotBlank(message = "La nueva contraseña es obligatoria")
     private String nuevaPassword;
 
     // Getters y setters
-    public int getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 

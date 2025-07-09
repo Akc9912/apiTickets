@@ -18,10 +18,12 @@ public class Tecnico extends Usuario {
 
     public Tecnico() {
         super();
+        this.setRol("TECNICO");
     }
 
     public Tecnico(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
+        this.setRol("TECNICO");
     }
 
     public int getFallas() {
@@ -42,27 +44,6 @@ public class Tecnico extends Usuario {
 
     public void setMarcas(int valor) {
         this.marcas = valor;
-    }
-
-    public void sumarFalla() {
-        this.fallas++;
-    }
-
-    public void sumarMarca() {
-        this.marcas++;
-    }
-
-    public void descontarFalla() {
-        this.fallas--;
-    }
-
-    public void descontarMarca() {
-        this.marcas--;
-    }
-
-    public void reiniciarFallasYMarcas() {
-        setFallas(0);
-        setMarcas(0);
     }
 
     @Override
