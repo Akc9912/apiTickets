@@ -1,6 +1,9 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.dto.*;
+import com.poo.miapi.dto.auth.ChangePasswordDto;
+import com.poo.miapi.dto.auth.LoginRequestDto;
+import com.poo.miapi.dto.auth.LoginResponseDto;
+import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,20 +26,14 @@ public class AuthController {
     }
 
     @PostMapping("/cambiar-password")
-    public ResponseEntity<String> cambiarPassword(@RequestBody @Valid CambioPasswordDto dto) {
+    public ResponseEntity<String> cambiarPassword(@RequestBody @Valid ChangePasswordDto dto) {
         usuarioService.cambiarPassword(dto);
         return ResponseEntity.ok("Contraseña actualizada correctamente");
     }
 
     @PostMapping("/reiniciar-password")
-    public ResponseEntity<String> reiniciarPassword(@RequestBody @Valid ReinicioPasswordDto dto) {
+    public ResponseEntity<String> reiniciarPassword(@RequestBody @Valid ResetPasswordDto dto) {
         usuarioService.reiniciarPassword(dto);
         return ResponseEntity.ok("Contraseña reiniciada correctamente");
-    }
-
-    @PostMapping("/registrar")
-    public ResponseEntity<UsuarioResponseDto> registrarUsuario(@RequestBody @Valid CrearUsuarioDto dto) {
-        UsuarioResponseDto nuevo = usuarioService.registrarUsuario(dto);
-        return ResponseEntity.ok(nuevo);
     }
 }

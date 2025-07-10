@@ -1,4 +1,6 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.ticket;
+
+import java.time.LocalDateTime;
 
 import com.poo.miapi.model.core.EstadoTicket;
 
@@ -18,18 +20,36 @@ public class TicketResponseDto {
     @NotBlank(message = "El estado del ticket es obligatorio")
     private EstadoTicket estado;
 
+    @NotBlank(message = "El creador del ticket es obligatorio")
+    private String creador;
+
     @NotBlank(message = "El técnico asignado es obligatorio")
     private String tecnicoAsignado;
 
-    public TicketResponseDto(int id, String titulo, String descripcion, EstadoTicket estado, String tecnicoAsignado) {
+    @NotNull(message = "La fecha de creación no puede ser nula")
+    private LocalDateTime fechaCreacion;
+
+    @NotNull(message = "La fecha de última actualización no puede ser nula")
+    private LocalDateTime fechaUltimaActualizacion;
+
+    // Constructor
+    public TicketResponseDto() {
+    }
+
+    public TicketResponseDto(int id, String titulo, String descripcion, EstadoTicket estado, String creador,
+            String tecnicoAsignado, LocalDateTime fechaCreacion, LocalDateTime fechaUltimaActualizacion) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.estado = estado;
+        this.creador = creador;
         this.tecnicoAsignado = tecnicoAsignado;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaUltimaActualizacion = fechaUltimaActualizacion;
     }
 
     // Getters
+
     public int getId() {
         return id;
     }
@@ -46,7 +66,19 @@ public class TicketResponseDto {
         return estado;
     }
 
+    public String getCreador() {
+        return creador;
+    }
+
     public String getTecnicoAsignado() {
         return tecnicoAsignado;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public LocalDateTime getFechaUltimaActualizacion() {
+        return fechaUltimaActualizacion;
     }
 }

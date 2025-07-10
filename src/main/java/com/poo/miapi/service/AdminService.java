@@ -1,7 +1,6 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.dto.CrearUsuarioDto;
-import com.poo.miapi.dto.EditarUsuarioDto;
+import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.TecnicoPorTicketRepository;
@@ -9,12 +8,9 @@ import com.poo.miapi.repository.TecnicoRepository;
 import com.poo.miapi.repository.TicketRepository;
 import com.poo.miapi.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,23 +37,24 @@ public class AdminService {
     // =========================
 
     // Crear usuario
-    public String crearUsuario(CrearUsuarioDto usuarioDto) {
-        validarDatosUsuario(usuarioDto);
+    public Usuario crearUsuario(UsuarioRequestDto usuario) {
 
-        if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
+        validarDatosUsuario(usuario);
+
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new IllegalArgumentException("El email ya está en uso");
         }
 
-        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
-        nuevoUsuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
-        nuevoUsuario.setRol(usuarioDto.getRol().toUpperCase());
+        Usuario nuevoUsuario = crearUsuarioPorRol(usuario);
+        nuevoUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        nuevoUsuario.setRol(usuario.getRol().toUpperCase());
         usuarioRepository.save(nuevoUsuario);
 
-        return "Usuario creado con éxito: " + nuevoUsuario.getEmail();
+        return nuevoUsuario;
     }
 
     // Editar usuario
-    public String editarUsuario(Long id, EditarUsuarioDto usuarioDto) {
+    public String editarUsuario(Long id, UsuarioRequestDto usuarioDto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         validarDatosUsuario(usuarioDto);
@@ -78,14 +75,16 @@ public class AdminService {
     }
 
     // Cambiar rol de usuario (crea nuevo usuario y da de baja lógica al anterior)
-    public String cambiarRolUsuario(int id, EditarUsuarioDto cambiarRolDto) {
+    public String cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
+
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
-        validarRol(cambiarRolDto.getRol());
 
-        Usuario nuevoUsuario = crearUsuarioPorRol(cambiarRolDto);
-        nuevoUsuario.setPassword(passwordEncoder.encode(cambiarRolDto.getPassword()));
-        nuevoUsuario.setRol(cambiarRolDto.getRol().toUpperCase());
+        validarRol((String) usuarioCambioRol.getRol());
+
+        Usuario nuevoUsuario = crearUsuario(usuarioCambioRol);
+        nuevoUsuario.setPassword(passwordEncoder.encode((CharSequence) usuarioCambioRol.getPassword()));
+        nuevoUsuario.setRol(((String) usuarioCambioRol.getRol()).toUpperCase());
         usuarioRepository.save(nuevoUsuario);
 
         usuario.setActivo(false);
@@ -176,7 +175,7 @@ public class AdminService {
     }
 
     // Reabrir ticket
-    public void reabrirTicket(Integer idTicket, String comentario) {
+    public String reabrirTicket(Integer idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 
@@ -206,22 +205,15 @@ public class AdminService {
         ticket.setEstado(EstadoTicket.REABIERTO);
         ticket.setFechaUltimaActualizacion(LocalDateTime.now());
         ticketRepository.save(ticket);
+
+        return "Ticket reabierto con éxito: " + ticket.getId();
     }
 
     // =========================
     // MÉTODOS AUXILIARES PRIVADOS
     // =========================
 
-    private void validarDatosUsuario(CrearUsuarioDto usuarioDto) {
-        if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
-                usuarioDto.getEmail() == null || usuarioDto.getPassword() == null ||
-                usuarioDto.getRol() == null) {
-            throw new IllegalArgumentException("Todos los campos son obligatorios");
-        }
-        validarRol(usuarioDto.getRol());
-    }
-
-    private void validarDatosUsuario(EditarUsuarioDto usuarioDto) {
+    private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
                 usuarioDto.getEmail() == null || usuarioDto.getPassword() == null ||
                 usuarioDto.getRol() == null) {
@@ -238,16 +230,17 @@ public class AdminService {
         }
     }
 
-    private Usuario crearUsuarioPorRol(CrearUsuarioDto usuarioDto) {
-        switch (usuarioDto.getRol().toUpperCase()) {
+    private Usuario crearUsuarioPorRol(UsuarioRequestDto cambiarRolDto) {
+        switch (((String) cambiarRolDto.getRol()).toUpperCase()) {
             case "ADMIN":
-                return crearAdmin(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
+                return crearAdmin(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
             case "TECNICO":
-                return crearTecnico(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
+                return crearTecnico(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
             case "TRABAJADOR":
-                return crearTrabajador(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
+                return crearTrabajador(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(),
+                        cambiarRolDto.getEmail());
             default:
-                throw new IllegalArgumentException("Rol no válido: " + usuarioDto.getRol());
+                throw new IllegalArgumentException("Rol no válido: " + cambiarRolDto.getRol());
         }
     }
 

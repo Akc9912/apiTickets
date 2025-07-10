@@ -4,10 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.poo.miapi.dto.CrearUsuarioDto;
-import com.poo.miapi.dto.EditarUsuarioDto;
-import com.poo.miapi.dto.CambiarRolDto;
+import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.service.AdminService;
 
@@ -23,7 +20,7 @@ public class AdminController {
     // POST /api/admin/usuarios Crear un nuevo usuario (admin,técnico,trabajador)
 
     @PostMapping("/usuarios")
-    public String crearUsuario(@Valid @RequestBody CrearUsuarioDto usuarioDto) {
+    public Usuario crearUsuario(@Valid @RequestBody UsuarioRequestDto usuarioDto) {
         return adminService.crearUsuario(usuarioDto);
     }
 
@@ -44,7 +41,7 @@ public class AdminController {
     // PUT /api/admin/usuarios/{id} Editar datos de un usuario.
 
     @PutMapping("/usuarios/{id}")
-    public String editarUsuario(@PathVariable Long id, @Valid @RequestBody EditarUsuarioDto usuarioDto) {
+    public String editarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequestDto usuarioDto) {
         return adminService.editarUsuario(id, usuarioDto);
     }
 
@@ -86,7 +83,7 @@ public class AdminController {
     // PUT /api/admin/usuarios/{id}/rol Cambiar el rol de un usuario.
 
     @PutMapping("/usuarios/{id}/rol")
-    public String cambiarRolUsuario(@PathVariable int id, @Valid @RequestBody EditarUsuarioDto cambiarRolDto) {
+    public String cambiarRolUsuario(@PathVariable int id, @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
         return adminService.cambiarRolUsuario(id, cambiarRolDto);
     }
 
@@ -100,8 +97,8 @@ public class AdminController {
     // POST /api/admin/tickets/{id}/reabrir Reabrir un ticket cerrado.
 
     @PostMapping("/tickets/{id}/reabrir")
-    public String reabrirTicket(@PathVariable Long id) {
-        return adminService.reabrirTicket(id);
+    public String reabrirTicket(@PathVariable Integer id, String comentario) {
+        return adminService.reabrirTicket(id, comentario);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.notificacion;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

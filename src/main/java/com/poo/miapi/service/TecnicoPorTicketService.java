@@ -7,8 +7,6 @@ import com.poo.miapi.repository.TecnicoPorTicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class TecnicoPorTicketService {
 
@@ -23,6 +21,4 @@ public class TecnicoPorTicketService {
     public TecnicoPorTicket guardar(TecnicoPorTicket historial) {
         return tecnicoPorTicketRepository.save(historial);
     }
-
-    // Otros métodos según necesidad...
 }

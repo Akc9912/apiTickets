@@ -1,4 +1,4 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.historial;
 
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

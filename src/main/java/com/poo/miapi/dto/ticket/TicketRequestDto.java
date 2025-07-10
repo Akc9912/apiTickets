@@ -1,11 +1,9 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.ticket;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class CrearTicketRequestDto {
-    @NotNull(message = "El idTrabajador no puede ser nulo")
-    private int idTrabajador;
+public class TicketRequestDto {
 
     @NotBlank(message = "El título es obligatorio")
     private String titulo;
@@ -13,15 +11,10 @@ public class CrearTicketRequestDto {
     @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
+    @NotNull(message = "El ID del trabajador es obligatorio")
+    private int idTrabajador;
+
     // Getters y setters
-    public int getIdTrabajador() {
-        return idTrabajador;
-    }
-
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
-    }
-
     public String getTitulo() {
         return titulo;
     }
@@ -36,5 +29,13 @@ public class CrearTicketRequestDto {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public int getIdTrabajador() {
+        return idTrabajador;
+    }
+
+    public void setIdTrabajador(int idTrabajador) {
+        this.idTrabajador = idTrabajador;
     }
 }

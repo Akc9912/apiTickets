@@ -1,10 +1,10 @@
 package com.poo.miapi.service;
 
-import com.poo.miapi.dto.CambioPasswordDto;
-import com.poo.miapi.dto.LoginRequestDto;
-import com.poo.miapi.dto.LoginResponseDto;
-import com.poo.miapi.dto.ReinicioPasswordDto;
-import com.poo.miapi.dto.UsuarioResponseDto;
+import com.poo.miapi.dto.auth.ChangePasswordDto;
+import com.poo.miapi.dto.auth.LoginRequestDto;
+import com.poo.miapi.dto.auth.LoginResponseDto;
+import com.poo.miapi.dto.auth.ResetPasswordDto;
+import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.UsuarioRepository;
 import com.poo.miapi.util.JwtUtil;
@@ -47,25 +47,25 @@ public class AuthService {
         return new LoginResponseDto(token, usuarioDto);
     }
 
-    public void cambiarPassword(CambioPasswordDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+    public void cambiarPassword(ChangePasswordDto dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if (dto.getNuevaPassword() == null || dto.getNuevaPassword().isBlank()) {
+        if (dto.getNewPassword() == null || dto.getNewPassword().isBlank()) {
             throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
         }
 
-        if (passwordEncoder.matches(dto.getNuevaPassword(), usuario.getPassword())) {
+        if (passwordEncoder.matches(dto.getNewPassword(), usuario.getPassword())) {
             throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior");
         }
 
-        usuario.setPassword(passwordEncoder.encode(dto.getNuevaPassword()));
+        usuario.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         usuario.setCambiarPass(false);
         usuarioRepository.save(usuario);
     }
 
-    public void reiniciarPassword(ReinicioPasswordDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+    public void reiniciarPassword(ResetPasswordDto dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));

@@ -1,32 +1,59 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.core.Admin;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Trabajador;
+import com.poo.miapi.model.notificacion.Notificacion;
 import com.poo.miapi.service.UsuarioService;
+import com.poo.miapi.dto.auth.ChangePasswordDto;
+import com.poo.miapi.dto.usuario.UsuarioRequestDto;
+import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@ControllerAdvice
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
+    @Autowired
+    private UsuarioService usuarioService;
 
-    /*
-     * GET /api/usuario/perfil
-     * Descripción: Ver mi perfil.
-     * PUT /api/usuario/perfil
-     * Descripción: Editar mis datos personales.
-     * PUT /api/usuario/password
-     * Descripción: Cambiar mi contraseña.
-     * GET /api/usuario/tickets
-     * Descripción: Ver mis tickets (como trabajador o técnico).
-     * GET /api/usuario/notificaciones
-     * Descripción: Ver mis notificaciones.
-     */
+    // GET /api/usuario/dator traer mis datos de usuario para armar el perfil.
+    @GetMapping("/obtener-datos")
+    public ResponseEntity<UsuarioResponseDto> obtenerDatos(Long userId) {
+        UsuarioResponseDto usuario = usuarioService.obtenerDatos(userId);
+        return ResponseEntity.ok(usuario);
+    }
+
+    // PUT /api/usuario/perfil Editar mis datos personales.
+    @PutMapping("/editar-datos")
+    public ResponseEntity<UsuarioResponseDto> editarDatos(@RequestBody Long userId,
+            @RequestBody UsuarioRequestDto usuarioDto) {
+        UsuarioResponseDto usuarioActualizado = usuarioService.editarDatosUsuario(userId, usuarioDto);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    // PUT /api/usuario/password Cambiar mi contraseña.
+
+    @PutMapping("/cambiar-password")
+    public ResponseEntity<String> cambiarPassword(@RequestParam ChangePasswordDto dto) {
+        String mensaje = usuarioService.cambiarPassword(dto);
+        return ResponseEntity.ok(mensaje);
+    }
+
+    // GET /api/usuario/tickets Ver mis tickets (como trabajador o técnico).
+
+    @GetMapping("/tickets")
+    public ResponseEntity<List<?>> verMisTickets(Long userId) {
+        List<?> tickets = usuarioService.verMisTickets(userId);
+        return ResponseEntity.ok(tickets);
+    }
+
+    // GET /api/usuario/notificaciones Ver mis notificaciones.
+
+    @GetMapping("/notificaciones")
+    public ResponseEntity<Optional<Notificacion>> verMisNotificaciones(Long userId) {
+        Optional<Notificacion> notificaciones = usuarioService.verMisNotificaciones(userId);
+        return ResponseEntity.ok(notificaciones);
+    }
+
 }

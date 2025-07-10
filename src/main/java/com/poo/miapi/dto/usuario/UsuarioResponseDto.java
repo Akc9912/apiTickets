@@ -1,4 +1,4 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.usuario;
 
 public class UsuarioResponseDto {
     private int id;

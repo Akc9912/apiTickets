@@ -1,26 +1,32 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.tecnico;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public class CrearUsuarioDto {
-    @NotBlank(message = "El nombre es obligatorio")
+public class TecnicoRequestDto {
+
+    @NotNull(message = "El id del técnico no puede ser nulo")
     private String nombre;
 
-    @NotBlank(message = "El apellido es obligatorio")
+    @NotBlank(message = "El nombre es obligatorio")
     private String apellido;
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    private String password;
+    // Constructor
+    public TecnicoRequestDto() {
+    }
 
-    @NotBlank(message = "El rol es obligatorio")
-    private String rol;
+    public TecnicoRequestDto(String nombre, String apellido, String email) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+    }
 
-    // Getters y setters
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
@@ -43,21 +49,5 @@ public class CrearUsuarioDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String tipo) {
-        this.rol = tipo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

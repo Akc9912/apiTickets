@@ -1,9 +1,10 @@
-package com.poo.miapi.dto;
+package com.poo.miapi.dto.trabajador;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class EditarUsuarioDto {
+public class TrabajadorRequestDto {
+
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
@@ -14,9 +15,18 @@ public class EditarUsuarioDto {
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
-    // Agrega otros campos editables si es necesario
+    // Constructor
 
-    // Getters y setters
+    public TrabajadorRequestDto() {
+    }
+
+    public TrabajadorRequestDto(String nombre, String apellido, String email) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+    }
+
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
@@ -39,15 +49,5 @@ public class EditarUsuarioDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Object getRol() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRol'");
-    }
-
-    public Object getPassword() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
     }
 }

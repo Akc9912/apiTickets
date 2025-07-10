@@ -34,6 +34,10 @@ public class Ticket {
 
     // Constructor requerido por JPA
     public Ticket() {
+        this.historialTecnicos = new ArrayList<>();
+        this.estado = EstadoTicket.NO_ATENDIDO;
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaUltimaActualizacion = LocalDateTime.now();
     }
 
     public Ticket(String titulo, String descripcion, Trabajador creador) {

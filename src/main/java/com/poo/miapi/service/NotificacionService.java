@@ -7,7 +7,7 @@ import com.poo.miapi.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificacionService {
@@ -25,12 +25,12 @@ public class NotificacionService {
         return notificacionRepository.save(n);
     }
 
-    public List<Notificacion> obtenerNotificaciones(int idUsuario) {
-        return notificacionRepository.findByUsuarioId(idUsuario);
+    public Optional<Notificacion> obtenerNotificaciones(Long idUsuario) {
+        return notificacionRepository.findById(idUsuario);
     }
 
-    public void eliminarTodasDelUsuario(int idUsuario) {
-        List<Notificacion> notificaciones = obtenerNotificaciones(idUsuario);
-        notificacionRepository.deleteAll(notificaciones);
+    public void eliminarTodasDelUsuario(Long idUsuario) {
+        notificacionRepository.deleteAllByUsuarioId(idUsuario);
+        ;
     }
 }

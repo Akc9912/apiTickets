@@ -1,16 +1,8 @@
 package com.poo.miapi.controller;
 
-import com.poo.miapi.dto.EvaluarTicketDto;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.service.TrabajadorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@ControllerAdvice
 @RequestMapping("/api/trabajador")
 public class TrabajadorController {
 
