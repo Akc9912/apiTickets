@@ -31,4 +31,16 @@ public enum EstadoTicket {
         }
         throw new IllegalArgumentException("Estado desconocido: " + label);
     }
+
+    // Método auxiliar para obtener el nombre del enum
+    public String getName() {
+        return name();
+    }
+
+    // Método para obtener todos los labels (útil para frontend)
+    public static String[] getAllLabels() {
+        return java.util.Arrays.stream(values())
+                .map(EstadoTicket::getLabel)
+                .toArray(String[]::new);
+    }
 }

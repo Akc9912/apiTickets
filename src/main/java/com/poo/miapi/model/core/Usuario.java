@@ -13,25 +13,41 @@ public abstract class Usuario {
 
     private String nombre;
     private String apellido;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String rol;
     private boolean cambiarPass;
     private boolean activo;
     private boolean bloqueado;
 
-    // constructor vacio requerido por JPA
+    // Constructor vacío requerido por JPA
     public Usuario() {
     }
 
-    // constructor para uso interno del service
+    // Constructor para uso interno del service
     public Usuario(String nombre, String apellido, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.password = null; // se define por servicio
+        this.rol = null; // se define por subclase
         this.cambiarPass = true;
         this.activo = true;
+        this.bloqueado = false;
+    }
+
+    // Constructor completo para subclases
+    public Usuario(String nombre, String apellido, String email, String password, String rol, boolean activo) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.password = password;
+        this.rol = rol;
+        this.cambiarPass = true;
+        this.activo = activo;
         this.bloqueado = false;
     }
 
@@ -105,10 +121,10 @@ public abstract class Usuario {
         this.bloqueado = valor;
     }
 
-    // metodos abstractos
+    // Método abstracto para tipo de usuario
     public abstract String getTipoUsuario();
 
-    // sobreescritura de metodos
+    // Sobreescritura de métodos
     @Override
     public String toString() {
         return "[" + getTipoUsuario() + "] " + nombre + " (ID: " + id + ")";

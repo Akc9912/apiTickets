@@ -32,22 +32,25 @@ public class TecnicoPorTicket {
     @Column(columnDefinition = "TEXT")
     private String comentario;
 
-    @Column(name = "fecha_asignacion")
+    @Column(name = "fecha_asignacion", nullable = false)
     private LocalDateTime fechaAsignacion;
 
     @Column(name = "fecha_desasignacion")
-    private LocalDateTime fechaDesasignacion = null;
+    private LocalDateTime fechaDesasignacion;
 
     public TecnicoPorTicket() {
         this.fechaAsignacion = LocalDateTime.now();
     }
 
-    public TecnicoPorTicket(Ticket ticket, Tecnico tecnico, EstadoTicket estadoInicial, EstadoTicket estadoFinal) {
-        this.fechaAsignacion = LocalDateTime.now();
+    public TecnicoPorTicket(Ticket ticket, Tecnico tecnico, EstadoTicket estadoInicial, EstadoTicket estadoFinal,
+            String comentario) {
         this.ticket = ticket;
         this.tecnico = tecnico;
         this.estadoInicial = estadoInicial;
         this.estadoFinal = estadoFinal;
+        this.comentario = comentario;
+        this.fechaAsignacion = LocalDateTime.now();
+        this.fechaDesasignacion = null;
     }
 
     // Getters y Setters
@@ -112,4 +115,15 @@ public class TecnicoPorTicket {
         this.fechaDesasignacion = fechaDesasignacion;
     }
 
+    @Override
+    public String toString() {
+        return "TecnicoPorTicket{id=" + id +
+                ", ticket=" + (ticket != null ? ticket.getId() : null) +
+                ", tecnico=" + (tecnico != null ? tecnico.getId() : null) +
+                ", estadoInicial=" + estadoInicial +
+                ", estadoFinal=" + estadoFinal +
+                ", fechaAsignacion=" + fechaAsignacion +
+                ", fechaDesasignacion=" + fechaDesasignacion +
+                '}';
+    }
 }

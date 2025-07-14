@@ -15,6 +15,11 @@ public interface TecnicoPorTicketRepository extends JpaRepository<TecnicoPorTick
 
     List<TecnicoPorTicket> findByTecnico(Tecnico tecnico);
 
+    List<TecnicoPorTicket> findByTicket(Ticket ticket);
+
     Optional<TecnicoPorTicket> findByTecnicoAndTicket(Tecnico tecnico, Ticket ticket);
 
+    List<TecnicoPorTicket> findByTecnicoId(int idTecnico);
+
+    List<TecnicoPorTicket> findByTicketId(int idTicket);
 }

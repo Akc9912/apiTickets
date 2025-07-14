@@ -2,7 +2,9 @@ package com.poo.miapi.model.core;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.poo.miapi.model.historial.IncidenteTecnico;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
@@ -34,33 +36,38 @@ public class Tecnico extends Usuario {
         this.setRol("TECNICO");
     }
 
+    public Tecnico(String nombre, String apellido, String email, String password, boolean activo) {
+        super(nombre, apellido, email, password, "TECNICO", activo);
+        this.setRol("TECNICO");
+    }
+
     /* ---------- Getters / Setters ---------- */
     public int getFallas() {
         return fallas;
-    }
-
-    public int getMarcas() {
-        return marcas;
-    }
-
-    public List<IncidenteTecnico> getIncidentes() {
-        return incidentes;
-    }
-
-    public List<TecnicoPorTicket> getHistorialTecnicos() {
-        return historialTecnicos;
     }
 
     public void setFallas(int fallas) {
         this.fallas = fallas;
     }
 
+    public int getMarcas() {
+        return marcas;
+    }
+
     public void setMarcas(int marcas) {
         this.marcas = marcas;
     }
 
+    public List<IncidenteTecnico> getIncidentes() {
+        return Collections.unmodifiableList(incidentes);
+    }
+
     public void setIncidentes(List<IncidenteTecnico> inc) {
         this.incidentes = inc;
+    }
+
+    public List<TecnicoPorTicket> getHistorialTecnicos() {
+        return Collections.unmodifiableList(historialTecnicos);
     }
 
     public void setHistorialTecnicos(List<TecnicoPorTicket> hist) {
@@ -69,19 +76,28 @@ public class Tecnico extends Usuario {
 
     /* ---------- Utilidades de dominio ---------- */
     public void addIncidente(IncidenteTecnico incidente) {
-        incidentes.add(incidente);
-        incidente.setTecnico(this);
+        if (incidente != null) {
+            incidentes.add(incidente);
+            incidente.setTecnico(this);
+        }
     }
 
     public void addEntradaHistorial(TecnicoPorTicket entrada) {
-        historialTecnicos.add(entrada);
-        entrada.setTecnico(this);
+        if (entrada != null) {
+            historialTecnicos.add(entrada);
+            entrada.setTecnico(this);
+        }
     }
 
+    /**
+     * Devuelve los tickets actualmente asignados al técnico (sin fecha de
+     * desasignación).
+     */
     public List<Ticket> getTicketsActuales() {
         return historialTecnicos.stream()
+                .filter(h -> h.getFechaDesasignacion() == null)
                 .map(TecnicoPorTicket::getTicket)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

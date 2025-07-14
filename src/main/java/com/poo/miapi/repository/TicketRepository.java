@@ -13,18 +13,25 @@ import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
-    List<Ticket> findByEstado(EstadoTicket estado);
+  List<Ticket> findByEstado(EstadoTicket estado);
 
-    List<Ticket> findByCreadorId(int idTrabajador);
+  List<Ticket> findByCreadorId(int idTrabajador);
 
-    List<Ticket> findByTituloContainingIgnoreCase(String palabra);
+  List<Ticket> findByTituloContainingIgnoreCase(String palabra);
 
-    @Query("""
-            SELECT DISTINCT t
-              FROM Ticket t
-              JOIN t.historialTecnicos h
-             WHERE h.tecnico              = :tecnico
-               AND h.fechaDesasignacion IS NULL
-            """)
-    List<Ticket> findByTecnicoActual(@Param("tecnico") Tecnico tecnico);
+  // Buscar tickets asignados actualmente a un técnico
+  @Query("""
+          SELECT DISTINCT t
+          FROM Ticket t
+          JOIN t.historialTecnicos h
+          WHERE h.tecnico = :tecnico
+            AND h.fechaDesasignacion IS NULL
+      """)
+  List<Ticket> findByTecnicoActual(@Param("tecnico") Tecnico tecnico);
+
+  // Buscar tickets por estado y técnico actual
+  List<Ticket> findByEstadoAndTecnicoActual(EstadoTicket estado, Tecnico tecnico);
+
+  // Buscar tickets por estado y creador
+  List<Ticket> findByEstadoAndCreadorId(EstadoTicket estado, int idTrabajador);
 }

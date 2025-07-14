@@ -8,7 +8,12 @@ import java.util.List;
 
 @Repository
 public interface HistorialValidacionRepository extends JpaRepository<HistorialValidacionTrabajador, Long> {
+
     List<HistorialValidacionTrabajador> findByTrabajadorId(int trabajadorId);
 
     List<HistorialValidacionTrabajador> findByTicketId(int ticketId);
+
+    long countByTrabajadorId(int trabajadorId);
+
+    long countByTicketId(int ticketId);
 }

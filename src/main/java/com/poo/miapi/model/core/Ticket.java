@@ -13,28 +13,31 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String titulo;
+
+    @Column(nullable = false)
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EstadoTicket estado;
 
     @ManyToOne
-    @JoinColumn(name = "id_creador")
+    @JoinColumn(name = "id_creador", nullable = false)
     private Trabajador creador;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private LocalDateTime fechaUltimaActualizacion;
 
     // Constructor requerido por JPA
     public Ticket() {
-        this.historialTecnicos = new ArrayList<>();
         this.estado = EstadoTicket.NO_ATENDIDO;
         this.fechaCreacion = LocalDateTime.now();
         this.fechaUltimaActualizacion = LocalDateTime.now();
@@ -44,7 +47,6 @@ public class Ticket {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.creador = creador;
-        this.historialTecnicos = new ArrayList<>();
         this.estado = EstadoTicket.NO_ATENDIDO;
         this.fechaCreacion = LocalDateTime.now();
         this.fechaUltimaActualizacion = LocalDateTime.now();
@@ -103,14 +105,19 @@ public class Ticket {
 
     // Utilidades
     public Tecnico getTecnicoActual() {
-        if (historialTecnicos.isEmpty())
-            return null;
-        return historialTecnicos.get(historialTecnicos.size() - 1).getTecnico();
+        // Busca el técnico asignado actualmente (última entrada sin fecha de
+        // desasignación)
+        for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
+            TecnicoPorTicket entrada = historialTecnicos.get(i);
+            if (entrada.getFechaDesasignacion() == null) {
+                return entrada.getTecnico();
+            }
+        }
+        return null;
     }
 
     @Override
     public String toString() {
         return "Ticket #" + id + ": " + titulo + " (" + estado + ")";
     }
-
 }

@@ -2,7 +2,6 @@ package com.poo.miapi.model.historial;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 
@@ -22,20 +21,22 @@ public class IncidenteTecnico {
     @JoinColumn(name = "id_tecnico")
     private Tecnico tecnico;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true) // Cambia a false si el ticket siempre es obligatorio
     @JoinColumn(name = "id_ticket")
     private Ticket ticket;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoIncidente tipo;
 
     @Column(columnDefinition = "TEXT")
     private String motivo;
 
-    private LocalDateTime fecha;
+    @Column(nullable = false)
+    private LocalDateTime fechaRegistro;
 
     public IncidenteTecnico() {
-        this.fecha = LocalDateTime.now();
+        this.fechaRegistro = LocalDateTime.now();
     }
 
     public IncidenteTecnico(Tecnico tecnico, Ticket ticket, TipoIncidente tipo, String motivo) {
@@ -43,7 +44,7 @@ public class IncidenteTecnico {
         this.ticket = ticket;
         this.tipo = tipo;
         this.motivo = motivo;
-        this.fecha = LocalDateTime.now();
+        this.fechaRegistro = LocalDateTime.now();
     }
 
     // Getters y setters
@@ -84,11 +85,22 @@ public class IncidenteTecnico {
         this.motivo = motivo;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    @Override
+    public String toString() {
+        return "IncidenteTecnico{id=" + id +
+                ", tecnico=" + (tecnico != null ? tecnico.getId() : null) +
+                ", ticket=" + (ticket != null ? ticket.getId() : null) +
+                ", tipo=" + tipo +
+                ", motivo='" + motivo + '\'' +
+                ", fechaRegistro=" + fechaRegistro +
+                '}';
     }
 }

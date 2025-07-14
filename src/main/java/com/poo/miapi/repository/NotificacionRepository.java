@@ -8,8 +8,10 @@ import java.util.List;
 
 @Repository
 public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
-    List<Notificacion> findByUsuarioId(Long idUsuario);
 
-    // Método para eliminar todas las notificaciones de un usuario
+    List<Notificacion> findAllByUsuarioId(Long idUsuario);
+
     void deleteAllByUsuarioId(Long idUsuario);
+
+    long countByUsuarioId(Long idUsuario);
 }

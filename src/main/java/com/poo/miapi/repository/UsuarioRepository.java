@@ -20,10 +20,15 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     long countByActivoTrue();
 
+    long count();
+
     List<Usuario> findByNombreContainingIgnoreCase(String nombre);
 
     List<Usuario> findByRol(String rol);
 
     Optional<Usuario> findById(Long id);
 
+    List<Usuario> findByTipoUsuario(String tipoUsuario);
+
+    List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
 }

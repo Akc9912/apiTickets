@@ -1,33 +1,61 @@
 package com.poo.miapi.model.notificacion;
 
 import com.poo.miapi.model.core.Usuario;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity
 public class Notificacion {
-    int id;
-    Usuario usuario;
-    String mensaje;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
+    @Column(nullable = false)
+    private String mensaje;
+
+    @Column(nullable = false)
+    private LocalDateTime fechaCreacion;
 
     public Notificacion() {
+        this.fechaCreacion = LocalDateTime.now();
     }
 
     public Notificacion(Usuario usuario, String mensaje) {
         this.usuario = usuario;
         this.mensaje = mensaje;
+        this.fechaCreacion = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Usuario getUsuario() {
-        return this.usuario;
+        return usuario;
     }
 
     public String getMensaje() {
-        return this.mensaje;
+        return mensaje;
     }
 
-    public void setUsuario(Usuario u) {
-        this.usuario = u;
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setMensaje(String m) {
-        this.mensaje = m;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 }
