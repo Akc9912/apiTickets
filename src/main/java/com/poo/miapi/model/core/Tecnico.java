@@ -5,31 +5,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.poo.miapi.model.historial.IncidenteTecnico;
+import com.poo.miapi.model.historial.TecnicoPorTicket;
 
 @Entity
 @DiscriminatorValue("TECNICO")
 public class Tecnico extends Usuario {
 
+    /* ---------- Campos propios ---------- */
     private int fallas = 0;
     private int marcas = 0;
 
+    /* Incidentes disciplinarios registrados al técnico */
     @OneToMany(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IncidenteTecnico> incidentes = new ArrayList<>();
 
-    private List<Ticket> misTickets = new ArrayList<>();
+    /* Historial de tickets atendidos por el técnico */
+    @OneToMany(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
 
+    /* ---------- Constructores ---------- */
     public Tecnico() {
         super();
-        this.misTickets = new ArrayList<>();
         this.setRol("TECNICO");
     }
 
     public Tecnico(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.misTickets = new ArrayList<>();
         this.setRol("TECNICO");
     }
 
+    /* ---------- Getters / Setters ---------- */
     public int getFallas() {
         return fallas;
     }
@@ -42,47 +47,45 @@ public class Tecnico extends Usuario {
         return incidentes;
     }
 
-    public void setFallas(int valor) {
-        this.fallas = valor;
+    public List<TecnicoPorTicket> getHistorialTecnicos() {
+        return historialTecnicos;
     }
 
-    public void setMarcas(int valor) {
-        this.marcas = valor;
+    public void setFallas(int fallas) {
+        this.fallas = fallas;
     }
 
-    public void setIncidentes(List<IncidenteTecnico> incidentes) {
-        this.incidentes = incidentes;
+    public void setMarcas(int marcas) {
+        this.marcas = marcas;
     }
 
+    public void setIncidentes(List<IncidenteTecnico> inc) {
+        this.incidentes = inc;
+    }
+
+    public void setHistorialTecnicos(List<TecnicoPorTicket> hist) {
+        this.historialTecnicos = hist;
+    }
+
+    /* ---------- Utilidades de dominio ---------- */
     public void addIncidente(IncidenteTecnico incidente) {
-        this.incidentes.add(incidente);
+        incidentes.add(incidente);
         incidente.setTecnico(this);
     }
 
-    public void removeIncidente(IncidenteTecnico incidente) {
-        this.incidentes.remove(incidente);
-        incidente.setTecnico(null);
+    public void addEntradaHistorial(TecnicoPorTicket entrada) {
+        historialTecnicos.add(entrada);
+        entrada.setTecnico(this);
     }
 
-    public List<Ticket> getMisTickets() {
-        return misTickets;
-    }
-
-    public void setMisTickets(List<Ticket> misTickets) {
-        this.misTickets = misTickets;
-    }
-
-    public void addTicket(Ticket ticket) {
-        this.misTickets.add(ticket);
-    }
-
-    public void removeTicket(Ticket ticket) {
-        this.misTickets.remove(ticket);
+    public List<Ticket> getTicketsActuales() {
+        return historialTecnicos.stream()
+                .map(TecnicoPorTicket::getTicket)
+                .toList();
     }
 
     @Override
     public String getTipoUsuario() {
         return "TECNICO";
     }
-
 }

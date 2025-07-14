@@ -1,5 +1,6 @@
 package com.poo.miapi.service;
 
+import com.poo.miapi.dto.ticket.EstadoTicketResponseDto;
 import com.poo.miapi.model.core.EstadoTicket;
 import com.poo.miapi.repository.EstadoTicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,30 @@ public class EstadoTicketService {
     @Autowired
     private EstadoTicketRepository estadoTicketRepository;
 
-    public List<EstadoTicket> listarEstados() {
-        return estadoTicketRepository.findAll();
+    // Listar todos los estados como DTOs
+    public List<EstadoTicketResponseDto> listarEstados() {
+        return estadoTicketRepository.findAll().stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
+    // Verificar existencia de estado
     public boolean existeEstado(String idEstado) {
         return estadoTicketRepository.existsById(idEstado);
     }
 
-    public EstadoTicket obtenerPorId(String idEstado) {
-        return estadoTicketRepository.findById(idEstado)
+    // Obtener estado por ID como DTO
+    public EstadoTicketResponseDto obtenerPorId(String idEstado) {
+        EstadoTicket estado = estadoTicketRepository.findById(idEstado)
                 .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+        return mapToDto(estado);
+    }
+
+    // Método auxiliar para mapear entidad a DTO
+    private EstadoTicketResponseDto mapToDto(EstadoTicket estado) {
+        return new EstadoTicketResponseDto(
+                estado.getId(),
+                estado.getNombre(),
+                estado.getDescripcion());
     }
 }

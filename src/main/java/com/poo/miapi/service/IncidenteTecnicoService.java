@@ -1,7 +1,13 @@
 package com.poo.miapi.service;
 
+import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
+import com.poo.miapi.dto.tecnico.IncidenteTecnicoRequestDto;
 import com.poo.miapi.model.historial.IncidenteTecnico;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.IncidenteTecnicoRepository;
+import com.poo.miapi.repository.TecnicoRepository;
+import com.poo.miapi.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +19,55 @@ public class IncidenteTecnicoService {
     @Autowired
     private IncidenteTecnicoRepository incidenteTecnicoRepository;
 
-    public List<IncidenteTecnico> listarTodos() {
-        return incidenteTecnicoRepository.findAll();
+    @Autowired
+    private TecnicoRepository tecnicoRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    // Listar todos los incidentes como DTOs
+    public List<IncidenteTecnicoResponseDto> listarTodos() {
+        return incidenteTecnicoRepository.findAll().stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public List<IncidenteTecnico> listarPorTecnico(int idTecnico) {
-        return incidenteTecnicoRepository.findByTecnicoId(idTecnico);
+    // Listar incidentes por técnico como DTOs
+    public List<IncidenteTecnicoResponseDto> listarPorTecnico(int idTecnico) {
+        return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
+    // Contar incidentes por técnico
     public long contarPorTecnico(int idTecnico) {
-        return incidenteTecnicoRepository.findByTecnicoId(idTecnico).size();
+        return incidenteTecnicoRepository.countByTecnicoId(idTecnico);
     }
 
-    public void registrarIncidente(IncidenteTecnico incidente) {
-        incidenteTecnicoRepository.save(incidente);
+    // Registrar incidente desde DTO
+    public IncidenteTecnicoResponseDto registrarIncidente(IncidenteTecnicoRequestDto dto) {
+        Tecnico tecnico = tecnicoRepository.findById(dto.getIdTecnico())
+                .orElseThrow(() -> new IllegalArgumentException("Técnico no encontrado"));
+        Ticket ticket = ticketRepository.findById(dto.getIdTicket())
+                .orElseThrow(() -> new IllegalArgumentException("Ticket no encontrado"));
+
+        IncidenteTecnico incidente = new IncidenteTecnico(
+                tecnico,
+                ticket,
+                dto.getTipo(),
+                dto.getMotivo());
+        IncidenteTecnico saved = incidenteTecnicoRepository.save(incidente);
+        return mapToDto(saved);
+    }
+
+    // Método auxiliar para mapear entidad a DTO
+    private IncidenteTecnicoResponseDto mapToDto(IncidenteTecnico incidente) {
+        return new IncidenteTecnicoResponseDto(
+                incidente.getId(),
+                incidente.getTecnico().getId(),
+                incidente.getTicket().getId(),
+                incidente.getTipo(),
+                incidente.getMotivo(),
+                incidente.getFechaRegistro());
     }
 }

@@ -23,6 +23,7 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // Login: recibe LoginRequestDto, devuelve LoginResponseDto
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -41,12 +42,13 @@ public class AuthService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol());
-        usuarioDto.setActivo(usuario.isActivo());
+                usuario.getRol(),
+                usuario.isActivo());
 
         return new LoginResponseDto(token, usuarioDto);
     }
 
+    // Cambiar contraseña: recibe ChangePasswordDto
     public void cambiarPassword(ChangePasswordDto dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -64,6 +66,7 @@ public class AuthService {
         usuarioRepository.save(usuario);
     }
 
+    // Reiniciar contraseña: recibe ResetPasswordDto
     public void reiniciarPassword(ResetPasswordDto dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));

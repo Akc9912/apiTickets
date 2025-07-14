@@ -20,6 +20,19 @@ public class UsuarioRequestDto {
     @NotBlank(message = "El rol es obligatorio")
     private String rol;
 
+    // Constructor vacío
+    public UsuarioRequestDto() {
+    }
+
+    // Constructor completo
+    public UsuarioRequestDto(String nombre, String apellido, String email, String password, String rol) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.password = password;
+        this.rol = rol;
+    }
+
     // Getters y setters
     public String getNombre() {
         return nombre;
@@ -45,19 +58,19 @@ public class UsuarioRequestDto {
         this.email = email;
     }
 
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String tipo) {
-        this.rol = tipo;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }

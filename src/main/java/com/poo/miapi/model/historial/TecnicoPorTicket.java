@@ -36,7 +36,7 @@ public class TecnicoPorTicket {
     private LocalDateTime fechaAsignacion;
 
     @Column(name = "fecha_desasignacion")
-    private LocalDateTime fechaDesasignacion;
+    private LocalDateTime fechaDesasignacion = null;
 
     public TecnicoPorTicket() {
         this.fechaAsignacion = LocalDateTime.now();

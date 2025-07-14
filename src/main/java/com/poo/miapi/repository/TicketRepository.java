@@ -5,6 +5,8 @@ import com.poo.miapi.model.core.EstadoTicket;
 import com.poo.miapi.model.core.Tecnico;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +19,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByTituloContainingIgnoreCase(String palabra);
 
-    List<Ticket> findByTecnicoActual(Tecnico tecnico);
+    @Query("""
+            SELECT DISTINCT t
+              FROM Ticket t
+              JOIN t.historialTecnicos h
+             WHERE h.tecnico              = :tecnico
+               AND h.fechaDesasignacion IS NULL
+            """)
+    List<Ticket> findByTecnicoActual(@Param("tecnico") Tecnico tecnico);
 }

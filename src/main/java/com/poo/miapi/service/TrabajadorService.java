@@ -1,5 +1,9 @@
 package com.poo.miapi.service;
 
+import com.poo.miapi.dto.ticket.EvaluarTicketDto;
+import com.poo.miapi.dto.ticket.TicketRequestDto;
+import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
 import com.poo.miapi.repository.TrabajadorRepository;
@@ -35,15 +39,19 @@ public class TrabajadorService {
                 .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
     }
 
-    public Ticket crearTicket(int idTrabajador, String titulo, String descripcion) {
-        Trabajador trabajador = buscarPorId(idTrabajador);
-        Ticket ticket = new Ticket(titulo, descripcion, trabajador);
+    // Crear ticket usando DTO
+    public TicketResponseDto crearTicket(TicketRequestDto dto) {
+        Trabajador trabajador = buscarPorId(dto.getIdTrabajador());
+        Ticket ticket = new Ticket(dto.getTitulo(), dto.getDescripcion(), trabajador);
         trabajador.agregarTicket(ticket);
-        return ticketRepository.save(ticket);
+        Ticket saved = ticketRepository.save(ticket);
+
+        return mapToTicketDto(saved);
     }
 
-    public void evaluarResolucion(int idTrabajador, int idTicket, boolean fueResuelto, String motivoFalla) {
-        Trabajador trabajador = buscarPorId(idTrabajador);
+    // Evaluar resolución usando DTO
+    public TicketResponseDto evaluarTicket(int idTicket, EvaluarTicketDto dto) {
+        Trabajador trabajador = buscarPorId(dto.getIdTrabajador());
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -59,33 +67,66 @@ public class TrabajadorService {
             throw new IllegalStateException("El ticket no está en estado RESUELTO");
         }
 
-        if (fueResuelto) {
+        if (dto.isFueResuelto()) {
             ticket.setEstado(EstadoTicket.FINALIZADO);
         } else {
             ticket.setEstado(EstadoTicket.REABIERTO);
-            tecnicoService.marcarFalla(ticket.getTecnicoActual().getId(), motivoFalla, ticket);
+            tecnicoService.marcarFalla(ticket.getTecnicoActual().getId(), dto.getMotivoFalla(), ticket);
         }
 
         ticketRepository.save(ticket);
 
         HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
-                trabajador, ticket, fueResuelto, fueResuelto ? "Resuelto correctamente" : motivoFalla);
+                trabajador, ticket, dto.isFueResuelto(),
+                dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla());
         historialValidacionRepository.save(validacion);
+
+        return mapToTicketDto(ticket);
     }
 
-    public List<Ticket> verTicketsActivos(int idTrabajador) {
+    // Ver tickets activos (devuelve DTOs)
+    public List<TicketResponseDto> verTicketsActivos(int idTrabajador) {
         Trabajador trabajador = buscarPorId(idTrabajador);
         return trabajador.getMisTickets().stream()
                 .filter(t -> !t.getEstado().equals(EstadoTicket.FINALIZADO))
+                .map(this::mapToTicketDto)
                 .toList();
     }
 
-    public List<Ticket> verTodosMisTickets(int idTrabajador) {
+    // Ver todos mis tickets (devuelve DTOs)
+    public List<TicketResponseDto> verTodosMisTickets(int idTrabajador) {
         Trabajador trabajador = buscarPorId(idTrabajador);
-        return trabajador.getMisTickets().stream().toList();
+        return trabajador.getMisTickets().stream()
+                .map(this::mapToTicketDto)
+                .toList();
     }
 
-    public List<Trabajador> listarTodos() {
-        return trabajadorRepository.findAll();
+    // Listar todos los trabajadores (devuelve DTOs)
+    public List<TrabajadorResponseDto> listarTodos() {
+        return trabajadorRepository.findAll().stream()
+                .map(this::mapToTrabajadorDto)
+                .toList();
+    }
+
+    // Métodos auxiliares para mapear entidades a DTOs
+    private TicketResponseDto mapToTicketDto(Ticket ticket) {
+        return new TicketResponseDto(
+                ticket.getId(),
+                ticket.getTitulo(),
+                ticket.getDescripcion(),
+                ticket.getEstado(),
+                ticket.getCreador() != null ? ticket.getCreador().getNombre() : null,
+                ticket.getTecnicoActual() != null ? ticket.getTecnicoActual().getNombre() : null,
+                ticket.getFechaCreacion(),
+                ticket.getFechaUltimaActualizacion());
+    }
+
+    private TrabajadorResponseDto mapToTrabajadorDto(Trabajador trabajador) {
+        return new TrabajadorResponseDto(
+                trabajador.getId(),
+                trabajador.getNombre(),
+                trabajador.getApellido(),
+                trabajador.getEmail(),
+                trabajador.isActivo());
     }
 }

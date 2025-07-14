@@ -6,11 +6,13 @@ import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
+import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.notificacion.Notificacion;
 import com.poo.miapi.repository.UsuarioRepository;
-import com.poo.miapi.util.JwtUtil;
 import com.poo.miapi.repository.TecnicoRepository;
+import com.poo.miapi.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,33 +44,21 @@ public class UsuarioService {
     // AUTENTICACIÓN Y LOGIN
     // =========================
 
-    public Usuario login(String email, String password) {
-        Usuario usuario = buscarPorEmail(email);
+    public LoginResponseDto login(LoginRequestDto request) {
+        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         if (!usuario.isActivo() || usuario.isBloqueado()) {
             throw new IllegalStateException("Usuario inactivo o bloqueado");
         }
 
-        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        return usuario;
-    }
-
-    public LoginResponseDto login(LoginRequestDto request) {
-        Usuario usuario = login(request.getEmail(), request.getPassword());
         String token = jwtUtil.generateToken(usuario);
 
-        return new LoginResponseDto(token, new UsuarioResponseDto(
-                usuario.getId(), usuario.getNombre(), usuario.getApellido(),
-                usuario.getEmail(), usuario.getTipoUsuario()));
-    }
-
-    public boolean verificarCredenciales(String email, String password) {
-        return usuarioRepository.findByEmail(email)
-                .filter(u -> passwordEncoder.matches(password, u.getPassword()))
-                .isPresent();
+        return new LoginResponseDto(token, mapToUsuarioDto(usuario));
     }
 
     // =========================
@@ -105,13 +95,14 @@ public class UsuarioService {
     // ESTADO DEL USUARIO
     // =========================
 
-    public void bloquearUsuario(Long userId) {
+    public UsuarioResponseDto bloquearUsuario(Long userId) {
         Usuario usuario = buscarPorId(userId);
         usuario.setBloqueado(true);
         usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
-    public void desbloquearUsuario(Long userId) {
+    public UsuarioResponseDto desbloquearUsuario(Long userId) {
         Usuario usuario = buscarPorId(userId);
         usuario.setBloqueado(false);
 
@@ -120,18 +111,21 @@ public class UsuarioService {
         }
 
         usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
-    public void bajaLogicaUsuario(Long id) {
+    public UsuarioResponseDto bajaLogicaUsuario(Long id) {
         Usuario usuario = buscarPorId(id);
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
-    public void altaLogicaUsuario(Long id) {
+    public UsuarioResponseDto altaLogicaUsuario(Long id) {
         Usuario usuario = buscarPorId(id);
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
     // =========================
@@ -148,24 +142,32 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
 
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDto> listarTodos() {
+        return usuarioRepository.findAll().stream()
+                .map(this::mapToUsuarioDto)
+                .toList();
     }
 
-    public List<Usuario> listarActivos() {
-        return usuarioRepository.findByActivoTrue();
+    public List<UsuarioResponseDto> listarActivos() {
+        return usuarioRepository.findByActivoTrue().stream()
+                .map(this::mapToUsuarioDto)
+                .toList();
     }
 
-    public List<Tecnico> listarTecnicosBloqueados() {
-        return tecnicoRepository.findByBloqueadoTrue();
+    public List<UsuarioResponseDto> listarTecnicosBloqueados() {
+        return tecnicoRepository.findByBloqueadoTrue().stream()
+                .map(this::mapToUsuarioDto)
+                .toList();
     }
 
-    public Usuario actualizarDatos(Long id, String nuevoNombre, String nuevoApellido, String nuevoEmail) {
+    public UsuarioResponseDto actualizarDatos(Long id, UsuarioRequestDto dto) {
         Usuario usuario = buscarPorId(id);
-        usuario.setNombre(nuevoNombre);
-        usuario.setApellido(nuevoApellido);
-        usuario.setEmail(nuevoEmail);
-        return usuarioRepository.save(usuario);
+        usuario.setNombre(dto.getNombre());
+        usuario.setApellido(dto.getApellido());
+        usuario.setEmail(dto.getEmail());
+        usuarioRepository.save(usuario);
+
+        return mapToUsuarioDto(usuario);
     }
 
     public String getTipoUsuario(Long id) {
@@ -174,17 +176,10 @@ public class UsuarioService {
 
     public UsuarioResponseDto obtenerDatos(Long id) {
         Usuario usuario = buscarPorId(id);
-        return new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getTipoUsuario());
-
+        return mapToUsuarioDto(usuario);
     }
 
     // Editar datos del usuario
-
     public UsuarioResponseDto editarDatosUsuario(Long id, UsuarioRequestDto dto) {
         Usuario usuario = buscarPorId(id);
         usuario.setNombre(dto.getNombre());
@@ -192,31 +187,43 @@ public class UsuarioService {
         usuario.setEmail(dto.getEmail());
         usuarioRepository.save(usuario);
 
-        return new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getTipoUsuario());
+        return mapToUsuarioDto(usuario);
     }
 
     // Ver mis tickets (como trabajador o técnico).
-
-    public List<Ticket> verMisTickets(Long userId) {
+    public List<TicketResponseDto> verMisTickets(Long userId) {
         Usuario usuario = buscarPorId(userId);
+        List<Ticket> tickets;
         if (usuario instanceof Trabajador trabajador) {
-            return trabajador.getMisTickets();
+            tickets = trabajador.getMisTickets();
         } else if (usuario instanceof Tecnico tecnico) {
-            return tecnico.getMisTickets();
+            tickets = tecnico.getTicketsActuales();
         } else {
             throw new IllegalArgumentException("El usuario no tiene tickets asociados");
         }
+        return tickets.stream()
+                .map(ticket -> new TicketResponseDto(
+                        ticket.getId(),
+                        ticket.getTitulo(),
+                        ticket.getDescripcion(),
+                        ticket.getEstado(),
+                        ticket.getCreador().getNombre(),
+                        ticket.getTecnicoActual() != null ? ticket.getTecnicoActual().getNombre() : null,
+                        ticket.getFechaCreacion(),
+                        ticket.getFechaUltimaActualizacion()))
+                .toList();
     }
 
     // Ver mis notificaciones (todos los usuarios)
-
-    public Optional<Notificacion> verMisNotificaciones(Long userId) {
-        return notificacionService.obtenerNotificaciones(userId);
+    public List<NotificacionResponseDto> verMisNotificaciones(Long userId) {
+        List<Notificacion> notificaciones = notificacionService.obtenerNotificaciones(userId);
+        return notificaciones.stream()
+                .map(n -> new NotificacionResponseDto(
+                        n.getId(),
+                        n.getUsuario().getId(),
+                        n.getMensaje(),
+                        n.getFechaCreacion()))
+                .toList();
     }
 
     // =========================
@@ -233,5 +240,19 @@ public class UsuarioService {
 
     public long contarTecnicosBloqueados() {
         return tecnicoRepository.countByBloqueadoTrue();
+    }
+
+    // =========================
+    // MÉTODO AUXILIAR PARA MAPEAR USUARIO A DTO
+    // =========================
+
+    private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
+        return new UsuarioResponseDto(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getEmail(),
+                usuario.getTipoUsuario(),
+                usuario.isActivo());
     }
 }

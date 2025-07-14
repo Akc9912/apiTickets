@@ -5,12 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 public class ChangePasswordDto {
 
-    /**
-     * DTO para cambiar la contraseña de un usuario.
-     * Contiene el campo de contraseña nueva y el ID del usuario.
-     * Este DTO se utiliza cuando un usuario desea cambiar su contraseña,
-     */
-
     @NotNull(message = "El ID del usuario no puede ser nulo")
     private Long userId;
 
@@ -20,8 +14,8 @@ public class ChangePasswordDto {
     public ChangePasswordDto() {
     }
 
-    public ChangePasswordDto(Long id, String newPassword) {
-        this.userId = id;
+    public ChangePasswordDto(Long userId, String newPassword) {
+        this.userId = userId;
         this.newPassword = newPassword;
     }
 

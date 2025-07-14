@@ -14,6 +14,15 @@ public class TicketRequestDto {
     @NotNull(message = "El ID del trabajador es obligatorio")
     private int idTrabajador;
 
+    public TicketRequestDto() {
+    }
+
+    public TicketRequestDto(String titulo, String descripcion, int idTrabajador) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.idTrabajador = idTrabajador;
+    }
+
     // Getters y setters
     public String getTitulo() {
         return titulo;

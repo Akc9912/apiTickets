@@ -24,7 +24,7 @@ public class Ticket {
     private Trabajador creador;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TecnicoPorTicket> historialTecnicos;
+    private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaCreacion;

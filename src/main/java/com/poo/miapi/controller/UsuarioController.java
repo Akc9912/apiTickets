@@ -8,7 +8,6 @@ import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,14 +37,6 @@ public class UsuarioController {
     public ResponseEntity<String> cambiarPassword(@RequestParam ChangePasswordDto dto) {
         String mensaje = usuarioService.cambiarPassword(dto);
         return ResponseEntity.ok(mensaje);
-    }
-
-    // GET /api/usuario/tickets Ver mis tickets (como trabajador o técnico).
-
-    @GetMapping("/tickets")
-    public ResponseEntity<List<?>> verMisTickets(Long userId) {
-        List<?> tickets = usuarioService.verMisTickets(userId);
-        return ResponseEntity.ok(tickets);
     }
 
     // GET /api/usuario/notificaciones Ver mis notificaciones.

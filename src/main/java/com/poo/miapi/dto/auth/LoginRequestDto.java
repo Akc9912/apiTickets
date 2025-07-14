@@ -15,6 +15,12 @@ public class LoginRequestDto {
     public LoginRequestDto() {
     }
 
+    // Constructor completo
+    public LoginRequestDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     // Getters y setters
     public String getEmail() {
         return email;

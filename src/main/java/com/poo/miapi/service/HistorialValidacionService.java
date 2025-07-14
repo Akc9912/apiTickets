@@ -1,7 +1,13 @@
 package com.poo.miapi.service;
 
+import com.poo.miapi.dto.historial.HistorialValidacionResponseDto;
+import com.poo.miapi.dto.historial.HistorialValidacionRequestDto;
 import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
+import com.poo.miapi.model.core.Trabajador;
+import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.HistorialValidacionRepository;
+import com.poo.miapi.repository.TrabajadorRepository;
+import com.poo.miapi.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +19,57 @@ public class HistorialValidacionService {
     @Autowired
     private HistorialValidacionRepository historialValidacionRepository;
 
-    public void registrarValidacion(HistorialValidacionTrabajador validacion) {
-        historialValidacionRepository.save(validacion);
+    @Autowired
+    private TrabajadorRepository trabajadorRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    // Registrar validación desde DTO
+    public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
+        Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
+                .orElseThrow(() -> new IllegalArgumentException("Trabajador no encontrado"));
+        Ticket ticket = ticketRepository.findById(dto.getIdTicket())
+                .orElseThrow(() -> new IllegalArgumentException("Ticket no encontrado"));
+
+        HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
+                trabajador,
+                ticket,
+                dto.isFueResuelto(),
+                dto.getComentario());
+        HistorialValidacionTrabajador saved = historialValidacionRepository.save(validacion);
+        return mapToDto(saved);
     }
 
-    public List<HistorialValidacionTrabajador> listarPorTrabajador(int trabajadorId) {
-        return historialValidacionRepository.findByTrabajadorId(trabajadorId);
+    // Listar por trabajador como DTOs
+    public List<HistorialValidacionResponseDto> listarPorTrabajador(int trabajadorId) {
+        return historialValidacionRepository.findByTrabajadorId(trabajadorId).stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public List<HistorialValidacionTrabajador> listarPorTicket(int ticketId) {
-        return historialValidacionRepository.findByTicketId(ticketId);
+    // Listar por ticket como DTOs
+    public List<HistorialValidacionResponseDto> listarPorTicket(int ticketId) {
+        return historialValidacionRepository.findByTicketId(ticketId).stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public List<HistorialValidacionTrabajador> listarTodos() {
-        return historialValidacionRepository.findAll();
+    // Listar todos como DTOs
+    public List<HistorialValidacionResponseDto> listarTodos() {
+        return historialValidacionRepository.findAll().stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Método auxiliar para mapear entidad a DTO
+    private HistorialValidacionResponseDto mapToDto(HistorialValidacionTrabajador validacion) {
+        return new HistorialValidacionResponseDto(
+                validacion.getId(),
+                validacion.getTrabajador().getId(),
+                validacion.getTicket().getId(),
+                validacion.isFueResuelto(),
+                validacion.getComentario(),
+                validacion.getFechaRegistro());
     }
 }

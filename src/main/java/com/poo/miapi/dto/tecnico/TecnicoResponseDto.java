@@ -5,7 +5,7 @@ import java.util.List;
 import com.poo.miapi.model.historial.IncidenteTecnico;
 
 public class TecnicoResponseDto {
-    private Long id;
+    private int id;
     private String nombre;
     private String apellido;
     private String email;
@@ -15,15 +15,15 @@ public class TecnicoResponseDto {
     private boolean bloqueado;
     private int fallas;
     private int marcas;
-    private List<IncidenteTecnico> incidentes;
+    private List<IncidenteTecnicoResponseDto> incidentes; // Usar DTO, no entidad
 
     // Constructor
     public TecnicoResponseDto() {
     }
 
-    public TecnicoResponseDto(Long id, String nombre, String apellido, String email, String rol,
+    public TecnicoResponseDto(int id, String nombre, String apellido, String email, String rol,
             boolean cambiarPass, boolean activo, boolean bloqueado, int fallas, int marcas,
-            List<IncidenteTecnico> incidentes) {
+            List<IncidenteTecnicoResponseDto> incidentes) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -37,48 +37,92 @@ public class TecnicoResponseDto {
         this.incidentes = incidentes;
     }
 
-    // Getters
-    public Long getId() {
+    // Getters y setters
+    public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getApellido() {
         return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public boolean isBloqueado() {
-        return bloqueado;
-    }
-
-    public int getFallas() {
-        return fallas;
-    }
-
-    public int getMarcas() {
-        return marcas;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getRol() {
         return rol;
     }
 
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
     public boolean isCambiarPass() {
         return cambiarPass;
     }
 
-    public List<IncidenteTecnico> getIncidentes() {
+    public void setCambiarPass(boolean cambiarPass) {
+        this.cambiarPass = cambiarPass;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public int getFallas() {
+        return fallas;
+    }
+
+    public void setFallas(int fallas) {
+        this.fallas = fallas;
+    }
+
+    public int getMarcas() {
+        return marcas;
+    }
+
+    public void setMarcas(int marcas) {
+        this.marcas = marcas;
+    }
+
+    public List<IncidenteTecnicoResponseDto> getIncidentes() {
         return incidentes;
+    }
+
+    public void setIncidentes(List<IncidenteTecnicoResponseDto> incidentes) {
+        this.incidentes = incidentes;
     }
 }
