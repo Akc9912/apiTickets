@@ -75,6 +75,10 @@ public class TecnicoService {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarFalla(tecnico);
 
+        if (tecnico.getFallas() >= 3) {
+            tecnico.setBloqueado(true);
+        }
+
         IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
                 motivo);
         incidenteTecnicoRepository.save(incidente);
@@ -83,6 +87,12 @@ public class TecnicoService {
     public void marcarMarca(Long idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarMarca(tecnico);
+
+        if (tecnico.getMarcas() >= 3) {
+            tecnico.setMarcas(0);
+            motivo = motivo + " - Marcas acumuladas";
+            marcarFalla(idTecnico, motivo, ticket);
+        }
 
         IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.MARCA,
                 motivo);

@@ -1,3 +1,5 @@
+use apiticket;
+
 CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -6,7 +8,8 @@ CREATE TABLE usuario (
     password VARCHAR(100) NOT NULL,
     cambiar_pass BOOLEAN NOT NULL,
     tipo_usuario VARCHAR(20) NOT NULL,
-    activo BOOLEAN NOT NULL
+    activo BOOLEAN NOT NULL,
+    bloqueado BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE admin (
@@ -23,7 +26,6 @@ CREATE TABLE tecnico (
     id INT PRIMARY KEY,
     fallas INT NOT NULL DEFAULT 0,
     marcas INT NOT NULL DEFAULT 0,
-    bloqueado BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
@@ -33,6 +35,8 @@ CREATE TABLE ticket (
     descripcion TEXT NOT NULL,
     estado VARCHAR(20) NOT NULL, -- Enum EstadoTicket
     id_creador INT,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_ultima_actualizacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (id_creador) REFERENCES trabajador(id) ON DELETE SET NULL
 );
 
@@ -64,7 +68,7 @@ CREATE TABLE tipo_notificacion (
 CREATE TABLE notificacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
-    id_tipo VARCHAR(30) NOT NULL,
+    id_tipo VARCHAR(30),
     mensaje TEXT NOT NULL,
     leida BOOLEAN NOT NULL DEFAULT FALSE,
     fecha_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -97,7 +101,7 @@ CREATE TABLE log_ticket_evento (
 CREATE TABLE comentario_ticket (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_ticket INT NOT NULL,
-    id_usuario INT NOT NULL,
+    id_usuario INT ,
     mensaje TEXT NOT NULL,
     fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_ticket) REFERENCES ticket(id) ON DELETE CASCADE,
@@ -114,6 +118,18 @@ CREATE TABLE resumen_ticket_mensual (
     PRIMARY KEY (anio, mes)
 );
 
-
 -- INDICES
+
+CREATE UNIQUE INDEX idx_usuario_email ON usuario(email);
+CREATE INDEX idx_usuario_tipo ON usuario(tipo_usuario);
+
 CREATE INDEX idx_tecnico_ticket ON tecnico_por_ticket(id_ticket, id_tecnico);
+
+CREATE INDEX idx_ticket_estado ON ticket(estado);
+CREATE INDEX idx_ticket_creador ON ticket(id_creador);
+CREATE INDEX idx_ticket_estado_creador ON ticket(estado, id_creador);
+CREATE INDEX idx_ticket_fecha_creacion ON ticket(fecha_creacion);
+CREATE INDEX idx_ticket_fecha_actualizacion ON ticket(fecha_ultima_actualizacion);
+
+CREATE INDEX idx_notificacion_usuario ON notificacion(id_usuario);
+CREATE INDEX idx_comentario_ticket_ticket ON comentario_ticket(id_ticket);

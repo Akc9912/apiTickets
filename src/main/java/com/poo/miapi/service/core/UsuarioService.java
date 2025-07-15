@@ -12,9 +12,10 @@ import com.poo.miapi.model.core.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.notificacion.NotificacionService;
-import com.poo.miapi.util.JwtUtil;
+import com.poo.miapi.service.security.JwtService; // Cambia aquí
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -29,23 +30,26 @@ public class UsuarioService {
     @Autowired
     private final NotificacionService notificacionService;
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService; // Cambia aquí
     @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final TecnicoService tecnicoService;
 
+    @Value("${APP_DEFAULT_PASSWORD}")
+    private String defaultPassword;
+
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             TecnicoRepository tecnicoRepository,
             NotificacionService notificacionService,
-            JwtUtil jwtUtil,
+            JwtService jwtService, // Cambia aquí
             PasswordEncoder passwordEncoder,
             TecnicoService tecnicoService) {
         this.usuarioRepository = usuarioRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.notificacionService = notificacionService;
-        this.jwtUtil = jwtUtil;
+        this.jwtService = jwtService; // Cambia aquí
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
     }
@@ -64,7 +68,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        String token = jwtUtil.generateToken(usuario);
+        String token = jwtService.generateToken(usuario); // Cambia aquí
 
         return new LoginResponseDto(token, mapToUsuarioDto(usuario));
     }
@@ -92,7 +96,7 @@ public class UsuarioService {
 
     public void reiniciarPassword(ResetPasswordDto dto) {
         Usuario usuario = buscarPorId(dto.getUserId());
-        usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
+        usuario.setPassword(passwordEncoder.encode(defaultPassword));
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
     }

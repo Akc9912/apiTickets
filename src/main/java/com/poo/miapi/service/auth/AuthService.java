@@ -7,7 +7,7 @@ import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.util.JwtUtil;
+import com.poo.miapi.service.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,15 +21,15 @@ public class AuthService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
 
     public AuthService(
             UsuarioRepository usuarioRepository,
             PasswordEncoder passwordEncoder,
-            JwtUtil jwtUtil) {
+            JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
+        this.jwtService = jwtService;
     }
 
     // Login: recibe LoginRequestDto, devuelve LoginResponseDto
@@ -45,7 +45,7 @@ public class AuthService {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        String token = jwtUtil.generateToken(usuario);
+        String token = jwtService.generateToken(usuario);
         UsuarioResponseDto usuarioDto = new UsuarioResponseDto(
                 usuario.getId(),
                 usuario.getNombre(),

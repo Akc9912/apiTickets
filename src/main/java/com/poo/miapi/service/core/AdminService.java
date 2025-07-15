@@ -13,6 +13,7 @@ import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -35,6 +36,9 @@ public class AdminService {
     private final TecnicoService tecnicoService;
     @Autowired
     private final TecnicoPorTicketService tecnicoPorTicketService;
+
+    @Value("${APP_DEFAULT_PASSWORD}")
+    private String defaultPassword;
 
     public AdminService(
             UsuarioRepository usuarioRepository,
@@ -64,7 +68,8 @@ public class AdminService {
         }
 
         Usuario nuevoUsuario = crearUsuarioPorRol(usuario);
-        nuevoUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
+        nuevoUsuario.setCambiarPass(true);
         nuevoUsuario.setRol(usuario.getRol().toUpperCase());
         usuarioRepository.save(nuevoUsuario);
 
@@ -100,7 +105,8 @@ public class AdminService {
         validarRol(usuarioCambioRol.getRol());
 
         Usuario nuevoUsuario = crearUsuarioPorRol(usuarioCambioRol);
-        nuevoUsuario.setPassword(passwordEncoder.encode(usuarioCambioRol.getPassword()));
+        nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
+        nuevoUsuario.setCambiarPass(true);
         nuevoUsuario.setRol(usuarioCambioRol.getRol().toUpperCase());
         usuarioRepository.save(nuevoUsuario);
 
@@ -220,8 +226,7 @@ public class AdminService {
         entradaHistorial.setComentario(comentario);
         tecnicoPorTicketRepository.save(entradaHistorial);
 
-        tecnicoActual.setFallas(tecnicoActual.getFallas() + 1);
-        tecnicoRepository.save(tecnicoActual);
+        tecnicoService.marcarMarca(tecnicoActual.getId(), comentario, ticket);
 
         ticket.setEstado(EstadoTicket.REABIERTO);
         ticket.setFechaUltimaActualizacion(LocalDateTime.now());
