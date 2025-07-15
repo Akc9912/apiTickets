@@ -105,8 +105,6 @@ public class Ticket {
 
     // Utilidades
     public Tecnico getTecnicoActual() {
-        // Busca el técnico asignado actualmente (última entrada sin fecha de
-        // desasignación)
         for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
             TecnicoPorTicket entrada = historialTecnicos.get(i);
             if (entrada.getFechaDesasignacion() == null) {

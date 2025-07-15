@@ -32,14 +32,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
       """)
   List<Ticket> findByTecnicoActual(@Param("tecnico") Tecnico tecnico);
 
-  // Buscar tickets por estado y técnico actual
-  List<Ticket> findByEstadoAndTecnicoActual(EstadoTicket estado, Tecnico tecnico);
+  // Buscar tickets por estado y técnico actual (usando historial)
+  @Query("""
+          SELECT DISTINCT t
+          FROM Ticket t
+          JOIN t.historialTecnicos h
+          WHERE t.estado = :estado
+            AND h.tecnico = :tecnico
+            AND h.fechaDesasignacion IS NULL
+      """)
+  List<Ticket> findByEstadoAndTecnicoActual(@Param("estado") EstadoTicket estado, @Param("tecnico") Tecnico tecnico);
 
   // Buscar tickets por estado y creador
   List<Ticket> findByEstadoAndCreadorId(EstadoTicket estado, Long idTrabajador);
-
-  // Traer ticket con técnico asignado (evita lazy loading)
-  @Query("SELECT t FROM Ticket t JOIN FETCH t.tecnicoActual WHERE t.id = :id")
-  Optional<Ticket> findByIdWithTecnico(@Param("id") Long id);
-
 }

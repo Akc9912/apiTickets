@@ -91,7 +91,7 @@ public class TecnicoService {
 
     public TicketResponseDto tomarTicket(Long idTecnico, Long idTicket) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        Ticket ticket = ticketRepository.findByIdWithTecnico(idTicket)
+        Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO)) {
@@ -104,6 +104,7 @@ public class TecnicoService {
                 EstadoTicket.ATENDIDO, null);
         tecnicoPorTicketRepository.save(historial);
 
+        ticket.agregarEntradaHistorial(historial);
         ticketRepository.save(ticket);
 
         return mapToTicketDto(ticket);
@@ -125,10 +126,12 @@ public class TecnicoService {
 
     public TicketResponseDto devolverTicket(Long idTecnico, Long idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        Ticket ticket = ticketRepository.findByIdWithTecnico(idTicket)
+        Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        if (ticket.getTecnicoActual() == null || ticket.getTecnicoActual().getId() != tecnico.getId()) {
+        // Usa el método utilitario del modelo para obtener el técnico actual
+        Tecnico tecnicoActual = ticket.getTecnicoActual();
+        if (tecnicoActual == null || !tecnicoActual.getId().equals(tecnico.getId())) {
             throw new IllegalArgumentException("Este ticket no pertenece a este técnico");
         }
 

@@ -1,0 +1,139 @@
+2025-07-14 22:39:41 - Starting MiapiApplication using Java 24.0.1 with PID 15084 (C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets\target\classes started by Seba in C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets)
+2025-07-14 22:39:41 - The following 1 profile is active: "h2"
+2025-07-14 22:39:41 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-07-14 22:39:41 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-07-14 22:39:43 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-14 22:39:43 - Finished Spring Data repository scanning in 124 ms. Found 10 JPA repository interfaces.
+2025-07-14 22:39:44 - Tomcat initialized with port 8080 (http)
+2025-07-14 22:39:44 - Starting service [Tomcat]
+2025-07-14 22:39:44 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-14 22:39:44 - Initializing Spring embedded WebApplicationContext
+2025-07-14 22:39:44 - Root WebApplicationContext: initialization completed in 2878 ms
+2025-07-14 22:39:45 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-14 22:39:45 - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-14 22:39:45 - HHH000026: Second-level cache disabled
+2025-07-14 22:39:45 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-14 22:39:46 - HikariPool-1 - Starting...
+2025-07-14 22:39:46 - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:demo_db        # <- URL de H2 user=SA
+2025-07-14 22:39:46 - HikariPool-1 - Start completed.
+2025-07-14 22:39:46 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-14 22:39:46 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-14 22:39:47 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-14 22:39:47 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-14 22:39:48 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-14 22:39:49 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'estadoTicketService' defined in file [C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets\target\classes\com\poo\miapi\service\core\EstadoTicketService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'estadoTicketRepository' defined in com.poo.miapi.repository.core.EstadoTicketRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Not a managed type: class com.poo.miapi.model.core.EstadoTicket
+2025-07-14 22:39:49 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-14 22:39:49 - Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: La base de datos ya esta cerrada (para des-habilitar el cerrado automatico durante el shutdown de la VM, agregue ";DB_CLOSE_ON_EXIT=FALSE" a la URL de conexión)
+Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-07-14 22:39:49 - HikariPool-1 - Shutdown initiated...
+2025-07-14 22:39:49 - HikariPool-1 - Shutdown completed.
+2025-07-14 22:39:49 - Stopping service [Tomcat]
+2025-07-14 22:39:49 - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-07-14 22:39:49 - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'estadoTicketService' defined in file [C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets\target\classes\com\poo\miapi\service\core\EstadoTicketService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'estadoTicketRepository' defined in com.poo.miapi.repository.core.EstadoTicketRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Not a managed type: class com.poo.miapi.model.core.EstadoTicket
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1222)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1188)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1123)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350)
+	at com.poo.miapi.MiapiApplication.main(MiapiApplication.java:9)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'estadoTicketRepository' defined in com.poo.miapi.repository.core.EstadoTicketRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Not a managed type: class com.poo.miapi.model.core.EstadoTicket
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 24 common frames omitted
+Caused by: java.lang.IllegalArgumentException: Not a managed type: class com.poo.miapi.model.core.EstadoTicket
+	at org.hibernate.metamodel.model.domain.internal.JpaMetamodelImpl.managedType(JpaMetamodelImpl.java:223)
+	at org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl.managedType(MappingMetamodelImpl.java:470)
+	at org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl.managedType(MappingMetamodelImpl.java:100)
+	at org.springframework.data.jpa.repository.support.JpaMetamodelEntityInformation.<init>(JpaMetamodelEntityInformation.java:82)
+	at org.springframework.data.jpa.repository.support.JpaEntityInformationSupport.getEntityInformation(JpaEntityInformationSupport.java:69)
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactory.getEntityInformation(JpaRepositoryFactory.java:251)
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactory.getTargetRepository(JpaRepositoryFactory.java:215)
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactory.getTargetRepository(JpaRepositoryFactory.java:198)
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactory.getTargetRepository(JpaRepositoryFactory.java:1)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:380)
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$4(RepositoryFactoryBeanSupport.java:350)
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:135)
+	at org.springframework.data.util.Lazy.get(Lazy.java:113)
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:356)
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean.afterPropertiesSet(JpaRepositoryFactoryBean.java:132)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822)
+	... 34 common frames omitted
+2025-07-14 22:45:48 - Starting MiapiApplication using Java 24.0.1 with PID 8324 (C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets\target\classes started by Seba in C:\Users\Seba\Desktop\ISET\programacion orientada a objetos\ApiTickets\apiTickets)
+2025-07-14 22:45:48 - The following 1 profile is active: "h2"
+2025-07-14 22:45:48 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-07-14 22:45:48 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-07-14 22:45:50 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-14 22:45:50 - Finished Spring Data repository scanning in 204 ms. Found 9 JPA repository interfaces.
+2025-07-14 22:45:52 - Tomcat initialized with port 8080 (http)
+2025-07-14 22:45:52 - Starting service [Tomcat]
+2025-07-14 22:45:52 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-14 22:45:52 - Initializing Spring embedded WebApplicationContext
+2025-07-14 22:45:52 - Root WebApplicationContext: initialization completed in 3969 ms
+2025-07-14 22:45:52 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-14 22:45:52 - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-14 22:45:52 - HHH000026: Second-level cache disabled
+2025-07-14 22:45:53 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-14 22:45:53 - HikariPool-1 - Starting...
+2025-07-14 22:45:53 - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:demo_db        # <- URL de H2 user=SA
+2025-07-14 22:45:53 - HikariPool-1 - Start completed.
+2025-07-14 22:45:53 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-14 22:45:53 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-14 22:45:54 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-14 22:45:54 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-14 22:45:55 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-14 22:45:56 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-14 22:45:57 - Exposing 14 endpoints beneath base path '/actuator'
+2025-07-14 22:45:57 - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-07-14 22:45:57 - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:demo_db        # <- URL de H2'
+2025-07-14 22:45:57 - LiveReload server is running on port 35729
+2025-07-14 22:45:57 - Tomcat started on port 8080 (http) with context path '/'
+2025-07-14 22:45:57 - Started MiapiApplication in 10.283 seconds (process running for 11.296)
+2025-07-14 22:45:59 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-14 22:45:59 - Initializing Servlet 'dispatcherServlet'
+2025-07-14 22:45:59 - Completed initialization in 2 ms
