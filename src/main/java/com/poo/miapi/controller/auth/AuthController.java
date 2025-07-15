@@ -5,7 +5,6 @@ import com.poo.miapi.dto.auth.LoginRequestDto;
 import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.service.auth.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -14,7 +13,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
