@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import com.poo.miapi.model.core.EstadoTicket;
 
 public class TecnicoPorTicketResponseDto {
-    private int id;
-    private int idTicket;
-    private int idTecnico;
+    private Long id;
+    private Long idTicket;
+    private Long idTecnico;
     private EstadoTicket estadoInicial;
     private EstadoTicket estadoFinal;
     private LocalDateTime fechaAsignacion;
@@ -16,7 +16,7 @@ public class TecnicoPorTicketResponseDto {
     public TecnicoPorTicketResponseDto() {
     }
 
-    public TecnicoPorTicketResponseDto(int id, int idTicket, int idTecnico, EstadoTicket estadoInicial,
+    public TecnicoPorTicketResponseDto(Long id, Long idTicket, Long idTecnico, EstadoTicket estadoInicial,
             EstadoTicket estadoFinal, LocalDateTime fechaAsignacion,
             LocalDateTime fechaDesasignacion, String comentario) {
         this.id = id;
@@ -30,27 +30,27 @@ public class TecnicoPorTicketResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getIdTicket() {
+    public Long getIdTicket() {
         return idTicket;
     }
 
-    public void setIdTicket(int idTicket) {
+    public void setIdTicket(Long idTicket) {
         this.idTicket = idTicket;
     }
 
-    public int getIdTecnico() {
+    public Long getIdTecnico() {
         return idTecnico;
     }
 
-    public void setIdTecnico(int idTecnico) {
+    public void setIdTecnico(Long idTecnico) {
         this.idTecnico = idTecnico;
     }
 

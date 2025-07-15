@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class TicketResponseDto {
     @NotNull(message = "El id del ticket no puede ser nulo")
-    private int id;
+    private Long id;
 
     @NotBlank(message = "El título del ticket es obligatorio")
     private String titulo;
@@ -33,7 +33,7 @@ public class TicketResponseDto {
     public TicketResponseDto() {
     }
 
-    public TicketResponseDto(int id, String titulo, String descripcion, EstadoTicket estado, String creador,
+    public TicketResponseDto(Long id, String titulo, String descripcion, EstadoTicket estado, String creador,
             String tecnicoAsignado, LocalDateTime fechaCreacion, LocalDateTime fechaUltimaActualizacion) {
         this.id = id;
         this.titulo = titulo;
@@ -46,11 +46,11 @@ public class TicketResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

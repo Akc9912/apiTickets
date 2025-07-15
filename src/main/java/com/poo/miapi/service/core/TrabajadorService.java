@@ -21,19 +21,28 @@ import java.util.List;
 public class TrabajadorService {
 
     @Autowired
-    private TrabajadorRepository trabajadorRepository;
-
+    private final TrabajadorRepository trabajadorRepository;
     @Autowired
-    private TicketRepository ticketRepository;
-
+    private final TicketRepository ticketRepository;
     @Autowired
-    private TecnicoRepository tecnicoRepository;
-
+    private final TecnicoRepository tecnicoRepository;
     @Autowired
-    private TecnicoService tecnicoService;
-
+    private final TecnicoService tecnicoService;
     @Autowired
-    private HistorialValidacionRepository historialValidacionRepository;
+    private final HistorialValidacionRepository historialValidacionRepository;
+
+    public TrabajadorService(
+            TrabajadorRepository trabajadorRepository,
+            TicketRepository ticketRepository,
+            TecnicoRepository tecnicoRepository,
+            TecnicoService tecnicoService,
+            HistorialValidacionRepository historialValidacionRepository) {
+        this.trabajadorRepository = trabajadorRepository;
+        this.ticketRepository = ticketRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.tecnicoService = tecnicoService;
+        this.historialValidacionRepository = historialValidacionRepository;
+    }
 
     public Trabajador buscarPorId(int id) {
         return trabajadorRepository.findById(id)
@@ -46,7 +55,6 @@ public class TrabajadorService {
         Ticket ticket = new Ticket(dto.getTitulo(), dto.getDescripcion(), trabajador);
         trabajador.agregarTicket(ticket);
         Ticket saved = ticketRepository.save(ticket);
-
         return mapToTicketDto(saved);
     }
 

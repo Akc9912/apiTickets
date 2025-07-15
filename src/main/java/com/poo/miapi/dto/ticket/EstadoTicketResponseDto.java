@@ -1,17 +1,15 @@
 package com.poo.miapi.dto.ticket;
 
 public class EstadoTicketResponseDto {
-    private String id;
-    private String nombre;
-    private String descripcion;
+    private String id; // nombre del enum, ej: "NO_ATENDIDO"
+    private String label; // descripción legible, ej: "No atendido"
 
     public EstadoTicketResponseDto() {
     }
 
-    public EstadoTicketResponseDto(String id, String nombre, String descripcion) {
+    public EstadoTicketResponseDto(String id, String label) {
         this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+        this.label = label;
     }
 
     // Getters y setters
@@ -23,19 +21,11 @@ public class EstadoTicketResponseDto {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getLabel() {
+        return label;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

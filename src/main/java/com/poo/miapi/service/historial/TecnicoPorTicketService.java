@@ -5,10 +5,8 @@ import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +14,11 @@ import java.util.Optional;
 public class TecnicoPorTicketService {
 
     @Autowired
-    private TecnicoPorTicketRepository tecnicoPorTicketRepository;
+    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
+
+    public TecnicoPorTicketService(TecnicoPorTicketRepository tecnicoPorTicketRepository) {
+        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
+    }
 
     // Buscar historial por técnico y ticket (devuelve DTO)
     public Optional<TecnicoPorTicketResponseDto> buscarEntradaHistorialPorTicket(Tecnico tecnico, Ticket ticket) {
@@ -40,6 +42,20 @@ public class TecnicoPorTicketService {
     // Listar historial por ticket (devuelve DTOs)
     public List<TecnicoPorTicketResponseDto> listarPorTicket(Ticket ticket) {
         return tecnicoPorTicketRepository.findByTicket(ticket).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Listar historial por idTecnico
+    public List<TecnicoPorTicketResponseDto> listarPorIdTecnico(int idTecnico) {
+        return tecnicoPorTicketRepository.findByTecnicoId(idTecnico).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Listar historial por idTicket
+    public List<TecnicoPorTicketResponseDto> listarPorIdTicket(int idTicket) {
+        return tecnicoPorTicketRepository.findByTicketId(idTicket).stream()
                 .map(this::mapToDto)
                 .toList();
     }

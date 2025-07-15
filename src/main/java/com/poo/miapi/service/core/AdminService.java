@@ -22,23 +22,38 @@ import java.util.List;
 public class AdminService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
     @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
     @Autowired
-    private TecnicoRepository tecnicoRepository;
+    private final TecnicoRepository tecnicoRepository;
     @Autowired
-    private TecnicoPorTicketRepository tecnicoPorTicketRepository;
+    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    private TecnicoService tecnicoService;
+    private final TecnicoService tecnicoService;
     @Autowired
-    private TecnicoPorTicketService tecnicoPorTicketService;
+    private final TecnicoPorTicketService tecnicoPorTicketService;
 
-    // =========================
+    public AdminService(
+            UsuarioRepository usuarioRepository,
+            TicketRepository ticketRepository,
+            TecnicoRepository tecnicoRepository,
+            TecnicoPorTicketRepository tecnicoPorTicketRepository,
+            PasswordEncoder passwordEncoder,
+            TecnicoService tecnicoService,
+            TecnicoPorTicketService tecnicoPorTicketService) {
+        this.usuarioRepository = usuarioRepository;
+        this.ticketRepository = ticketRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tecnicoService = tecnicoService;
+        this.tecnicoPorTicketService = tecnicoPorTicketService;
+    }
+
     // USUARIOS
-    // =========================
 
     // Crear usuario
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuario) {
@@ -144,9 +159,7 @@ public class AdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    // =========================
     // CONSULTAS DE USUARIOS
-    // =========================
 
     public List<UsuarioResponseDto> listarTodosLosUsuarios() {
         return usuarioRepository.findAll().stream()
@@ -169,9 +182,7 @@ public class AdminService {
                 .toList();
     }
 
-    // =========================
     // TICKETS
-    // =========================
 
     public List<TicketResponseDto> listarTodosLosTickets() {
         return ticketRepository.findAll().stream()
@@ -199,8 +210,8 @@ public class AdminService {
             throw new IllegalArgumentException("No hay técnico asignado al ticket, no se puede reabrir");
         }
 
-        TecnicoPorTicket entradaHistorial = tecnicoPorTicketService
-                .buscarEntradaHistorialPorTicket(tecnicoActual, ticket)
+        TecnicoPorTicket entradaHistorial = tecnicoPorTicketRepository
+                .findByTecnicoAndTicket(tecnicoActual, ticket)
                 .orElseThrow(
                         () -> new IllegalArgumentException("No se encontró historial para este ticket en el técnico"));
 
@@ -219,9 +230,7 @@ public class AdminService {
         return mapToTicketDto(ticket);
     }
 
-    // =========================
     // MÉTODOS AUXILIARES PRIVADOS
-    // =========================
 
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||

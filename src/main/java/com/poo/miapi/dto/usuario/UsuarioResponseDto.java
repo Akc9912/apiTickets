@@ -1,7 +1,7 @@
 package com.poo.miapi.dto.usuario;
 
 public class UsuarioResponseDto {
-    private int id;
+    private Long id;
     private String nombre;
     private String apellido;
     private String email;
@@ -16,7 +16,7 @@ public class UsuarioResponseDto {
     }
 
     // Constructor para crear un DTO a partir de un usuario
-    public UsuarioResponseDto(int id, String nombre, String apellido, String email, String rol, boolean activo) {
+    public UsuarioResponseDto(Long id, String nombre, String apellido, String email, String rol, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -25,7 +25,7 @@ public class UsuarioResponseDto {
         this.activo = activo;
     }
 
-    public UsuarioResponseDto(int id, String nombre, String apellido, String email, String rol, boolean activo,
+    public UsuarioResponseDto(Long id, String nombre, String apellido, String email, String rol, boolean activo,
             boolean bloqueado, boolean cambiarPass, String tipoUsuario) {
         this.id = id;
         this.nombre = nombre;
@@ -39,11 +39,11 @@ public class UsuarioResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import com.poo.miapi.model.historial.IncidenteTecnico.TipoIncidente;
 
 public class IncidenteTecnicoResponseDto {
-    private int id;
-    private int idTecnico;
-    private int idTicket;
+    private Long id;
+    private Long idTecnico;
+    private Long idTicket;
     private TipoIncidente tipo;
     private String motivo;
     private LocalDateTime fechaRegistro;
@@ -14,7 +14,7 @@ public class IncidenteTecnicoResponseDto {
     public IncidenteTecnicoResponseDto() {
     }
 
-    public IncidenteTecnicoResponseDto(int id, int idTecnico, int idTicket, TipoIncidente tipo, String motivo,
+    public IncidenteTecnicoResponseDto(Long id, Long idTecnico, Long idTicket, TipoIncidente tipo, String motivo,
             LocalDateTime fechaRegistro) {
         this.id = id;
         this.idTecnico = idTecnico;
@@ -25,27 +25,27 @@ public class IncidenteTecnicoResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getIdTecnico() {
+    public Long getIdTecnico() {
         return idTecnico;
     }
 
-    public void setIdTecnico(int idTecnico) {
+    public void setIdTecnico(Long idTecnico) {
         this.idTecnico = idTecnico;
     }
 
-    public int getIdTicket() {
+    public Long getIdTicket() {
         return idTicket;
     }
 
-    public void setIdTicket(int idTicket) {
+    public void setIdTicket(Long idTicket) {
         this.idTicket = idTicket;
     }
 

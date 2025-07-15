@@ -85,4 +85,8 @@ public class HistorialValidacionTrabajador {
     public void setFechaValidacion(LocalDateTime fechaValidacion) {
         this.fechaValidacion = fechaValidacion;
     }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaValidacion;
+    }
 }

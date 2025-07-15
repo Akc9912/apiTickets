@@ -9,7 +9,6 @@ import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.model.core.*;
-import com.poo.miapi.model.notificacion.Notificacion;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.notificacion.NotificacionService;
@@ -19,31 +18,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
+    @Autowired
+    private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private final TecnicoRepository tecnicoRepository;
+    @Autowired
     private final NotificacionService notificacionService;
+    @Autowired
+    private final JwtUtil jwtUtil;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final TecnicoService tecnicoService;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private TecnicoRepository tecnicoRepository;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private TecnicoService tecnicoService;
-
-    UsuarioService(NotificacionService notificacionService) {
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            TecnicoRepository tecnicoRepository,
+            NotificacionService notificacionService,
+            JwtUtil jwtUtil,
+            PasswordEncoder passwordEncoder,
+            TecnicoService tecnicoService) {
+        this.usuarioRepository = usuarioRepository;
+        this.tecnicoRepository = tecnicoRepository;
         this.notificacionService = notificacionService;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+        this.tecnicoService = tecnicoService;
     }
 
-    // =========================
-    // AUTENTICACIÓN Y LOGIN
-    // =========================
+    // Autenticación y Login
 
     public LoginResponseDto login(LoginRequestDto request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
@@ -62,9 +69,7 @@ public class UsuarioService {
         return new LoginResponseDto(token, mapToUsuarioDto(usuario));
     }
 
-    // =========================
-    // CONTRASEÑAS
-    // =========================
+    // contraseña
 
     public String cambiarPassword(ChangePasswordDto dto) {
         Usuario usuario = buscarPorId(dto.getUserId());
@@ -92,9 +97,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    // =========================
-    // ESTADO DEL USUARIO
-    // =========================
+    // Estado del usuario
 
     public UsuarioResponseDto bloquearUsuario(Long userId) {
         Usuario usuario = buscarPorId(userId);
@@ -129,9 +132,7 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    // =========================
-    // CONSULTAS Y LECTURA
-    // =========================
+    // Consultas y operaciones sobre usuarios
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
@@ -217,19 +218,10 @@ public class UsuarioService {
 
     // Ver mis notificaciones (todos los usuarios)
     public List<NotificacionResponseDto> verMisNotificaciones(Long userId) {
-        List<Notificacion> notificaciones = notificacionService.obtenerNotificaciones(userId);
-        return notificaciones.stream()
-                .map(n -> new NotificacionResponseDto(
-                        n.getId(),
-                        n.getUsuario().getId(),
-                        n.getMensaje(),
-                        n.getFechaCreacion()))
-                .toList();
+        return notificacionService.obtenerNotificaciones(userId);
     }
 
-    // =========================
-    // ESTADÍSTICAS
-    // =========================
+    // Estadísticas de usuarios
 
     public long contarUsuariosTotales() {
         return usuarioRepository.count();
@@ -243,9 +235,7 @@ public class UsuarioService {
         return tecnicoRepository.countByBloqueadoTrue();
     }
 
-    // =========================
-    // MÉTODO AUXILIAR PARA MAPEAR USUARIO A DTO
-    // =========================
+    // Metodo auxiliar para mapear Usuario a UsuarioResponseDto
 
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
         return new UsuarioResponseDto(

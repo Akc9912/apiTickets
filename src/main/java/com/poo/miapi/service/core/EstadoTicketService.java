@@ -3,7 +3,6 @@ package com.poo.miapi.service.core;
 import com.poo.miapi.dto.ticket.EstadoTicketResponseDto;
 import com.poo.miapi.model.core.EstadoTicket;
 import com.poo.miapi.repository.core.EstadoTicketRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,11 @@ import java.util.List;
 public class EstadoTicketService {
 
     @Autowired
-    private EstadoTicketRepository estadoTicketRepository;
+    private final EstadoTicketRepository estadoTicketRepository;
+
+    public EstadoTicketService(EstadoTicketRepository estadoTicketRepository) {
+        this.estadoTicketRepository = estadoTicketRepository;
+    }
 
     // Listar todos los estados como DTOs
     public List<EstadoTicketResponseDto> listarEstados() {
@@ -37,8 +40,7 @@ public class EstadoTicketService {
     // Método auxiliar para mapear entidad a DTO
     private EstadoTicketResponseDto mapToDto(EstadoTicket estado) {
         return new EstadoTicketResponseDto(
-                estado.getId(),
-                estado.getNombre(),
-                estado.getDescripcion());
+                estado.getName(),
+                estado.getLabel());
     }
 }

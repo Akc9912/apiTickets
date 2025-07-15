@@ -3,15 +3,15 @@ package com.poo.miapi.dto.notificacion;
 import java.time.LocalDateTime;
 
 public class NotificacionResponseDto {
-    private int id;
-    private int idUsuario;
+    private Long id;
+    private Long idUsuario;
     private String mensaje;
     private LocalDateTime fechaCreacion;
 
     public NotificacionResponseDto() {
     }
 
-    public NotificacionResponseDto(int id, int idUsuario, String mensaje, LocalDateTime fechaCreacion) {
+    public NotificacionResponseDto(Long id, Long idUsuario, String mensaje, LocalDateTime fechaCreacion) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.mensaje = mensaje;
@@ -19,19 +19,19 @@ public class NotificacionResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 

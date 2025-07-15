@@ -11,20 +11,26 @@ import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class IncidenteTecnicoService {
 
     @Autowired
-    private IncidenteTecnicoRepository incidenteTecnicoRepository;
-
+    private final IncidenteTecnicoRepository incidenteTecnicoRepository;
     @Autowired
-    private TecnicoRepository tecnicoRepository;
-
+    private final TecnicoRepository tecnicoRepository;
     @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
+
+    public IncidenteTecnicoService(
+            IncidenteTecnicoRepository incidenteTecnicoRepository,
+            TecnicoRepository tecnicoRepository,
+            TicketRepository ticketRepository) {
+        this.incidenteTecnicoRepository = incidenteTecnicoRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.ticketRepository = ticketRepository;
+    }
 
     // Listar todos los incidentes como DTOs
     public List<IncidenteTecnicoResponseDto> listarTodos() {
@@ -36,6 +42,20 @@ public class IncidenteTecnicoService {
     // Listar incidentes por técnico como DTOs
     public List<IncidenteTecnicoResponseDto> listarPorTecnico(int idTecnico) {
         return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Listar incidentes por ticket como DTOs
+    public List<IncidenteTecnicoResponseDto> listarPorTicket(int idTicket) {
+        return incidenteTecnicoRepository.findByTicketId(idTicket).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Listar incidentes por tipo
+    public List<IncidenteTecnicoResponseDto> listarPorTipo(IncidenteTecnico.TipoIncidente tipo) {
+        return incidenteTecnicoRepository.findByTipo(tipo).stream()
                 .map(this::mapToDto)
                 .toList();
     }
@@ -66,7 +86,7 @@ public class IncidenteTecnicoService {
         return new IncidenteTecnicoResponseDto(
                 incidente.getId(),
                 incidente.getTecnico().getId(),
-                incidente.getTicket().getId(),
+                incidente.getTicket() != null ? incidente.getTicket().getId() : null,
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());

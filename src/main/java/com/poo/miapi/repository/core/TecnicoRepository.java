@@ -26,5 +26,5 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 
     List<Tecnico> findByTipoUsuario(String tipoUsuario);
 
-    Optional<Tecnico> findById(Integer id);
+    Optional<Tecnico> findById(Long id);
 }

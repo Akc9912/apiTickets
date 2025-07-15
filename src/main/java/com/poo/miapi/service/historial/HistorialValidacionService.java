@@ -8,23 +8,28 @@ import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.HistorialValidacionRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class HistorialValidacionService {
 
         @Autowired
-        private HistorialValidacionRepository historialValidacionRepository;
-
+        private final HistorialValidacionRepository historialValidacionRepository;
         @Autowired
-        private TrabajadorRepository trabajadorRepository;
-
+        private final TrabajadorRepository trabajadorRepository;
         @Autowired
-        private TicketRepository ticketRepository;
+        private final TicketRepository ticketRepository;
+
+        public HistorialValidacionService(
+                        HistorialValidacionRepository historialValidacionRepository,
+                        TrabajadorRepository trabajadorRepository,
+                        TicketRepository ticketRepository) {
+                this.historialValidacionRepository = historialValidacionRepository;
+                this.trabajadorRepository = trabajadorRepository;
+                this.ticketRepository = ticketRepository;
+        }
 
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {

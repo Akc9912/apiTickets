@@ -1,7 +1,7 @@
 package com.poo.miapi.dto.trabajador;
 
 public class TrabajadorResponseDto {
-    private int id;
+    private Long id;
     private String nombre;
     private String apellido;
     private String email;
@@ -10,7 +10,7 @@ public class TrabajadorResponseDto {
     public TrabajadorResponseDto() {
     }
 
-    public TrabajadorResponseDto(int id, String nombre, String apellido, String email, boolean activo) {
+    public TrabajadorResponseDto(Long id, String nombre, String apellido, String email, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -19,11 +19,11 @@ public class TrabajadorResponseDto {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

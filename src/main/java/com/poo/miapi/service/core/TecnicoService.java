@@ -19,18 +19,26 @@ import java.util.List;
 public class TecnicoService {
 
     @Autowired
-    private TecnicoRepository tecnicoRepository;
-
+    private final TecnicoRepository tecnicoRepository;
     @Autowired
-    private TicketRepository ticketRepository;
-
+    private final TicketRepository ticketRepository;
     @Autowired
-    private TecnicoPorTicketRepository tecnicoPorTicketRepository;
-
+    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     @Autowired
-    private IncidenteTecnicoRepository incidenteTecnicoRepository;
+    private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
-    public Tecnico buscarPorId(int idTecnico) {
+    public TecnicoService(
+            TecnicoRepository tecnicoRepository,
+            TicketRepository ticketRepository,
+            TecnicoPorTicketRepository tecnicoPorTicketRepository,
+            IncidenteTecnicoRepository incidenteTecnicoRepository) {
+        this.tecnicoRepository = tecnicoRepository;
+        this.ticketRepository = ticketRepository;
+        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
+        this.incidenteTecnicoRepository = incidenteTecnicoRepository;
+    }
+
+    public Tecnico buscarPorId(Long idTecnico) {
         return tecnicoRepository.findById(idTecnico)
                 .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
     }
@@ -58,7 +66,12 @@ public class TecnicoService {
         tecnicoRepository.save(tecnico);
     }
 
-    public void marcarFalla(int idTecnico, String motivo, Ticket ticket) {
+    public void reiniciarFallasYMarcas(Long idTecnico) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        reiniciarFallasYMarcas(tecnico);
+    }
+
+    public void marcarFalla(Long idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarFalla(tecnico);
 
@@ -67,7 +80,7 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
-    public void marcarMarca(int idTecnico, String motivo, Ticket ticket) {
+    public void marcarMarca(Long idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarMarca(tecnico);
 
@@ -76,14 +89,9 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
-    public void reiniciarFallasYMarcas(int idTecnico) {
+    public TicketResponseDto tomarTicket(Long idTecnico, Long idTicket) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        reiniciarFallasYMarcas(tecnico);
-    }
-
-    public TicketResponseDto tomarTicket(int idTecnico, int idTicket) {
-        Tecnico tecnico = buscarPorId(idTecnico);
-        Ticket ticket = ticketRepository.findById(idTicket)
+        Ticket ticket = ticketRepository.findByIdWithTecnico(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO)) {
@@ -91,11 +99,11 @@ public class TecnicoService {
         }
 
         ticket.setEstado(EstadoTicket.ATENDIDO);
-        ticket.setTecnicoActual(tecnico);
 
         TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, EstadoTicket.NO_ATENDIDO,
-                EstadoTicket.ATENDIDO);
+                EstadoTicket.ATENDIDO, null);
         tecnicoPorTicketRepository.save(historial);
+
         ticketRepository.save(ticket);
 
         return mapToTicketDto(ticket);
@@ -115,9 +123,9 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
+    public TicketResponseDto devolverTicket(Long idTecnico, Long idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        Ticket ticket = ticketRepository.findById(idTicket)
+        Ticket ticket = ticketRepository.findByIdWithTecnico(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         if (ticket.getTecnicoActual() == null || ticket.getTecnicoActual().getId() != tecnico.getId()) {
@@ -150,9 +158,9 @@ public class TecnicoService {
     }
 
     // Devuelve tickets asignados como DTOs
-    public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
+    public List<TicketResponseDto> verTicketsAsignados(Long idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
-        return ticketRepository.findByTecnicoActual(tecnico).stream()
+        return tecnico.getTicketsActuales().stream()
                 .map(this::mapToTicketDto)
                 .toList();
     }
@@ -182,15 +190,16 @@ public class TecnicoService {
                 tecnico.isBloqueado(),
                 tecnico.getFallas(),
                 tecnico.getMarcas(),
-                tecnico.getTicketsActuales() // Puedes mapear a DTOs si lo prefieres
-        );
+                tecnico.getIncidentes().stream()
+                        .map(this::mapToIncidenteDto)
+                        .toList());
     }
 
     private IncidenteTecnicoResponseDto mapToIncidenteDto(IncidenteTecnico incidente) {
         return new IncidenteTecnicoResponseDto(
                 incidente.getId(),
                 incidente.getTecnico().getId(),
-                incidente.getTicket().getId(),
+                incidente.getTicket() != null ? incidente.getTicket().getId() : null,
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());

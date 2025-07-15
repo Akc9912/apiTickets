@@ -3,26 +3,28 @@ package com.poo.miapi.service.notificacion;
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.model.notificacion.Notificacion;
 import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.notificacion.NotificacionRepository;
-
+import com.poo.miapi.repository.core.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class NotificacionService {
 
     @Autowired
-    private NotificacionRepository notificacionRepository;
-
+    private final NotificacionRepository notificacionRepository;
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public NotificacionService(NotificacionRepository notificacionRepository, UsuarioRepository usuarioRepository) {
+        this.notificacionRepository = notificacionRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     // Enviar una notificación a un usuario (devuelve DTO)
-    public NotificacionResponseDto enviarNotificacion(int idUsuario, String mensaje) {
+    public NotificacionResponseDto enviarNotificacion(Long idUsuario, String mensaje) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         Notificacion n = new Notificacion(usuario, mensaje);
@@ -42,6 +44,11 @@ public class NotificacionService {
         notificacionRepository.deleteAllByUsuarioId(idUsuario);
     }
 
+    // Contar notificaciones de un usuario
+    public long contarNotificaciones(Long idUsuario) {
+        return notificacionRepository.countByUsuarioId(idUsuario);
+    }
+
     // Método auxiliar para mapear entidad a DTO
     private NotificacionResponseDto mapToDto(Notificacion n) {
         return new NotificacionResponseDto(
@@ -50,4 +57,5 @@ public class NotificacionService {
                 n.getMensaje(),
                 n.getFechaCreacion());
     }
+
 }
