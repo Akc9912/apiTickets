@@ -20,5 +20,5 @@ public interface TrabajadorRepository extends JpaRepository<Trabajador, Integer>
 
     List<Trabajador> findByActivo(boolean activo);
 
-    Optional<Trabajador> findById(Integer id);
+    Optional<Trabajador> findById(Long id);
 }

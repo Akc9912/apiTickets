@@ -3,6 +3,7 @@ package com.poo.miapi.repository.core;
 import com.poo.miapi.model.core.EstadoTicket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -11,7 +12,5 @@ public interface EstadoTicketRepository extends JpaRepository<EstadoTicket, Stri
 
     List<EstadoTicket> findByNombreContainingIgnoreCase(String nombre);
 
-    boolean existsById(String id);
-
-    // Ya tienes findById por defecto
+    boolean existsById(@NonNull String id);
 }
