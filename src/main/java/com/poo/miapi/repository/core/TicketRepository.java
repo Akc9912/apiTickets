@@ -14,6 +14,8 @@ import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
+  Optional<Ticket> findById(Long id);
+
   List<Ticket> findByEstado(EstadoTicket estado);
 
   List<Ticket> findByCreadorId(Long idTrabajador);
@@ -39,4 +41,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
   // Traer ticket con técnico asignado (evita lazy loading)
   @Query("SELECT t FROM Ticket t JOIN FETCH t.tecnicoActual WHERE t.id = :id")
   Optional<Ticket> findByIdWithTecnico(@Param("id") Long id);
+
 }

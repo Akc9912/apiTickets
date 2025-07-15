@@ -109,7 +109,7 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto finalizarTicket(int idTecnico, int idTicket) {
+    public TicketResponseDto finalizarTicket(Long idTecnico, Long idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -144,7 +144,7 @@ public class TecnicoService {
     }
 
     // Devuelve historial de incidentes como DTOs
-    public List<IncidenteTecnicoResponseDto> obtenerHistorialIncidentes(int idTecnico) {
+    public List<IncidenteTecnicoResponseDto> obtenerHistorialIncidentes(Long idTecnico) {
         return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
                 .map(this::mapToIncidenteDto)
                 .toList();

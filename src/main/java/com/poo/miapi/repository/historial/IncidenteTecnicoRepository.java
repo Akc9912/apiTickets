@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface IncidenteTecnicoRepository extends JpaRepository<IncidenteTecnico, Long> {
 
-    List<IncidenteTecnico> findByTecnicoId(int tecnicoId);
+    List<IncidenteTecnico> findByTecnicoId(Long tecnicoId);
 
-    List<IncidenteTecnico> findByTicketId(int ticketId);
+    List<IncidenteTecnico> findByTicketId(Long ticketId);
 
     long countByTecnicoId(int tecnicoId);
 

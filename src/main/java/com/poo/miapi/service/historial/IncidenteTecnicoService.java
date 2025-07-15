@@ -40,14 +40,14 @@ public class IncidenteTecnicoService {
     }
 
     // Listar incidentes por técnico como DTOs
-    public List<IncidenteTecnicoResponseDto> listarPorTecnico(int idTecnico) {
+    public List<IncidenteTecnicoResponseDto> listarPorTecnico(Long idTecnico) {
         return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
     // Listar incidentes por ticket como DTOs
-    public List<IncidenteTecnicoResponseDto> listarPorTicket(int idTicket) {
+    public List<IncidenteTecnicoResponseDto> listarPorTicket(Long idTicket) {
         return incidenteTecnicoRepository.findByTicketId(idTicket).stream()
                 .map(this::mapToDto)
                 .toList();
