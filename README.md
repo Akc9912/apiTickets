@@ -335,14 +335,6 @@ services:
 - **Caching**: Redis para sesiones
 - **Monitoring**: Prometheus + Grafana
 
----
-
-## 👨‍💻 Desarrolladores
-
-- **Seba** - _Desarrollo Principal_ - [@Akc9912](https://github.com/Akc9912)
-
----
-
 <div align="center">
 
 **⭐ Si este proyecto te resulta útil, ¡dale una estrella! ⭐**
