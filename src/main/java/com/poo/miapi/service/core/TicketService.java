@@ -8,7 +8,6 @@ import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +15,7 @@ import java.util.List;
 @Service
 public class TicketService {
 
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TrabajadorRepository trabajadorRepository;
 
     public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository) {

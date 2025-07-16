@@ -31,4 +31,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     // List<Usuario> findByTipoUsuario(String tipoUsuario);
 
     List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
+
+    // Métodos para SuperAdminService
+    long countByRol(String rol);
+
+    long countByRolAndActivoTrue(String rol);
+
+    long countByBloqueadoTrue();
+
+    List<Usuario> findByRolIn(List<String> roles);
 }

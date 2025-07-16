@@ -6,7 +6,6 @@ import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.service.core.TrabajadorService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
