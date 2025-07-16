@@ -15,7 +15,7 @@ import com.poo.miapi.model.core.Usuario;
 @Service
 public class JwtService {
 
-    @Value("${JWT_SECRET}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     private long jwtExpirationMs = 1000 * 60 * 60 * 10; // 10 horas

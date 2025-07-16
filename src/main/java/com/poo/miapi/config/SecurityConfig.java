@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Desactivamos CSRF para APIs REST
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Acceso libre para endpoints públicos
+                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll() // Swagger
                         .requestMatchers("/api/superadmin/**").hasRole("SUPER_ADMIN") // Solo SuperAdmins
                         .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN") // SuperAdmins y Admins
                         .anyRequest().authenticated() // Todo lo demás requiere autenticación

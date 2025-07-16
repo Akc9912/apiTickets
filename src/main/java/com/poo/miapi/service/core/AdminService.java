@@ -29,7 +29,7 @@ public class AdminService {
     private final TecnicoService tecnicoService;
     private final TecnicoPorTicketService tecnicoPorTicketService;
 
-    @Value("${APP_DEFAULT_PASSWORD}")
+    @Value("${app.default-password}")
     private String defaultPassword;
 
     public AdminService(

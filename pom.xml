@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.poo</groupId>
 	<artifactId>miapi</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<name>miapi</name>
-	<description>Api tickets</description>
+	<description>Api tickets - Sistema de gestión de tickets con documentación Swagger</description>
 	<url/>
 	<licenses>
 		<license/>

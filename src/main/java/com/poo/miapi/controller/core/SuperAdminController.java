@@ -1,6 +1,7 @@
 package com.poo.miapi.controller.core;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,10 +10,18 @@ import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.SuperAdminService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/superadmin")
+@Tag(name = "SuperAdmin", description = "Endpoints exclusivos del SuperAdmin - Dueño del sistema con acceso total")
+@SecurityRequirement(name = "bearerAuth")
 public class SuperAdminController {
     private final SuperAdminService superAdminService;
 
@@ -22,21 +31,28 @@ public class SuperAdminController {
 
     // === GESTIÓN DE USUARIOS ===
 
-    // POST /api/superadmin/usuarios - Crear cualquier tipo de usuario
+    @Operation(summary = "Crear usuario", description = "Crear cualquier tipo de usuario en el sistema (SuperAdmin, Admin, Técnico, Trabajador)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos de SuperAdmin")
+    })
     @PostMapping("/usuarios")
-    public ResponseEntity<UsuarioResponseDto> crearUsuario(@Valid @RequestBody UsuarioRequestDto usuarioDto) {
+    public ResponseEntity<UsuarioResponseDto> crearUsuario(
+            @Parameter(description = "Datos del nuevo usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
         return ResponseEntity.ok(superAdminService.crearUsuario(usuarioDto));
     }
 
-    // GET /api/superadmin/usuarios - Listar todos los usuarios del sistema
+    @Operation(summary = "Listar todos los usuarios", description = "Obtener lista completa de usuarios del sistema")
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioResponseDto>> listarTodosLosUsuarios() {
         return ResponseEntity.ok(superAdminService.listarTodosLosUsuarios());
     }
 
-    // GET /api/superadmin/usuarios/{id} - Ver detalles de cualquier usuario
+    @Operation(summary = "Ver usuario por ID", description = "Obtener detalles de un usuario específico")
     @GetMapping("/usuarios/{id}")
-    public ResponseEntity<UsuarioResponseDto> verUsuario(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> verUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable Long id) {
         return ResponseEntity.ok(superAdminService.verUsuarioPorId(id));
     }
 

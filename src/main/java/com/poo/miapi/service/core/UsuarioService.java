@@ -29,7 +29,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
 
-    @Value("${APP_DEFAULT_PASSWORD}")
+    @Value("${app.default-password}")
     private String defaultPassword;
 
     public UsuarioService(
