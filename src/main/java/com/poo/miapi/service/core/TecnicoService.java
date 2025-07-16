@@ -18,13 +18,9 @@ import java.util.List;
 @Service
 public class TecnicoService {
 
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
-    @Autowired
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
     public TecnicoService(

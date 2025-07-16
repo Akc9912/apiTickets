@@ -20,15 +20,10 @@ import java.util.List;
 @Service
 public class TrabajadorService {
 
-    @Autowired
     private final TrabajadorRepository trabajadorRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TecnicoService tecnicoService;
-    @Autowired
     private final HistorialValidacionRepository historialValidacionRepository;
 
     public TrabajadorService(

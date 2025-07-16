@@ -14,7 +14,6 @@ import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.notificacion.NotificacionService;
 import com.poo.miapi.service.security.JwtService; // Cambia aquí
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,17 +22,11 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final NotificacionService notificacionService;
-    @Autowired
     private final JwtService jwtService; // Cambia aquí
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final TecnicoService tecnicoService;
 
     @Value("${APP_DEFAULT_PASSWORD}")

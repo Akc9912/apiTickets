@@ -2,6 +2,8 @@ package com.poo.miapi.dto.usuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class UsuarioRequestDto {
     @NotBlank(message = "El nombre es obligatorio")
@@ -15,9 +17,11 @@ public class UsuarioRequestDto {
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
     @NotBlank(message = "El rol es obligatorio")
+    @Pattern(regexp = "^(ADMIN|TECNICO|TRABAJADOR)$", message = "El rol debe ser ADMIN, TECNICO o TRABAJADOR")
     private String rol;
 
     // Constructor vacío

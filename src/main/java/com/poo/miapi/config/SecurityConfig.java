@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Desactivamos CSRF para APIs REST
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Acceso libre para endpoints públicos
+                        .requestMatchers("/api/auth/**").permitAll() // Acceso libre para endpoints públicos
                         .anyRequest().authenticated() // Todo lo demás requiere autenticación
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

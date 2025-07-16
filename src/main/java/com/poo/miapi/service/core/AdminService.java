@@ -12,7 +12,6 @@ import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,19 +21,12 @@ import java.util.List;
 @Service
 public class AdminService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final TecnicoService tecnicoService;
-    @Autowired
     private final TecnicoPorTicketService tecnicoPorTicketService;
 
     @Value("${APP_DEFAULT_PASSWORD}")
@@ -98,7 +90,7 @@ public class AdminService {
     }
 
     // Cambiar rol de usuario (crea nuevo usuario y da de baja lógica al anterior)
-    public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
+    public UsuarioResponseDto cambiarRolUsuario(Long id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
@@ -135,7 +127,7 @@ public class AdminService {
     }
 
     // Bloquear usuario
-    public UsuarioResponseDto bloquearUsuario(long idUsuario) {
+    public UsuarioResponseDto bloquearUsuario(Long idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(true);
@@ -144,7 +136,7 @@ public class AdminService {
     }
 
     // Desbloquear usuario
-    public UsuarioResponseDto desbloquearUsuario(int idUsuario) {
+    public UsuarioResponseDto desbloquearUsuario(Long idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(false);
@@ -203,7 +195,7 @@ public class AdminService {
     }
 
     // Reabrir ticket
-    public TicketResponseDto reabrirTicket(Integer idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 

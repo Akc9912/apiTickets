@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api/trabajador")
 public class TrabajadorController {
 
-    @Autowired
     private final TrabajadorService trabajadorService;
 
     public TrabajadorController(TrabajadorService trabajadorService) {

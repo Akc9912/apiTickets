@@ -2,7 +2,6 @@ package com.poo.miapi.controller.core;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.poo.miapi.dto.usuario.UsuarioRequestDto;
@@ -15,7 +14,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
-    @Autowired
     private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
@@ -68,7 +66,7 @@ public class AdminController {
 
     // POST /api/admin/usuarios/{id}/desbloquear - Desbloquear usuario
     @PostMapping("/usuarios/{id}/desbloquear")
-    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(@PathVariable int id) {
+    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.desbloquearUsuario(id));
     }
 
@@ -80,7 +78,7 @@ public class AdminController {
 
     // PUT /api/admin/usuarios/{id}/rol - Cambiar el rol de un usuario
     @PutMapping("/usuarios/{id}/rol")
-    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable int id,
+    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable Long id,
             @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
         return ResponseEntity.ok(adminService.cambiarRolUsuario(id, cambiarRolDto));
     }
@@ -93,7 +91,7 @@ public class AdminController {
 
     // POST /api/admin/tickets/{id}/reabrir - Reabrir un ticket cerrado
     @PostMapping("/tickets/{id}/reabrir")
-    public ResponseEntity<TicketResponseDto> reabrirTicket(@PathVariable Integer id, @RequestParam String comentario) {
+    public ResponseEntity<TicketResponseDto> reabrirTicket(@PathVariable Long id, @RequestParam String comentario) {
         return ResponseEntity.ok(adminService.reabrirTicket(id, comentario));
     }
 
