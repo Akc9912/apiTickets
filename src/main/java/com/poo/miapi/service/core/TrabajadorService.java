@@ -12,7 +12,6 @@ import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +19,10 @@ import java.util.List;
 @Service
 public class TrabajadorService {
 
-    @Autowired
     private final TrabajadorRepository trabajadorRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TecnicoService tecnicoService;
-    @Autowired
     private final HistorialValidacionRepository historialValidacionRepository;
 
     public TrabajadorService(

@@ -22,7 +22,7 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 
     List<Tecnico> findByApellidoContainingIgnoreCase(String apellido);
 
-    List<Tecnico> findByRol(String rol);
+    List<Tecnico> findByRol(com.poo.miapi.model.core.Rol rol);
 
     // List<Tecnico> findByTipoUsuario(String tipoUsuario);
 

@@ -11,20 +11,15 @@ import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class TecnicoService {
 
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
-    @Autowired
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
     public TecnicoService(
@@ -197,7 +192,7 @@ public class TecnicoService {
                 tecnico.getNombre(),
                 tecnico.getApellido(),
                 tecnico.getEmail(),
-                tecnico.getRol(),
+                tecnico.getRol() != null ? tecnico.getRol().name() : null,
                 tecnico.isCambiarPass(),
                 tecnico.isActivo(),
                 tecnico.isBloqueado(),

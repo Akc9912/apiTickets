@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import com.poo.miapi.model.core.Rol;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
@@ -24,11 +25,20 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNombreContainingIgnoreCase(String nombre);
 
-    List<Usuario> findByRol(String rol);
+    List<Usuario> findByRol(Rol rol);
 
     Optional<Usuario> findById(Long id);
 
     // List<Usuario> findByTipoUsuario(String tipoUsuario);
 
     List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
+
+    // Métodos para SuperAdminService
+    long countByRol(Rol rol);
+
+    long countByRolAndActivoTrue(Rol rol);
+
+    long countByBloqueadoTrue();
+
+    List<Usuario> findByRolIn(List<Rol> roles);
 }

@@ -12,7 +12,7 @@ import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.poo.miapi.util.PasswordHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,22 +22,15 @@ import java.util.List;
 @Service
 public class AdminService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final TecnicoService tecnicoService;
-    @Autowired
     private final TecnicoPorTicketService tecnicoPorTicketService;
 
-    @Value("${APP_DEFAULT_PASSWORD}")
+    @Value("${app.default-password}")
     private String defaultPassword;
 
     public AdminService(
@@ -66,13 +59,16 @@ public class AdminService {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new IllegalArgumentException("El email ya está en uso");
         }
-
+        Rol rolEnum = usuario.getRolEnum();
+        if (rolEnum == null) {
+            throw new IllegalArgumentException("Rol no válido: " + usuario.getRol());
+        }
         Usuario nuevoUsuario = crearUsuarioPorRol(usuario);
-        nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuario.getApellido());
+        nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
         nuevoUsuario.setCambiarPass(true);
-        nuevoUsuario.setRol(usuario.getRol().toUpperCase());
+        nuevoUsuario.setRol(rolEnum);
         usuarioRepository.save(nuevoUsuario);
-
         return mapToUsuarioDto(nuevoUsuario);
     }
 
@@ -90,24 +86,29 @@ public class AdminService {
         usuario.setNombre(usuarioDto.getNombre());
         usuario.setApellido(usuarioDto.getApellido());
         usuario.setEmail(usuarioDto.getEmail());
-        usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
-        usuario.setRol(usuarioDto.getRol().toUpperCase());
+        // No se actualiza password aquí porque UsuarioRequestDto no tiene password
+        Rol rolEnum = usuarioDto.getRolEnum();
+        if (rolEnum == null) {
+            throw new IllegalArgumentException("Rol no válido: " + usuarioDto.getRol());
+        }
+        usuario.setRol(rolEnum);
         usuarioRepository.save(usuario);
-
         return mapToUsuarioDto(usuario);
     }
 
     // Cambiar rol de usuario (crea nuevo usuario y da de baja lógica al anterior)
-    public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
+    public UsuarioResponseDto cambiarRolUsuario(Long id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
-        validarRol(usuarioCambioRol.getRol());
-
+        Rol rolEnum = usuarioCambioRol.getRolEnum();
+        if (rolEnum == null) {
+            throw new IllegalArgumentException("Rol no válido: " + usuarioCambioRol.getRol());
+        }
         Usuario nuevoUsuario = crearUsuarioPorRol(usuarioCambioRol);
         nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
         nuevoUsuario.setCambiarPass(true);
-        nuevoUsuario.setRol(usuarioCambioRol.getRol().toUpperCase());
+        nuevoUsuario.setRol(rolEnum);
         usuarioRepository.save(nuevoUsuario);
 
         usuario.setActivo(false);
@@ -135,7 +136,7 @@ public class AdminService {
     }
 
     // Bloquear usuario
-    public UsuarioResponseDto bloquearUsuario(long idUsuario) {
+    public UsuarioResponseDto bloquearUsuario(Long idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(true);
@@ -144,7 +145,7 @@ public class AdminService {
     }
 
     // Desbloquear usuario
-    public UsuarioResponseDto desbloquearUsuario(int idUsuario) {
+    public UsuarioResponseDto desbloquearUsuario(Long idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(false);
@@ -183,7 +184,13 @@ public class AdminService {
         if (rol == null || rol.isBlank()) {
             throw new IllegalArgumentException("El rol no puede ser nulo o vacío");
         }
-        return usuarioRepository.findByRol(rol.toUpperCase()).stream()
+        Rol rolEnum;
+        try {
+            rolEnum = Rol.valueOf(rol.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rol no válido: " + rol);
+        }
+        return usuarioRepository.findByRol(rolEnum).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
@@ -203,7 +210,7 @@ public class AdminService {
     }
 
     // Reabrir ticket
-    public TicketResponseDto reabrirTicket(Integer idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 
@@ -239,8 +246,7 @@ public class AdminService {
 
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
-                usuarioDto.getEmail() == null || usuarioDto.getPassword() == null ||
-                usuarioDto.getRol() == null) {
+                usuarioDto.getEmail() == null || usuarioDto.getRol() == null) {
             throw new IllegalArgumentException("Todos los campos son obligatorios");
         }
         validarRol(usuarioDto.getRol());
@@ -287,8 +293,9 @@ public class AdminService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isActivo());
+                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isActivo(),
+                usuario.isBloqueado());
     }
 
     // Mapeo de entidad Ticket a DTO

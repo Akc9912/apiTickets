@@ -1,39 +1,22 @@
 package com.poo.miapi.dto.usuario;
 
+import com.poo.miapi.model.core.Rol;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class UsuarioRequestDto {
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotNull
     private String nombre;
-
-    @NotBlank(message = "El apellido es obligatorio")
+    @NotNull
     private String apellido;
-
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "El email debe tener un formato válido")
+    @NotNull
+    @Email
     private String email;
-
-    @NotBlank(message = "La contraseña es obligatoria")
-    private String password;
-
-    @NotBlank(message = "El rol es obligatorio")
     private String rol;
 
-    // Constructor vacío
     public UsuarioRequestDto() {
     }
 
-    // Constructor completo
-    public UsuarioRequestDto(String nombre, String apellido, String email, String password, String rol) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.password = password;
-        this.rol = rol;
-    }
-
-    // Getters y setters
     public String getNombre() {
         return nombre;
     }
@@ -58,19 +41,19 @@ public class UsuarioRequestDto {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getRol() {
         return rol;
     }
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public Rol getRolEnum() {
+        try {
+            return rol != null ? Rol.valueOf(rol) : null;
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

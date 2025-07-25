@@ -6,21 +6,15 @@ import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.model.core.EstadoTicket;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EstadisticaService {
 
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final UsuarioRepository usuarioRepository;
-    @Autowired
     private final TecnicoRepository tecnicoRepository;
-    @Autowired
     private final TrabajadorRepository trabajadorRepository;
-    @Autowired
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
     public EstadisticaService(

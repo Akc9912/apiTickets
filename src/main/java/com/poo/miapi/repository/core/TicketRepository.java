@@ -45,4 +45,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
   // Buscar tickets por estado y creador
   List<Ticket> findByEstadoAndCreadorId(EstadoTicket estado, Long idTrabajador);
+
+  // Métodos para estadísticas de SuperAdminService
+  long countByEstado(EstadoTicket estado);
 }

@@ -9,18 +9,14 @@ import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final JwtService jwtService;
 
     public AuthService(
@@ -51,8 +47,9 @@ public class AuthService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isActivo());
+                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isActivo(),
+                usuario.isBloqueado());
 
         return new LoginResponseDto(token, usuarioDto);
     }
