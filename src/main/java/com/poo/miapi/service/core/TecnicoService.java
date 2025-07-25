@@ -192,7 +192,7 @@ public class TecnicoService {
                 tecnico.getNombre(),
                 tecnico.getApellido(),
                 tecnico.getEmail(),
-                tecnico.getRol(),
+                tecnico.getRol() != null ? tecnico.getRol().name() : null,
                 tecnico.isCambiarPass(),
                 tecnico.isActivo(),
                 tecnico.isBloqueado(),

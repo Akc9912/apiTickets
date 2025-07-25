@@ -240,7 +240,8 @@ public class UsuarioService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getTipoUsuario(),
-                usuario.isActivo());
+                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isActivo(),
+                usuario.isBloqueado());
     }
 }

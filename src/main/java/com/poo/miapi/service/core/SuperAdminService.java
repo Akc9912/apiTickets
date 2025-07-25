@@ -13,6 +13,7 @@ import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
+import com.poo.miapi.util.PasswordHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,12 +62,21 @@ public class SuperAdminService {
             throw new IllegalArgumentException("El email ya está en uso");
         }
 
-        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
-        nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
-        nuevoUsuario.setCambiarPass(true);
-        nuevoUsuario.setRol(usuarioDto.getRol().toUpperCase());
-        usuarioRepository.save(nuevoUsuario);
+        // Si el rol es SUPERADMIN, asegurarse de que no exista otro
+        if (usuarioDto.getRol() != null && usuarioDto.getRol().equalsIgnoreCase("SUPERADMIN")) {
+            long superAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
+            if (superAdmins > 0) {
+                throw new IllegalStateException("Ya existe un SuperAdmin en el sistema. No se puede crear otro.");
+            }
+        }
 
+        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
+        // Usar PasswordHelper para generar la contraseña por defecto
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
+        nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
+        nuevoUsuario.setCambiarPass(true);
+        nuevoUsuario.setRol(com.poo.miapi.model.core.Rol.valueOf(usuarioDto.getRol().toUpperCase()));
+        usuarioRepository.save(nuevoUsuario);
         return mapToUsuarioDto(nuevoUsuario);
     }
 
@@ -95,8 +105,9 @@ public class SuperAdminService {
         usuario.setNombre(usuarioDto.getNombre());
         usuario.setApellido(usuarioDto.getApellido());
         usuario.setEmail(usuarioDto.getEmail());
-        usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
-        usuario.setRol(usuarioDto.getRol().toUpperCase());
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
+        usuario.setPassword(passwordEncoder.encode(rawPassword));
+        usuario.setRol(com.poo.miapi.model.core.Rol.valueOf(usuarioDto.getRol().toUpperCase()));
         usuarioRepository.save(usuario);
 
         return mapToUsuarioDto(usuario);
@@ -107,8 +118,8 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin
-        if (UserRole.isSuperAdmin(usuario.getRol())) {
-            long totalSuperAdmins = usuarioRepository.countByRol(UserRole.SUPER_ADMIN);
+        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN) {
+            long totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede eliminar el último SuperAdmin del sistema");
             }
@@ -130,8 +141,9 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin activo
-        if (UserRole.isSuperAdmin(usuario.getRol()) && usuario.isActivo()) {
-            long superAdminsActivos = usuarioRepository.countByRolAndActivoTrue(UserRole.SUPER_ADMIN);
+        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN && usuario.isActivo()) {
+            long superAdminsActivos = usuarioRepository
+                    .countByRolAndActivoTrue(com.poo.miapi.model.core.Rol.SUPERADMIN);
             if (superAdminsActivos <= 1) {
                 throw new IllegalStateException("No se puede desactivar el último SuperAdmin activo");
             }
@@ -147,7 +159,7 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         // Los SuperAdmins no pueden ser bloqueados
-        if (UserRole.isSuperAdmin(usuario.getRol())) {
+        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN) {
             throw new IllegalStateException("No se puede bloquear a un SuperAdmin");
         }
 
@@ -183,8 +195,9 @@ public class SuperAdminService {
         validarRol(usuarioCambioRol.getRol());
 
         // Verificar restricciones de SuperAdmin
-        if (UserRole.isSuperAdmin(usuario.getRol()) && !UserRole.isSuperAdmin(usuarioCambioRol.getRol())) {
-            long totalSuperAdmins = usuarioRepository.countByRol(UserRole.SUPER_ADMIN);
+        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN
+                && usuarioCambioRol.getRolEnum() != com.poo.miapi.model.core.Rol.SUPERADMIN) {
+            long totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede cambiar el rol del último SuperAdmin");
             }
@@ -193,7 +206,6 @@ public class SuperAdminService {
         Usuario nuevoUsuario = crearUsuarioPorRol(usuarioCambioRol);
         nuevoUsuario.setPassword(passwordEncoder.encode(defaultPassword));
         nuevoUsuario.setCambiarPass(true);
-        nuevoUsuario.setRol(usuarioCambioRol.getRol().toUpperCase());
         usuarioRepository.save(nuevoUsuario);
 
         usuario.setActivo(false);
@@ -206,7 +218,7 @@ public class SuperAdminService {
         if (rol == null || rol.isBlank()) {
             throw new IllegalArgumentException("El rol no puede ser nulo o vacío");
         }
-        return usuarioRepository.findByRol(rol.toUpperCase()).stream()
+        return usuarioRepository.findByRol(com.poo.miapi.model.core.Rol.valueOf(rol.toUpperCase())).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
@@ -214,7 +226,7 @@ public class SuperAdminService {
     // === GESTIÓN DE ADMINISTRADORES ===
 
     public List<UsuarioResponseDto> listarAdministradores() {
-        return usuarioRepository.findByRolIn(List.of(UserRole.SUPER_ADMIN, UserRole.ADMIN)).stream()
+        return usuarioRepository.findByRolIn(List.of(Rol.SUPERADMIN, Rol.ADMIN)).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
@@ -223,7 +235,7 @@ public class SuperAdminService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if (UserRole.isAdminRole(usuario.getRol())) {
+        if (usuario.getRol() == com.poo.miapi.model.core.Rol.ADMIN) {
             throw new IllegalStateException("El usuario ya tiene permisos de administración");
         }
 
@@ -231,7 +243,7 @@ public class SuperAdminService {
         adminDto.setNombre(usuario.getNombre());
         adminDto.setApellido(usuario.getApellido());
         adminDto.setEmail(usuario.getEmail());
-        adminDto.setPassword(defaultPassword);
+        // adminDto.setPassword(defaultPassword); // No existe campo password en el DTO
         adminDto.setRol(UserRole.ADMIN);
 
         return cambiarRolUsuario(id, adminDto);
@@ -249,7 +261,8 @@ public class SuperAdminService {
         trabajadorDto.setNombre(usuario.getNombre());
         trabajadorDto.setApellido(usuario.getApellido());
         trabajadorDto.setEmail(usuario.getEmail());
-        trabajadorDto.setPassword(defaultPassword);
+        // trabajadorDto.setPassword(defaultPassword); // No existe campo password en el
+        // DTO
         trabajadorDto.setRol(UserRole.TRABAJADOR);
 
         return cambiarRolUsuario(id, trabajadorDto);
@@ -308,10 +321,10 @@ public class SuperAdminService {
         stats.put("totalUsuarios", usuarioRepository.count());
         stats.put("usuariosActivos", usuarioRepository.countByActivoTrue());
         stats.put("usuariosBloqueados", usuarioRepository.countByBloqueadoTrue());
-        stats.put("superAdmins", usuarioRepository.countByRol(UserRole.SUPER_ADMIN));
-        stats.put("admins", usuarioRepository.countByRol(UserRole.ADMIN));
-        stats.put("tecnicos", usuarioRepository.countByRol(UserRole.TECNICO));
-        stats.put("trabajadores", usuarioRepository.countByRol(UserRole.TRABAJADOR));
+        stats.put("superAdmins", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN));
+        stats.put("admins", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.ADMIN));
+        stats.put("tecnicos", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.TECNICO));
+        stats.put("trabajadores", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.TRABAJADOR));
         return stats;
     }
 
@@ -338,7 +351,7 @@ public class SuperAdminService {
 
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
-                usuarioDto.getEmail() == null || usuarioDto.getPassword() == null ||
+                usuarioDto.getEmail() == null ||
                 usuarioDto.getRol() == null) {
             throw new IllegalArgumentException("Todos los campos son obligatorios");
         }
@@ -389,8 +402,9 @@ public class SuperAdminService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isActivo());
+                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isActivo(),
+                usuario.isBloqueado());
     }
 
     // Mapeo de entidad Ticket a DTO

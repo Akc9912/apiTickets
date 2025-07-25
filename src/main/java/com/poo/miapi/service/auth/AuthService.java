@@ -47,8 +47,9 @@ public class AuthService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isActivo());
+                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isActivo(),
+                usuario.isBloqueado());
 
         return new LoginResponseDto(token, usuarioDto);
     }

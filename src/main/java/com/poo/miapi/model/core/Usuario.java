@@ -18,7 +18,8 @@ public abstract class Usuario {
     private String email;
 
     private String password;
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
     private boolean cambiarPass;
     private boolean activo;
     private boolean bloqueado;
@@ -27,27 +28,16 @@ public abstract class Usuario {
     public Usuario() {
     }
 
-    // Constructor para uso interno del service
+    // Constructor completo para subclases (sin rol, activo ni password como
+    // parámetro)
     public Usuario(String nombre, String apellido, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.password = null; // se define por servicio
-        this.rol = null; // se define por subclase
+        this.password = null;
+        this.rol = null; // Se asigna en la subclase
         this.cambiarPass = true;
         this.activo = true;
-        this.bloqueado = false;
-    }
-
-    // Constructor completo para subclases
-    public Usuario(String nombre, String apellido, String email, String password, String rol, boolean activo) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.password = password;
-        this.rol = rol;
-        this.cambiarPass = true;
-        this.activo = activo;
         this.bloqueado = false;
     }
 
@@ -72,7 +62,7 @@ public abstract class Usuario {
         return this.password;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return this.rol;
     }
 
@@ -105,7 +95,7 @@ public abstract class Usuario {
         this.password = hashedPassword;
     }
 
-    public void setRol(String unRol) {
+    public void setRol(Rol unRol) {
         this.rol = unRol;
     }
 

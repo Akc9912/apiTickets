@@ -14,17 +14,12 @@ public class Trabajador extends Usuario {
 
     public Trabajador() {
         super();
-        this.setRol("TRABAJADOR");
+        this.setRol(Rol.TRABAJADOR);
     }
 
     public Trabajador(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.setRol("TRABAJADOR");
-    }
-
-    public Trabajador(String nombre, String apellido, String email, String password, boolean activo) {
-        super(nombre, apellido, email, password, "TRABAJADOR", activo);
-        this.setRol("TRABAJADOR");
+        this.setRol(Rol.TRABAJADOR);
     }
 
     public List<Ticket> getMisTickets() {

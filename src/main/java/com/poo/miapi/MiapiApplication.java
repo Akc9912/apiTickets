@@ -8,5 +8,6 @@ public class MiapiApplication {
     public static void main(String[] args) {
         SpringApplication.run(MiapiApplication.class, args);
         System.out.println("API Tickets is running...");
+        System.out.println(System.getProperty("java.class.path"));
     }
 }

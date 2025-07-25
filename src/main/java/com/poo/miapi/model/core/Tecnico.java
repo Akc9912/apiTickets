@@ -28,17 +28,12 @@ public class Tecnico extends Usuario {
     /* ---------- Constructores ---------- */
     public Tecnico() {
         super();
-        this.setRol("TECNICO");
+        this.setRol(Rol.TECNICO);
     }
 
     public Tecnico(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.setRol("TECNICO");
-    }
-
-    public Tecnico(String nombre, String apellido, String email, String password, boolean activo) {
-        super(nombre, apellido, email, password, "TECNICO", activo);
-        this.setRol("TECNICO");
+        this.setRol(Rol.TECNICO);
     }
 
     /* ---------- Getters / Setters ---------- */

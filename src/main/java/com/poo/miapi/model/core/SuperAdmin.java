@@ -9,17 +9,12 @@ public class SuperAdmin extends Usuario {
 
     public SuperAdmin() {
         super();
-        this.setRol("SUPER_ADMIN");
+        this.setRol(Rol.SUPERADMIN);
     }
 
     public SuperAdmin(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.setRol("SUPER_ADMIN");
-    }
-
-    public SuperAdmin(String nombre, String apellido, String email, String password, boolean activo) {
-        super(nombre, apellido, email, password, "SUPER_ADMIN", activo);
-        this.setRol("SUPER_ADMIN");
+        this.setRol(Rol.SUPERADMIN);
     }
 
     @Override

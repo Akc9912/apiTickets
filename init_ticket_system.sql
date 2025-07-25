@@ -156,14 +156,6 @@ CREATE INDEX idx_comentario_ticket_ticket ON comentario_ticket(id_ticket);
 
 -- DATOS INICIALES
 
--- Insertar SuperAdmin por defecto
--- Password: "secret" (hash BCrypt)
-INSERT INTO usuario (nombre, apellido, email, password, cambiar_pass, rol, activo, bloqueado)
-VALUES ('Super', 'Admin', 'superadmin@sistema.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPEngcF6W', TRUE, 'SUPER_ADMIN', TRUE, FALSE);
-
--- Obtener el ID del SuperAdmin y agregarlo a la tabla super_admin
-INSERT INTO super_admin (id)
-SELECT id FROM usuario WHERE email = 'superadmin@sistema.com' AND rol = 'SUPER_ADMIN';
 
 -- Insertar tipos de notificación básicos
 INSERT INTO tipo_notificacion (id, descripcion) VALUES
