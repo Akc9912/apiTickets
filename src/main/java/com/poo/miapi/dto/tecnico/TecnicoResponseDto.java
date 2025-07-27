@@ -3,7 +3,7 @@ package com.poo.miapi.dto.tecnico;
 import java.util.List;
 
 public class TecnicoResponseDto {
-    private Long id;
+    private int id;
     private String nombre;
     private String apellido;
     private String email;
@@ -19,7 +19,7 @@ public class TecnicoResponseDto {
     public TecnicoResponseDto() {
     }
 
-    public TecnicoResponseDto(Long id, String nombre, String apellido, String email, String rol,
+    public TecnicoResponseDto(int id, String nombre, String apellido, String email, String rol,
             boolean cambiarPass, boolean activo, boolean bloqueado, int fallas, int marcas,
             List<IncidenteTecnicoResponseDto> incidentes) {
         this.id = id;
@@ -36,11 +36,11 @@ public class TecnicoResponseDto {
     }
 
     // Getters y setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

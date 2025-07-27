@@ -19,7 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByBloqueadoTrue();
 
-    long countByActivoTrue();
+    int countByActivoTrue();
 
     long count();
 
@@ -34,11 +34,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
 
     // Métodos para SuperAdminService
-    long countByRol(Rol rol);
+    int countByRol(Rol rol);
 
-    long countByRolAndActivoTrue(Rol rol);
+    int countByRolAndActivoTrue(Rol rol);
 
-    long countByBloqueadoTrue();
+    int countByBloqueadoTrue();
 
     List<Usuario> findByRolIn(List<Rol> roles);
 }

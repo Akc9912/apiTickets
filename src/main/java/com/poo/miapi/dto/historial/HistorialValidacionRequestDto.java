@@ -1,15 +1,8 @@
 package com.poo.miapi.dto.historial;
 
-import jakarta.validation.constraints.NotNull;
-
 public class HistorialValidacionRequestDto {
-    @NotNull(message = "El ID del trabajador es obligatorio")
     private int idTrabajador;
-
-    @NotNull(message = "El ID del ticket es obligatorio")
     private int idTicket;
-
-    @NotNull(message = "Debe indicar si fue resuelto")
     private boolean fueResuelto;
 
     private String comentario; // Opcional

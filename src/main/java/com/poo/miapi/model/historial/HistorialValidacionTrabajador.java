@@ -10,7 +10,7 @@ public class HistorialValidacionTrabajador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_trabajador")
@@ -42,7 +42,7 @@ public class HistorialValidacionTrabajador {
     }
 
     // Getters y setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

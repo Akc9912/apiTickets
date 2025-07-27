@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
+public interface NotificacionRepository extends JpaRepository<Notificacion, Integer> {
 
-    List<Notificacion> findAllByUsuarioId(Long idUsuario);
+    List<Notificacion> findAllByUsuarioId(int idUsuario);
 
-    void deleteAllByUsuarioId(Long idUsuario);
+    void deleteAllByUsuarioId(int idUsuario);
 
-    long countByUsuarioId(Long idUsuario);
+    int countByUsuarioId(int idUsuario);
 }

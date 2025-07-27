@@ -15,7 +15,7 @@ public class IncidenteTecnico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_tecnico")
@@ -49,7 +49,7 @@ public class IncidenteTecnico {
 
     // Getters y setters
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

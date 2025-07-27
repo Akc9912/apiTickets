@@ -210,7 +210,7 @@ public class AdminService {
     }
 
     // Reabrir ticket
-    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 

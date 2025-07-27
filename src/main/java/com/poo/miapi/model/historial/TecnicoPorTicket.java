@@ -11,7 +11,7 @@ public class TecnicoPorTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_ticket")
@@ -55,7 +55,7 @@ public class TecnicoPorTicket {
 
     // Getters y Setters
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

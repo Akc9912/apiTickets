@@ -9,18 +9,8 @@ import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.SuperAdminService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/superadmin")
-@Tag(name = "SuperAdmin", description = "Endpoints exclusivos del SuperAdmin - Dueño del sistema con acceso total")
-@SecurityRequirement(name = "bearerAuth")
 public class SuperAdminController {
     private final SuperAdminService superAdminService;
 
@@ -30,35 +20,25 @@ public class SuperAdminController {
 
     // === GESTIÓN DE USUARIOS ===
 
-    @Operation(summary = "Crear usuario", description = "Crear cualquier tipo de usuario en el sistema (SuperAdmin, Admin, Técnico, Trabajador)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos de SuperAdmin")
-    })
     @PostMapping("/usuarios")
-    public ResponseEntity<UsuarioResponseDto> crearUsuario(
-            @Parameter(description = "Datos del nuevo usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
+    public ResponseEntity<UsuarioResponseDto> crearUsuario(@RequestBody UsuarioRequestDto usuarioDto) {
         return ResponseEntity.ok(superAdminService.crearUsuario(usuarioDto));
     }
 
-    @Operation(summary = "Listar todos los usuarios", description = "Obtener lista completa de usuarios del sistema")
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioResponseDto>> listarTodosLosUsuarios() {
         return ResponseEntity.ok(superAdminService.listarTodosLosUsuarios());
     }
 
-    @Operation(summary = "Ver usuario por ID", description = "Obtener detalles de un usuario específico")
     @GetMapping("/usuarios/{id}")
-    public ResponseEntity<UsuarioResponseDto> verUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> verUsuario(@PathVariable Long id) {
         return ResponseEntity.ok(superAdminService.verUsuarioPorId(id));
     }
 
     // PUT /api/superadmin/usuarios/{id} - Editar cualquier usuario
     @PutMapping("/usuarios/{id}")
     public ResponseEntity<UsuarioResponseDto> editarUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDto usuarioDto) {
+            @RequestBody UsuarioRequestDto usuarioDto) {
         return ResponseEntity.ok(superAdminService.editarUsuario(id, usuarioDto));
     }
 
@@ -102,7 +82,7 @@ public class SuperAdminController {
     // PUT /api/superadmin/usuarios/{id}/rol - Cambiar rol de usuario
     @PutMapping("/usuarios/{id}/rol")
     public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
+            @RequestBody UsuarioRequestDto cambiarRolDto) {
         return ResponseEntity.ok(superAdminService.cambiarRolUsuario(id, cambiarRolDto));
     }
 

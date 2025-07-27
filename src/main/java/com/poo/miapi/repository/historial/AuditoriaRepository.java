@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface AuditoriaRepository extends JpaRepository<Auditoria, Long> {
+public interface AuditoriaRepository extends JpaRepository<Auditoria, Integer> {
 
     List<Auditoria> findByUsuario(String usuario);
 

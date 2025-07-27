@@ -3,9 +3,9 @@ package com.poo.miapi.dto.historial;
 import java.time.LocalDateTime;
 
 public class HistorialValidacionResponseDto {
-    private Long id;
-    private Long idTrabajador;
-    private Long idTicket;
+    private int id;
+    private int idTrabajador;
+    private int idTicket;
     private boolean fueResuelto;
     private String comentario;
     private LocalDateTime fechaRegistro;
@@ -13,7 +13,7 @@ public class HistorialValidacionResponseDto {
     public HistorialValidacionResponseDto() {
     }
 
-    public HistorialValidacionResponseDto(Long id, Long idTrabajador, Long idTicket, boolean fueResuelto,
+    public HistorialValidacionResponseDto(int id, int idTrabajador, int idTicket, boolean fueResuelto,
             String comentario, LocalDateTime fechaRegistro) {
         this.id = id;
         this.idTrabajador = idTrabajador;
@@ -24,27 +24,27 @@ public class HistorialValidacionResponseDto {
     }
 
     // Getters y setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Long getIdTrabajador() {
+    public int getIdTrabajador() {
         return idTrabajador;
     }
 
-    public void setIdTrabajador(Long idTrabajador) {
+    public void setIdTrabajador(int idTrabajador) {
         this.idTrabajador = idTrabajador;
     }
 
-    public Long getIdTicket() {
+    public int getIdTicket() {
         return idTicket;
     }
 
-    public void setIdTicket(Long idTicket) {
+    public void setIdTicket(int idTicket) {
         this.idTicket = idTicket;
     }
 

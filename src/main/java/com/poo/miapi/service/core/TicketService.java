@@ -24,7 +24,7 @@ public class TicketService {
     }
 
     // Buscar ticket por ID y devolver DTO
-    public TicketResponseDto buscarPorId(Integer id) {
+    public TicketResponseDto buscarPorId(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         return mapToDto(ticket);
@@ -45,7 +45,7 @@ public class TicketService {
     }
 
     // Listar tickets por creador como DTOs
-    public List<TicketResponseDto> listarPorCreador(Long idTrabajador) {
+    public List<TicketResponseDto> listarPorCreador(int idTrabajador) {
         return ticketRepository.findByCreadorId(idTrabajador).stream()
                 .map(this::mapToDto)
                 .toList();
@@ -59,7 +59,7 @@ public class TicketService {
     }
 
     // Actualizar estado y devolver DTO
-    public TicketResponseDto actualizarEstado(Integer idTicket, EstadoTicket nuevoEstado) {
+    public TicketResponseDto actualizarEstado(int idTicket, EstadoTicket nuevoEstado) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         ticket.setEstado(nuevoEstado);

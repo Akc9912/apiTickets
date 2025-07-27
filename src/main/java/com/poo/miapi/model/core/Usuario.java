@@ -9,7 +9,7 @@ public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String nombre;
     private String apellido;
@@ -42,7 +42,7 @@ public abstract class Usuario {
     }
 
     // Getters
-    public Long getId() {
+    public int getId() {
         return this.id;
     }
 

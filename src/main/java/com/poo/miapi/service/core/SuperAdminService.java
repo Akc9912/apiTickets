@@ -86,13 +86,13 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public UsuarioResponseDto verUsuarioPorId(Long id) {
+    public UsuarioResponseDto verUsuarioPorId(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto editarUsuario(Long id, UsuarioRequestDto usuarioDto) {
+    public UsuarioResponseDto editarUsuario(int id, UsuarioRequestDto usuarioDto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         validarDatosUsuario(usuarioDto);
@@ -113,13 +113,13 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public void eliminarUsuario(Long id) {
+    public void eliminarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin
         if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN) {
-            long totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
+            int totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede eliminar el último SuperAdmin del sistema");
             }
@@ -128,7 +128,7 @@ public class SuperAdminService {
         usuarioRepository.delete(usuario);
     }
 
-    public UsuarioResponseDto activarUsuario(Long id) {
+    public UsuarioResponseDto activarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         usuario.setActivo(true);
@@ -136,13 +136,13 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desactivarUsuario(Long id) {
+    public UsuarioResponseDto desactivarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin activo
         if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN && usuario.isActivo()) {
-            long superAdminsActivos = usuarioRepository
+            int superAdminsActivos = usuarioRepository
                     .countByRolAndActivoTrue(com.poo.miapi.model.core.Rol.SUPERADMIN);
             if (superAdminsActivos <= 1) {
                 throw new IllegalStateException("No se puede desactivar el último SuperAdmin activo");
@@ -154,7 +154,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto bloquearUsuario(Long id) {
+    public UsuarioResponseDto bloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -168,7 +168,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desbloquearUsuario(Long id) {
+    public UsuarioResponseDto desbloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         usuario.setBloqueado(false);
@@ -179,7 +179,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto resetearPassword(Long id) {
+    public UsuarioResponseDto resetearPassword(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
@@ -188,7 +188,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto cambiarRolUsuario(Long id, UsuarioRequestDto usuarioCambioRol) {
+    public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
@@ -231,7 +231,7 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public UsuarioResponseDto promoverAAdmin(Long id) {
+    public UsuarioResponseDto promoverAAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -249,7 +249,7 @@ public class SuperAdminService {
         return cambiarRolUsuario(id, adminDto);
     }
 
-    public UsuarioResponseDto degradarAdmin(Long id) {
+    public UsuarioResponseDto degradarAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -276,7 +276,7 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 
@@ -308,7 +308,7 @@ public class SuperAdminService {
         return mapToTicketDto(ticket);
     }
 
-    public void eliminarTicket(Long id) {
+    public void eliminarTicket(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         ticketRepository.delete(ticket);

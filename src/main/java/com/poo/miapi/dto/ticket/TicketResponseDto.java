@@ -1,39 +1,23 @@
 package com.poo.miapi.dto.ticket;
 
 import java.time.LocalDateTime;
-
 import com.poo.miapi.model.core.EstadoTicket;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 public class TicketResponseDto {
-    @NotNull(message = "El id del ticket no puede ser nulo")
-    private Long id;
-
-    @NotBlank(message = "El título del ticket es obligatorio")
+    private int id;
     private String titulo;
-
-    @NotBlank(message = "La descripción del ticket es obligatoria")
     private String descripcion;
-
-    @NotNull(message = "El estado del ticket es obligatorio")
     private EstadoTicket estado;
-
     private String creador; // Puede ser null si no hay creador
     private String tecnicoAsignado; // Puede ser null si no hay técnico
-
-    @NotNull(message = "La fecha de creación no puede ser nula")
     private LocalDateTime fechaCreacion;
-
-    @NotNull(message = "La fecha de última actualización no puede ser nula")
     private LocalDateTime fechaUltimaActualizacion;
 
     // Constructor
     public TicketResponseDto() {
     }
 
-    public TicketResponseDto(Long id, String titulo, String descripcion, EstadoTicket estado, String creador,
+    public TicketResponseDto(int id, String titulo, String descripcion, EstadoTicket estado, String creador,
             String tecnicoAsignado, LocalDateTime fechaCreacion, LocalDateTime fechaUltimaActualizacion) {
         this.id = id;
         this.titulo = titulo;
@@ -46,11 +30,11 @@ public class TicketResponseDto {
     }
 
     // Getters y setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

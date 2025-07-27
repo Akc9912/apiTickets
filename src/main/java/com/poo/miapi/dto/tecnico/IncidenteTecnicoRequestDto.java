@@ -1,21 +1,11 @@
 package com.poo.miapi.dto.tecnico;
 
 import com.poo.miapi.model.historial.IncidenteTecnico.TipoIncidente;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
 
 public class IncidenteTecnicoRequestDto {
-
-    @NotNull(message = "El ID del técnico es obligatorio")
     private int idTecnico;
-
-    @NotNull(message = "El ID del ticket es obligatorio")
     private int idTicket;
-
-    @NotNull(message = "El tipo de incidente es obligatorio")
     private TipoIncidente tipo;
-
-    @NotBlank(message = "El motivo es obligatorio")
     private String motivo;
 
     public IncidenteTecnicoRequestDto() {

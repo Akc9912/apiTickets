@@ -7,13 +7,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HistorialValidacionRepository extends JpaRepository<HistorialValidacionTrabajador, Long> {
+public interface HistorialValidacionRepository extends JpaRepository<HistorialValidacionTrabajador, Integer> {
 
     List<HistorialValidacionTrabajador> findByTrabajadorId(int trabajadorId);
 
     List<HistorialValidacionTrabajador> findByTicketId(int ticketId);
 
-    long countByTrabajadorId(int trabajadorId);
+    int countByTrabajadorId(int trabajadorId);
 
-    long countByTicketId(int ticketId);
+    int countByTicketId(int ticketId);
 }

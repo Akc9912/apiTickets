@@ -1,6 +1,7 @@
 package com.poo.miapi.repository.core;
 
 import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 
     List<Tecnico> findByBloqueadoTrue();
 
-    long countByBloqueadoTrue();
+    int countByBloqueadoTrue();
 
     List<Tecnico> findByActivoTrue();
 
@@ -22,9 +23,7 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 
     List<Tecnico> findByApellidoContainingIgnoreCase(String apellido);
 
-    List<Tecnico> findByRol(com.poo.miapi.model.core.Rol rol);
+    List<Tecnico> findByRol(Rol rol);
 
-    // List<Tecnico> findByTipoUsuario(String tipoUsuario);
-
-    Optional<Tecnico> findById(Long id);
+    Optional<Tecnico> findById(int id);
 }

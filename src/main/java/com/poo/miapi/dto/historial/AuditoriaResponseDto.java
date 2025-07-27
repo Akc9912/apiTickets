@@ -3,7 +3,7 @@ package com.poo.miapi.dto.historial;
 import java.time.LocalDateTime;
 
 public class AuditoriaResponseDto {
-    private Long id;
+    private int id;
     private String usuario;
     private String accion;
     private String entidad;
@@ -13,7 +13,7 @@ public class AuditoriaResponseDto {
     public AuditoriaResponseDto() {
     }
 
-    public AuditoriaResponseDto(Long id, String usuario, String accion, String entidad, String detalle,
+    public AuditoriaResponseDto(int id, String usuario, String accion, String entidad, String detalle,
             LocalDateTime fecha) {
         this.id = id;
         this.usuario = usuario;
@@ -23,7 +23,7 @@ public class AuditoriaResponseDto {
         this.fecha = fecha;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -47,7 +47,7 @@ public class AuditoriaResponseDto {
         return fecha;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -1,16 +1,10 @@
 package com.poo.miapi.dto.usuario;
 
 import com.poo.miapi.model.core.Rol;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 
 public class UsuarioRequestDto {
-    @NotNull
     private String nombre;
-    @NotNull
     private String apellido;
-    @NotNull
-    @Email
     private String email;
     private String rol;
 

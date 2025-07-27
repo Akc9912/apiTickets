@@ -1,10 +1,8 @@
 package com.poo.miapi.dto.auth;
 
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
-import jakarta.validation.constraints.NotBlank;
 
 public class LoginResponseDto {
-    @NotBlank(message = "El token es obligatorio")
     private String token;
 
     private UsuarioResponseDto usuario;

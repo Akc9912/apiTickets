@@ -1,15 +1,8 @@
 package com.poo.miapi.dto.ticket;
 
-import jakarta.validation.constraints.NotNull;
-
 public class EvaluarTicketDto {
-
-    @NotNull(message = "El ID del trabajador es obligatorio")
     private int idTrabajador;
-
-    @NotNull(message = "Debe indicar si fue resuelto")
     private boolean fueResuelto;
-
     private String motivoFalla; // Opcional, solo si no fue resuelto
 
     public EvaluarTicketDto() {

@@ -7,25 +7,28 @@ import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.service.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import com.poo.miapi.util.PasswordHelper;
 
 @Service
 public class AuthService {
 
+    // Set estático para guardar los tokens válidos
+    private static final Set<String> validTokens = new HashSet<>();
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
     public AuthService(
             UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
     }
 
     // Login: recibe LoginRequestDto, devuelve LoginResponseDto
@@ -37,11 +40,6 @@ public class AuthService {
             throw new IllegalStateException("Usuario inactivo o bloqueado");
         }
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword())) {
-            throw new IllegalArgumentException("Contraseña incorrecta");
-        }
-
-        String token = jwtService.generateToken(usuario);
         UsuarioResponseDto usuarioDto = new UsuarioResponseDto(
                 usuario.getId(),
                 usuario.getNombre(),
@@ -51,7 +49,16 @@ public class AuthService {
                 usuario.isActivo(),
                 usuario.isBloqueado());
 
+        // Genera un token aleatorio y lo guarda en el set
+        String token = UUID.randomUUID().toString();
+        validTokens.add(token);
         return new LoginResponseDto(token, usuarioDto);
+
+    }
+
+    // Método para validar el token en endpoints protegidos
+    public static boolean isTokenValid(String token) {
+        return validTokens.contains(token);
     }
 
     // Cambiar contraseña: recibe ChangePasswordDto
@@ -61,10 +68,6 @@ public class AuthService {
 
         if (dto.getNewPassword() == null || dto.getNewPassword().isBlank()) {
             throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
-        }
-
-        if (passwordEncoder.matches(dto.getNewPassword(), usuario.getPassword())) {
-            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior");
         }
 
         usuario.setPassword(passwordEncoder.encode(dto.getNewPassword()));
@@ -77,7 +80,8 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
+        String defaultPassword = PasswordHelper.generarPasswordPorDefecto(usuario.getApellido());
+        usuario.setPassword(passwordEncoder.encode(defaultPassword));
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
     }
