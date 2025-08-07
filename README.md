@@ -8,11 +8,11 @@
 ![JWT](https://img.shields.io/badge/JWT-Auth-red.svg)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-purple.svg)
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203-brightgreen.svg)
-![Version](https://img.shields.io/badge/Version-0.2.0--SNAPSHOT-yellow.svg)
+![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)
 
-**Sistema completo de gestión de tickets para soporte técnico con arquitectura moderna, escalable y documentación interactiva**
+**Sistema completo de gestión de tickets para soporte técnico con arquitectura moderna y escalable**
 
-[Características](#-características) • [Instalación](#-instalación) • [API Documentation](#-api-documentation) • [Arquitectura](#-arquitectura)
+[🚀 Instalación Rápida](#-instalación-rápida) • [📚 Documentación Técnica](./TECHNICAL_DOCS.md) • [🗄️ Base de Datos](./DATABASE_SETUP.md) • [📈 Changelog](./CHANGELOG.md)
 
 </div>
 
@@ -20,33 +20,230 @@
 
 ## 📋 Descripción
 
-**ApiTickets** es un sistema robusto de gestión de tickets diseñado para organizaciones que necesitan un control eficiente de sus solicitudes de soporte técnico. Construido con **Spring Boot** y **MySQL**, ofrece una arquitectura escalable con autenticación JWT, un sistema de roles jerárquico y **documentación interactiva con Swagger**.
+**ApiTickets** es un sistema robusto de gestión de tickets diseñado para organizaciones que necesitan un control eficiente de sus solicitudes de soporte técnico. Construido con **Spring Boot 3.5.3** y **MySQL 8.0**, ofrece:
 
-### 🎯 Problema que Resuelve
-
-- **Desorganización** en el manejo de solicitudes de soporte
-- **Falta de trazabilidad** en la resolución de incidencias
-- **Ausencia de roles y permisos** claros
-- **Dificultad para generar reportes** y estadísticas
-- **Documentación API obsoleta o inexistente**
-
-### 💡 Solución Ofrecida
-
-Un sistema centralizado que permite gestionar tickets desde su creación hasta su resolución, con roles diferenciados, notificaciones automáticas y reportes en tiempo real.
+- ✅ **Sistema de roles jerárquico** (SuperAdmin, Admin, Técnico, Trabajador)
+- ✅ **Autenticación JWT** segura
+- ✅ **API REST completa** con documentación Swagger
+- ✅ **Auditoría completa** de todas las acciones
+- ✅ **Notificaciones automáticas**
+- ✅ **Estadísticas en tiempo real**
 
 ---
 
-## ✨ Características
+## 🚀 Instalación Rápida
 
-### � **Documentación API Interactiva**
+### **Prerrequisitos**
 
-- **Swagger UI integrado** para exploración y pruebas en tiempo real
-- **OpenAPI 3.0** con especificaciones completas de todos los endpoints
-- **Documentación automática** que se actualiza con el código
-- **Testing interactivo** desde la interfaz web
-- **Ejemplos de request/response** para cada endpoint
+- ☕ Java 24+
+- 🗄️ MySQL 8.0+
+- 📦 Maven 3.9+
 
-### �🔐 **Sistema de Autenticación Avanzado**
+### **1. Clonar el Repositorio**
+
+```bash
+git clone https://github.com/Akc9912/apiTickets.git
+cd apiTickets
+```
+
+### **2. Configurar Base de Datos**
+
+```bash
+# Ejecutar el script único que hace todo
+mysql -u root -p < create_database.sql
+```
+
+### **3. Iniciar la Aplicación**
+
+```bash
+# Opción 1: Con Maven
+./mvnw spring-boot:run
+
+# Opción 2: JAR compilado
+./mvnw clean package
+java -jar target/miapi-*.jar
+```
+
+### **4. Verificar Instalación**
+
+- 🌐 **API**: http://localhost:8081
+- 📖 **Swagger UI**: http://localhost:8081/swagger-ui/index.html
+- 🔐 **Login**: `superadmin@sistema.com` / `secret`
+
+---
+
+## 👥 Roles del Sistema
+
+| Rol               | Descripción       | Permisos Principales                               |
+| ----------------- | ----------------- | -------------------------------------------------- |
+| 🔴 **SuperAdmin** | Dueño del sistema | Control total, crear admins, estadísticas globales |
+| 🟠 **Admin**      | Administrador     | Gestionar usuarios, tickets, reportes limitados    |
+| 🔵 **Técnico**    | Soporte técnico   | Resolver tickets, gestionar asignaciones           |
+| 🟢 **Trabajador** | Usuario final     | Crear tickets, evaluar soluciones                  |
+
+---
+
+## 🛠️ Tecnologías
+
+- **Backend**: Spring Boot 3.5.3, Spring Security 6.5.1, Spring Data JPA
+- **Base de Datos**: MySQL 8.0 con HikariCP
+- **Autenticación**: JWT con refresh tokens
+- **Documentación**: Swagger/OpenAPI 3.0
+- **Build**: Maven 3.9.10
+- **Java**: 24+ con Records y Pattern Matching
+
+---
+
+## � Documentación
+
+| Documento                                       | Descripción                                 |
+| ----------------------------------------------- | ------------------------------------------- |
+| 📖 **[TECHNICAL_DOCS.md](./TECHNICAL_DOCS.md)** | Documentación completa para desarrolladores |
+| 🗄️ **[DATABASE_SETUP.md](./DATABASE_SETUP.md)** | Guía de configuración de base de datos      |
+| 📈 **[CHANGELOG.md](./CHANGELOG.md)**           | Historial de cambios y versiones            |
+
+---
+
+## 🎯 Endpoints Principales
+
+### **Autenticación**
+
+```bash
+POST /api/auth/login                 # Iniciar sesión
+POST /api/auth/cambiar-password      # Cambiar contraseña
+```
+
+### **Gestión de Tickets**
+
+```bash
+GET  /api/tickets                    # Listar tickets
+POST /api/tickets                    # Crear ticket
+PUT  /api/tickets/{id}/estado        # Cambiar estado
+```
+
+### **Administración**
+
+```bash
+GET  /api/superadmin/usuarios        # Gestión de usuarios
+GET  /api/superadmin/estadisticas    # Estadísticas del sistema
+```
+
+**📖 Ver documentación completa:** [TECHNICAL_DOCS.md](./TECHNICAL_DOCS.md)
+
+---
+
+## 🔧 Configuración
+
+### **Variables de Entorno**
+
+```bash
+# Crear archivo .env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=apiticket
+DB_USERNAME=root
+DB_PASSWORD=tu_password
+JWT_SECRET=tu_clave_secreta_muy_larga
+SERVER_PORT=8081
+```
+
+### **Propiedades de la Aplicación**
+
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/apiticket
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD:}
+server.port=${SERVER_PORT:8081}
+jwt.secret=${JWT_SECRET:default_secret_key}
+```
+
+---
+
+## 🧪 Testing
+
+### **Datos de Prueba**
+
+- 🔐 **SuperAdmin**: `superadmin@sistema.com` / `secret`
+
+### **Crear Usuarios de Prueba**
+
+```bash
+# Usar Swagger UI o endpoints REST para crear:
+# - Administradores
+# - Técnicos
+# - Trabajadores
+```
+
+### **Swagger UI**
+
+```
+http://localhost:8081/swagger-ui/index.html
+```
+
+---
+
+## 📊 Características del Sistema
+
+### **✅ Gestión de Tickets**
+
+- Estados: No atendido → Atendido → Finalizado → Resuelto
+- Asignación automática y manual de técnicos
+- Historial completo de cambios
+- Evaluación por parte del trabajador
+
+### **✅ Sistema de Usuarios**
+
+- Roles jerárquicos con permisos específicos
+- Autenticación JWT segura
+- Gestión de contraseñas con políticas
+- Activación/desactivación de cuentas
+
+### **✅ Auditoría y Reportes**
+
+- Log completo de todas las acciones
+- Estadísticas en tiempo real
+- Reportes por usuario, técnico, período
+- Métricas de rendimiento
+
+### **✅ Notificaciones**
+
+- Sistema automático de notificaciones
+- Alertas por cambios de estado
+- Notificaciones de asignación
+- Recordatorios automáticos
+
+---
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+---
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+---
+
+## 👨‍� Autor
+
+**Sebastian Conde** - [@Akc9912](https://github.com/Akc9912)
+
+---
+
+<div align="center">
+
+**¿Necesitas ayuda?**
+
+📖 [Documentación Técnica](./TECHNICAL_DOCS.md) • 🗄️ [Setup de BD](./DATABASE_SETUP.md) • 🐛 [Issues](https://github.com/Akc9912/apiTickets/issues)
+
+</div>
 
 - Autenticación JWT segura con tokens de larga duración
 - Cambio obligatorio de contraseña en primer acceso
