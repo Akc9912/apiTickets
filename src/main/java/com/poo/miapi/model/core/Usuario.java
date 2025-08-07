@@ -1,4 +1,5 @@
 package com.poo.miapi.model.core;
+import com.poo.miapi.model.enums.Rol;
 
 import jakarta.persistence.*;
 
@@ -109,6 +110,24 @@ public abstract class Usuario {
 
     public void setBloqueado(boolean valor) {
         this.bloqueado = valor;
+    }
+
+    // Métodos de validación de estado
+    
+    /**
+     * Verifica si el usuario puede iniciar sesión
+     * Solo usuarios activos pueden iniciar sesión
+     */
+    public boolean puedeIniciarSesion() {
+        return this.activo;
+    }
+    
+    /**
+     * Verifica si el usuario puede realizar acciones en el sistema
+     * Usuarios activos y no bloqueados pueden realizar acciones
+     */
+    public boolean puedeRealizarAcciones() {
+        return this.activo && !this.bloqueado;
     }
 
     // Método abstracto para tipo de usuario

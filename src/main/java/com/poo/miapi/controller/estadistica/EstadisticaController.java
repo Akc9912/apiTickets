@@ -1,6 +1,6 @@
 package com.poo.miapi.controller.estadistica;
 
-import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.service.estadistica.EstadisticaService;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;

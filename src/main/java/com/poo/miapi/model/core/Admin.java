@@ -1,4 +1,5 @@
 package com.poo.miapi.model.core;
+import com.poo.miapi.model.enums.Rol;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

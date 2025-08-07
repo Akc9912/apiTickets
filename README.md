@@ -2,7 +2,13 @@
 
 <div align="center">
 
-![Java](https://img.shields.io/badge/Java-24+-orange.svg)
+![Java](https://img.shields.io/ba## 📚 Documentación
+
+| Documento                                       | Descripción                                 |
+| ----------------------------------------------- | ------------------------------------------- | ---------------- |
+| 📖 **[TECHNICAL_DOCS.md](./TECHNICAL_DOCS.md)** | Documentación completa para desarrolladores |
+| 📈 **[CHANGELOG.md](./CHANGELOG.md)**           | Historial de cambios y versiones            | -24+-orange.svg) |
+
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-green.svg)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
 ![JWT](https://img.shields.io/badge/JWT-Auth-red.svg)
@@ -12,7 +18,7 @@
 
 **Sistema completo de gestión de tickets para soporte técnico con arquitectura moderna y escalable**
 
-[🚀 Instalación Rápida](#-instalación-rápida) • [📚 Documentación Técnica](./TECHNICAL_DOCS.md) • [🗄️ Base de Datos](./DATABASE_SETUP.md) • [📈 Changelog](./CHANGELOG.md)
+[🚀 Instalación Rápida](#-instalación-rápida) • [📚 Documentación Técnica](./TECHNICAL_DOCS.md) • [ Changelog](./CHANGELOG.md)
 
 </div>
 
@@ -53,6 +59,14 @@ cd apiTickets
 mysql -u root -p < create_database.sql
 ```
 
+> 📋 **Nota**: El script `create_database.sql` incluye:
+>
+> - ✅ Creación de la base de datos `apiticket`
+> - ✅ Estructura completa de tablas
+> - ✅ Configuración de enums `Rol` y `EstadoTicket`
+> - ✅ Datos iniciales (SuperAdmin)
+> - ✅ Índices optimizados
+
 ### **3. Iniciar la Aplicación**
 
 ```bash
@@ -83,6 +97,34 @@ java -jar target/miapi-*.jar
 
 ---
 
+## 🔒 Estados de Usuario
+
+| Estado           | Descripción              | Puede Iniciar Sesión         | Puede Realizar Acciones |
+| ---------------- | ------------------------ | ---------------------------- | ----------------------- |
+| ✅ **Activo**    | Usuario normal           | ✅ Sí                        | ✅ Sí                   |
+| ❌ **Inactivo**  | Baja lógica del usuario  | ❌ No (como si no existiera) | ❌ No                   |
+| 🚫 **Bloqueado** | Suspendido temporalmente | ✅ Sí                        | ❌ No                   |
+
+### 🔐 Medidas de Seguridad Implementadas
+
+1. **Usuarios Inactivos**: Se tratan como si no existieran en el sistema
+
+   - Mismo mensaje de error que usuarios inexistentes
+   - Previene enumeración de cuentas registradas
+
+2. **Usuarios Bloqueados**: Pueden autenticarse pero no realizar acciones
+
+   - Útil para suspensiones temporales
+   - Permite al usuario ver su estado en el sistema
+
+3. **Protección contra Timing Attacks**:
+   - Verificación de contraseña incluso para usuarios inexistentes
+   - Tiempo de respuesta consistente
+
+> **Nota de Seguridad**: Los usuarios inactivos se tratan como si no existieran en el sistema para proteger información sobre cuentas registradas.
+
+---
+
 ## 🛠️ Tecnologías
 
 - **Backend**: Spring Boot 3.5.3, Spring Security 6.5.1, Spring Data JPA
@@ -100,7 +142,8 @@ java -jar target/miapi-*.jar
 | ----------------------------------------------- | ------------------------------------------- |
 | 📖 **[TECHNICAL_DOCS.md](./TECHNICAL_DOCS.md)** | Documentación completa para desarrolladores |
 | 🗄️ **[DATABASE_SETUP.md](./DATABASE_SETUP.md)** | Guía de configuración de base de datos      |
-| 📈 **[CHANGELOG.md](./CHANGELOG.md)**           | Historial de cambios y versiones            |
+| � **[JWT_SECURITY.md](./JWT_SECURITY.md)**      | Configuración de seguridad JWT              |
+| �📈 **[CHANGELOG.md](./CHANGELOG.md)**          | Historial de cambios y versiones            |
 
 ---
 
@@ -134,29 +177,53 @@ GET  /api/superadmin/estadisticas    # Estadísticas del sistema
 
 ## 🔧 Configuración
 
-### **Variables de Entorno**
+### **Variables de Entorno (.env)**
+
+El proyecto utiliza un archivo `.env` para la configuración sensible. Copia `.env.example` como `.env`:
 
 ```bash
-# Crear archivo .env
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=apiticket
-DB_USERNAME=root
-DB_PASSWORD=tu_password
-JWT_SECRET=tu_clave_secreta_muy_larga
+# Copiar plantilla
+cp .env.example .env
+```
+
+Variables principales:
+
+```bash
+# Base de datos
+DB_URL=jdbc:mysql://localhost:3306/apiticket?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+DB_USER=root
+DB_PASS=tu_password
+
+# JWT Security (¡IMPORTANTE: cambiar en producción!)
+JWT_SECRET=tu_clave_secreta_muy_larga_minimo_256_bits
+JWT_EXPIRATION_MS=36000000
+
+# Aplicación
 SERVER_PORT=8080
 ```
+
+### **🔑 Sistema de Contraseñas**
+
+**Contraseña por defecto**: `[Apellido]123`
+
+- Ejemplo: Usuario "Juan Pérez" → contraseña: `Perez123`
+- **Cambio obligatorio**: Los usuarios deben cambiar la contraseña en su primer inicio de sesión
+- **Campo `cambiarPass`**: Indica si el usuario debe actualizar su contraseña
 
 ### **Propiedades de la Aplicación**
 
 ```properties
-# application.properties
-spring.datasource.url=jdbc:mysql://localhost:3306/apiticket
-spring.datasource.username=${DB_USERNAME:root}
-spring.datasource.password=${DB_PASSWORD:}
+# application.properties - Configuración con variables de entorno
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
 server.port=${SERVER_PORT:8080}
-jwt.secret=${JWT_SECRET:default_secret_key}
+jwt.secret=${JWT_SECRET:defaultSecretKey}
+jwt.expiration-ms=${JWT_EXPIRATION_MS:36000000}
+# La contraseña se genera automáticamente: apellido + "123"
 ```
+
+> ⚠️ **Seguridad**: El archivo `.env` está en `.gitignore` y no se sube al repositorio.
 
 ---
 
@@ -241,7 +308,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 **¿Necesitas ayuda?**
 
-📖 [Documentación Técnica](./TECHNICAL_DOCS.md) • 🗄️ [Setup de BD](./DATABASE_SETUP.md) • 🐛 [Issues](https://github.com/Akc9912/apiTickets/issues)
+📖 [Documentación Técnica](./TECHNICAL_DOCS.md) • � [Changelog](./CHANGELOG.md) • 🐛 [Issues](https://github.com/Akc9912/apiTickets/issues)
 
 </div>
 

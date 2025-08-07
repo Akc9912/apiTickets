@@ -1,7 +1,7 @@
 package com.poo.miapi.dto.historial;
 
 import java.time.LocalDateTime;
-import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.enums.EstadoTicket;
 
 public class TecnicoPorTicketResponseDto {
     private int id;

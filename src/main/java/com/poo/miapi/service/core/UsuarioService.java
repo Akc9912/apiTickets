@@ -12,7 +12,7 @@ import com.poo.miapi.model.core.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.notificacion.NotificacionService;
-import com.poo.miapi.service.security.JwtService; // Cambia aquí
+import com.poo.miapi.service.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +25,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final TecnicoRepository tecnicoRepository;
     private final NotificacionService notificacionService;
-    private final JwtService jwtService; // Cambia aquí
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
 
@@ -36,13 +36,13 @@ public class UsuarioService {
             UsuarioRepository usuarioRepository,
             TecnicoRepository tecnicoRepository,
             NotificacionService notificacionService,
-            JwtService jwtService, // Cambia aquí
+            JwtService jwtService, 
             PasswordEncoder passwordEncoder,
             TecnicoService tecnicoService) {
         this.usuarioRepository = usuarioRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.notificacionService = notificacionService;
-        this.jwtService = jwtService; // Cambia aquí
+        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
     }
@@ -53,15 +53,17 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if (!usuario.isActivo() || usuario.isBloqueado()) {
-            throw new IllegalStateException("Usuario inactivo o bloqueado");
+        // Solo usuarios INACTIVOS se tratan como si no existieran
+        // Usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones
+        if (!usuario.isActivo()) {
+            throw new EntityNotFoundException("Usuario no encontrado");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        String token = jwtService.generateToken(usuario); // Cambia aquí
+        String token = jwtService.generateToken(usuario);
 
         return new LoginResponseDto(token, mapToUsuarioDto(usuario));
     }
@@ -241,6 +243,7 @@ public class UsuarioService {
                 usuario.getApellido(),
                 usuario.getEmail(),
                 usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
     }
