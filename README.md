@@ -66,8 +66,8 @@ java -jar target/miapi-*.jar
 
 ### **4. Verificar Instalación**
 
-- 🌐 **API**: http://localhost:8081
-- 📖 **Swagger UI**: http://localhost:8081/swagger-ui/index.html
+- 🌐 **API**: http://localhost:8080
+- 📖 **Swagger UI**: http://localhost:8080/swagger-ui/index.html
 - 🔐 **Login**: `superadmin@sistema.com` / `secret`
 
 ---
@@ -144,7 +144,7 @@ DB_NAME=apiticket
 DB_USERNAME=root
 DB_PASSWORD=tu_password
 JWT_SECRET=tu_clave_secreta_muy_larga
-SERVER_PORT=8081
+SERVER_PORT=8080
 ```
 
 ### **Propiedades de la Aplicación**
@@ -154,7 +154,7 @@ SERVER_PORT=8081
 spring.datasource.url=jdbc:mysql://localhost:3306/apiticket
 spring.datasource.username=${DB_USERNAME:root}
 spring.datasource.password=${DB_PASSWORD:}
-server.port=${SERVER_PORT:8081}
+server.port=${SERVER_PORT:8080}
 jwt.secret=${JWT_SECRET:default_secret_key}
 ```
 
@@ -178,7 +178,7 @@ jwt.secret=${JWT_SECRET:default_secret_key}
 ### **Swagger UI**
 
 ```
-http://localhost:8081/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html
 ```
 
 ---
@@ -187,10 +187,10 @@ http://localhost:8081/swagger-ui/index.html
 
 ### **✅ Gestión de Tickets**
 
-- Estados: No atendido → Atendido → Finalizado → Resuelto
+- Estados: No atendido → Atendido → Finalizado → Resuelto/Reabierto
 - Asignación automática y manual de técnicos
 - Historial completo de cambios
-- Evaluación por parte del trabajador
+- Validación final por parte del trabajador (aceptar/rechazar solución)
 
 ### **✅ Sistema de Usuarios**
 
@@ -433,10 +433,10 @@ La API cuenta con **documentación automática y interactiva** generada con Swag
 
 | Método | Endpoint                      | Descripción        | Rol Requerido |
 | ------ | ----------------------------- | ------------------ | ------------- |
-| `GET`  | `/api/tickets`                | Listar mis tickets | Trabajador+   |
-| `POST` | `/api/tickets`                | Crear ticket       | Trabajador+   |
-| `PUT`  | `/api/tickets/{id}/resolver`  | Resolver ticket    | Técnico       |
-| `PUT`  | `/api/tickets/{id}/finalizar` | Finalizar ticket   | Trabajador    |
+| `GET`  | `/api/tickets`                      | Listar mis tickets | Trabajador+   |
+| `POST` | `/api/tickets`                      | Crear ticket       | Trabajador+   |
+| `PUT`  | `/api/tickets/{id}/resolver`        | Resolver ticket    | Técnico       |
+| `POST` | `/api/trabajador/tickets/{id}/evaluar` | Evaluar solución   | Trabajador    |
 
 ### 🔔 **Notificaciones**
 
@@ -510,11 +510,11 @@ erDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> NO_ATENDIDO : Crear Ticket
-    NO_ATENDIDO --> ATENDIDO : Asignar Técnico
+    NO_ATENDIDO --> ATENDIDO : Técnico Toma
+    REABIERTO --> ATENDIDO : Técnico Retoma
     ATENDIDO --> RESUELTO : Técnico Resuelve
-    RESUELTO --> FINALIZADO : Trabajador Confirma
-    FINALIZADO --> REABIERTO : SuperAdmin/Admin
-    REABIERTO --> ATENDIDO : Reasignar
+    RESUELTO --> FINALIZADO : Trabajador Acepta
+    RESUELTO --> REABIERTO : Trabajador Rechaza
 ```
 
 ---
@@ -601,9 +601,3 @@ Este proyecto sigue [Semantic Versioning](https://semver.org/):
 **Versión Actual**: `0.2.0-SNAPSHOT`
 
 **Changelog**: Ver [CHANGELOG.md](./CHANGELOG.md) para detalles de todas las versiones.
-
-<div align="center">
-
-**⭐ Si este proyecto te resulta útil, ¡dale una estrella! ⭐**
-
-</div>

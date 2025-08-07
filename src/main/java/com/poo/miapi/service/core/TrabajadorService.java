@@ -73,7 +73,7 @@ public class TrabajadorService {
         if (dto.isFueResuelto()) {
             ticket.setEstado(EstadoTicket.FINALIZADO);
         } else {
-            ticket.setEstado(EstadoTicket.REABIERTO);
+            ticket.setEstado(EstadoTicket.REABIERTO); // Primero va a REABIERTO
             tecnicoService.marcarFalla(ticket.getTecnicoActual().getId(), dto.getMotivoFalla(), ticket);
         }
 

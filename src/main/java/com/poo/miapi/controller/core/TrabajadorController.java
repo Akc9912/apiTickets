@@ -65,14 +65,14 @@ public class TrabajadorController {
         return trabajadorService.verTicketsActivos(idTrabajador);
     }
 
-    // POST /api/trabajador/tickets/{ticketId}/evaluar - Evaluar la atención
-    // recibida en un ticket
+    // POST /api/trabajador/tickets/{ticketId}/evaluar - Validación final del trabajador
+    // después de que el técnico finaliza el ticket (aceptar/rechazar solución)
     @PostMapping("/tickets/{ticketId}/evaluar")
-    @Operation(summary = "Evaluar ticket", description = "Permite al trabajador evaluar la atención recibida en un ticket finalizado")
+    @Operation(summary = "Evaluar solución de ticket", description = "Validación final del trabajador: acepta la solución (RESUELTO) o la rechaza (REABIERTO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket evaluado exitosamente", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
-            @ApiResponse(responseCode = "400", description = "El ticket no está en estado finalizado o ya fue evaluado")
+            @ApiResponse(responseCode = "400", description = "El ticket no está en estado FINALIZADO o ya fue evaluado")
     })
     public TicketResponseDto evaluarTicket(
             @Parameter(description = "ID del ticket") @PathVariable int ticketId,

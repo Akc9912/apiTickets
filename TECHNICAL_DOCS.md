@@ -5,7 +5,7 @@
 ### 🔗 **URL Base de la API**
 
 ```
-http://localhost:8081
+http://localhost:8080
 ```
 
 ### 🔐 **Autenticación JWT**
@@ -77,79 +77,628 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 - ✅ Crear tickets
 - ✅ Ver sus propios tickets
-- ✅ Evaluar tickets finalizados
+- ✅ Validar tickets finalizados (aceptar/rechazar solución)
 - ✅ Recibir notificaciones
 
-## 🎫 **Endpoints Principales**
+## 🎫 **Endpoints con Ejemplos JSON**
 
-### **Autenticación**
+### **🔐 Autenticación**
 
-```bash
-POST /api/auth/login                    # Iniciar sesión
-POST /api/auth/cambiar-password         # Cambiar contraseña
-POST /api/auth/reiniciar-password       # Reiniciar contraseña (admin)
+#### `POST /api/auth/login`
+
+**Recibe:**
+
+```json
+{
+  "email": "usuario@ejemplo.com",
+  "password": "miPassword123"
+}
 ```
 
-### **Usuarios**
+**Devuelve:**
 
-```bash
-GET  /api/usuarios/obtener-datos        # Obtener datos del usuario
-PUT  /api/usuarios/editar-datos         # Editar datos
-PUT  /api/usuarios/cambiar-password     # Cambiar contraseña
-GET  /api/usuarios/mis-tickets          # Ver mis tickets
-GET  /api/usuarios/notificaciones       # Ver notificaciones
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "usuario": {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "usuario@ejemplo.com",
+    "rol": "TRABAJADOR",
+    "activo": true,
+    "bloqueado": false,
+    "fechaCreacion": "2025-08-07T10:30:00"
+  }
+}
 ```
 
-### **SuperAdmin**
+#### `POST /api/auth/cambiar-password`
 
-```bash
-GET  /api/superadmin/usuarios           # Listar todos los usuarios
-POST /api/superadmin/usuarios           # Crear usuario
-PUT  /api/superadmin/usuarios/{id}      # Editar usuario
-DELETE /api/superadmin/usuarios/{id}    # Eliminar usuario
-PUT  /api/superadmin/usuarios/{id}/rol  # Cambiar rol
-GET  /api/superadmin/tickets            # Ver todos los tickets
-POST /api/superadmin/tickets/{id}/reabrir # Reabrir ticket
+**Recibe:**
+
+```json
+{
+  "passwordActual": "passwordViejo123",
+  "passwordNuevo": "passwordNuevo456"
+}
 ```
 
-### **Administradores**
+**Devuelve:**
 
-```bash
-GET  /api/admin/usuarios                # Listar usuarios
-POST /api/admin/usuarios                # Crear usuario (no SuperAdmin)
-PUT  /api/admin/usuarios/{id}           # Editar usuario
-PUT  /api/admin/usuarios/{id}/bloquear  # Bloquear usuario
-POST /api/admin/tickets/{id}/reabrir    # Reabrir ticket
+```json
+{
+  "mensaje": "Contraseña cambiada exitosamente",
+  "fecha": "2025-08-07T10:30:00"
+}
 ```
 
-### **Tickets**
+### **👥 Gestión de Usuarios**
 
-```bash
-GET  /api/tickets                       # Listar todos los tickets
-POST /api/tickets                       # Crear ticket
-GET  /api/tickets/{id}                  # Ver ticket específico
-PUT  /api/tickets/{id}/estado           # Cambiar estado
-GET  /api/tickets/estado?estado=...     # Filtrar por estado
-GET  /api/tickets/creador?userId=...    # Tickets por creador
+#### `GET /api/usuarios/obtener-datos`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+{
+  "id": 1,
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "usuario@ejemplo.com",
+  "rol": "TRABAJADOR",
+  "activo": true,
+  "bloqueado": false,
+  "fechaCreacion": "2025-08-07T10:30:00",
+  "fechaUltimoAcceso": "2025-08-07T11:15:00"
+}
 ```
 
-### **Técnicos**
+#### `PUT /api/usuarios/editar-datos`
 
-```bash
-GET  /api/tecnico/tickets/asignados     # Ver tickets asignados
-POST /api/tecnico/tickets/{id}/tomar    # Tomar ticket
-POST /api/tecnico/tickets/{id}/finalizar # Finalizar ticket
-POST /api/tecnico/tickets/{id}/devolver # Devolver ticket
-GET  /api/tecnico/incidentes            # Ver historial de incidentes
+**Recibe:**
+
+```json
+{
+  "nombre": "Juan Carlos",
+  "apellido": "Pérez García",
+  "email": "juan.perez@nuevoemail.com"
+}
 ```
 
-### **Trabajadores**
+**Devuelve:**
 
-```bash
-GET  /api/trabajador/tickets            # Ver mis tickets
-POST /api/trabajador/tickets            # Crear ticket
-GET  /api/trabajador/tickets/activos    # Ver tickets activos
-POST /api/trabajador/tickets/{id}/evaluar # Evaluar ticket
+```json
+{
+  "id": 1,
+  "nombre": "Juan Carlos",
+  "apellido": "Pérez García",
+  "email": "juan.perez@nuevoemail.com",
+  "rol": "TRABAJADOR",
+  "activo": true,
+  "fechaActualizacion": "2025-08-07T11:20:00"
+}
+```
+
+#### `GET /api/usuarios/mis-tickets`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Problema con impresora",
+    "descripcion": "La impresora no funciona en la oficina 203",
+    "estado": "ATENDIDO",
+    "fechaCreacion": "2025-08-07T09:00:00",
+    "fechaActualizacion": "2025-08-07T10:15:00",
+    "tecnico": {
+      "id": 3,
+      "nombre": "María",
+      "apellido": "González"
+    }
+  }
+]
+```
+
+### **🔱 Endpoints SuperAdmin**
+
+#### `GET /api/superadmin/usuarios`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Super",
+    "apellido": "Admin",
+    "email": "superadmin@sistema.com",
+    "rol": "SUPER_ADMIN",
+    "activo": true,
+    "bloqueado": false,
+    "fechaCreacion": "2025-08-07T08:00:00"
+  },
+  {
+    "id": 2,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com",
+    "rol": "TRABAJADOR",
+    "activo": true,
+    "bloqueado": false,
+    "fechaCreacion": "2025-08-07T09:30:00"
+  }
+]
+```
+
+#### `POST /api/superadmin/usuarios`
+
+**Recibe:**
+
+```json
+{
+  "nombre": "Carlos",
+  "apellido": "Rodríguez",
+  "email": "carlos@empresa.com",
+  "password": "password123",
+  "rol": "TECNICO"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 4,
+  "nombre": "Carlos",
+  "apellido": "Rodríguez",
+  "email": "carlos@empresa.com",
+  "rol": "TECNICO",
+  "activo": true,
+  "bloqueado": false,
+  "fechaCreacion": "2025-08-07T16:00:00",
+  "mensaje": "Usuario creado exitosamente"
+}
+```
+
+#### `PUT /api/superadmin/usuarios/{id}/rol`
+
+**Recibe:**
+
+```json
+{
+  "rol": "ADMIN"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 2,
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "rol": "ADMIN",
+  "fechaActualizacion": "2025-08-07T16:15:00",
+  "mensaje": "Rol actualizado exitosamente"
+}
+```
+
+### **⚙️ Endpoints Admin**
+
+#### `GET /api/admin/usuarios`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 2,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com",
+    "rol": "TRABAJADOR",
+    "activo": true,
+    "bloqueado": false,
+    "fechaCreacion": "2025-08-07T09:30:00"
+  }
+]
+```
+
+#### `POST /api/admin/usuarios`
+
+**Recibe:**
+
+```json
+{
+  "nombre": "Ana",
+  "apellido": "López",
+  "email": "ana@empresa.com",
+  "password": "password456",
+  "rol": "TRABAJADOR"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 5,
+  "nombre": "Ana",
+  "apellido": "López",
+  "email": "ana@empresa.com",
+  "rol": "TRABAJADOR",
+  "activo": true,
+  "fechaCreacion": "2025-08-07T16:30:00",
+  "mensaje": "Usuario creado exitosamente"
+}
+```
+
+#### `PUT /api/admin/usuarios/{id}/bloquear`
+
+**Recibe:**
+
+```json
+{
+  "bloqueado": true,
+  "motivo": "Incumplimiento de políticas de seguridad"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 5,
+  "nombre": "Ana",
+  "apellido": "López",
+  "bloqueado": true,
+  "fechaBloqueo": "2025-08-07T17:00:00",
+  "motivo": "Incumplimiento de políticas de seguridad",
+  "mensaje": "Usuario bloqueado exitosamente"
+}
+```
+
+### **🎫 Gestión de Tickets**
+
+#### `GET /api/tickets`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Problema con impresora",
+    "descripcion": "La impresora HP de la oficina 203 no imprime documentos",
+    "estado": "ATENDIDO",
+    "fechaCreacion": "2025-08-07T09:00:00",
+    "fechaActualizacion": "2025-08-07T10:15:00",
+    "trabajador": {
+      "id": 1,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "email": "juan@empresa.com"
+    },
+    "tecnico": {
+      "id": 3,
+      "nombre": "María",
+      "apellido": "González",
+      "email": "maria@empresa.com"
+    }
+  }
+]
+```
+
+#### `POST /api/tickets`
+
+**Recibe:**
+
+```json
+{
+  "titulo": "Error en sistema de ventas",
+  "descripcion": "El sistema de ventas se cierra inesperadamente al generar reportes"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 2,
+  "titulo": "Error en sistema de ventas",
+  "descripcion": "El sistema de ventas se cierra inesperadamente al generar reportes",
+  "estado": "NO_ATENDIDO",
+  "fechaCreacion": "2025-08-07T11:30:00",
+  "trabajador": {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com"
+  },
+  "tecnico": null
+}
+```
+
+#### `GET /api/tickets/{id}`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+{
+  "id": 1,
+  "titulo": "Problema con impresora",
+  "descripcion": "La impresora HP de la oficina 203 no imprime documentos",
+  "estado": "FINALIZADO",
+  "solucion": "Se reemplazó el cartucho de tinta y se configuró el driver",
+  "fechaCreacion": "2025-08-07T09:00:00",
+  "fechaActualizacion": "2025-08-07T14:20:00",
+  "fechaFinalizacion": "2025-08-07T14:20:00",
+  "trabajador": {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com"
+  },
+  "tecnico": {
+    "id": 3,
+    "nombre": "María",
+    "apellido": "González",
+    "email": "maria@empresa.com"
+  },
+  "historiales": [
+    {
+      "id": 1,
+      "accion": "CREADO",
+      "fechaAccion": "2025-08-07T09:00:00",
+      "usuario": "Juan Pérez"
+    },
+    {
+      "id": 2,
+      "accion": "ASIGNADO",
+      "fechaAccion": "2025-08-07T10:15:00",
+      "usuario": "María González"
+    }
+  ]
+}
+```
+
+#### `PUT /api/tickets/{id}/estado`
+
+**Recibe:**
+
+```json
+{
+  "estado": "ATENDIDO",
+  "comentario": "Ticket asignado para revisión"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 1,
+  "estado": "ATENDIDO",
+  "fechaActualizacion": "2025-08-07T10:15:00",
+  "mensaje": "Estado actualizado exitosamente"
+}
+```
+
+### **🔧 Endpoints para Técnicos**
+
+#### `GET /api/tecnico/tickets/asignados`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Problema con impresora",
+    "descripcion": "La impresora HP de la oficina 203 no imprime documentos",
+    "estado": "ATENDIDO",
+    "fechaCreacion": "2025-08-07T09:00:00",
+    "trabajador": {
+      "id": 1,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "email": "juan@empresa.com"
+    }
+  }
+]
+```
+
+#### `POST /api/tecnico/tickets/{id}/tomar`
+
+**Descripción:** Permite al técnico tomar tickets en estado NO_ATENDIDO o REABIERTO. El ticket pasa automáticamente a ATENDIDO.
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+{
+  "id": 2,
+  "titulo": "Error en sistema de ventas",
+  "estado": "ATENDIDO",
+  "tecnicoAsignado": {
+    "id": 3,
+    "nombre": "María",
+    "apellido": "González"
+  },
+  "fechaAsignacion": "2025-08-07T11:45:00",
+  "mensaje": "Ticket tomado exitosamente"
+}
+```
+
+#### `POST /api/tecnico/tickets/{id}/finalizar`
+
+**Recibe:**
+
+```json
+{
+  "solucion": "Se reemplazó el cartucho de tinta y se configuró correctamente el driver de la impresora. Problema resuelto."
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 1,
+  "titulo": "Problema con impresora",
+  "estado": "FINALIZADO",
+  "solucion": "Se reemplazó el cartucho de tinta y se configuró correctamente el driver de la impresora. Problema resuelto.",
+  "fechaFinalizacion": "2025-08-07T14:20:00",
+  "mensaje": "Ticket finalizado exitosamente"
+}
+```
+
+#### `POST /api/tecnico/tickets/{id}/devolver`
+
+**Recibe:**
+
+```json
+{
+  "motivo": "Requiere aprobación del supervisor para compra de repuestos"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 2,
+  "estado": "NO_ATENDIDO",
+  "motivo": "Requiere aprobación del supervisor para compra de repuestos",
+  "fechaDevolucion": "2025-08-07T12:30:00",
+  "mensaje": "Ticket devuelto exitosamente"
+}
+```
+
+### **👷 Endpoints para Trabajadores**
+
+#### `GET /api/trabajador/tickets`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Problema con impresora",
+    "descripcion": "La impresora HP de la oficina 203 no imprime documentos",
+    "estado": "FINALIZADO",
+    "fechaCreacion": "2025-08-07T09:00:00",
+    "fechaFinalizacion": "2025-08-07T14:20:00",
+    "tecnico": {
+      "id": 3,
+      "nombre": "María",
+      "apellido": "González"
+    },
+    "solucion": "Se reemplazó el cartucho de tinta y se configuró el driver"
+  }
+]
+```
+
+#### `POST /api/trabajador/tickets`
+
+**Recibe:**
+
+```json
+{
+  "titulo": "Computadora lenta",
+  "descripcion": "Mi computadora de trabajo está muy lenta desde ayer, tarda mucho en abrir programas"
+}
+```
+
+**Devuelve:**
+
+```json
+{
+  "id": 3,
+  "titulo": "Computadora lenta",
+  "descripcion": "Mi computadora de trabajo está muy lenta desde ayer, tarda mucho en abrir programas",
+  "estado": "NO_ATENDIDO",
+  "fechaCreacion": "2025-08-07T15:00:00",
+  "trabajador": {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez"
+  },
+  "mensaje": "Ticket creado exitosamente"
+}
+```
+
+#### `POST /api/trabajador/tickets/{id}/evaluar`
+
+**Descripción:** Validación final del trabajador después de que el técnico finaliza el ticket. El trabajador decide si acepta o rechaza la solución.
+
+**Recibe (aceptar):**
+
+```json
+{
+  "idTrabajador": 1,
+  "fueResuelto": true,
+  "motivoFalla": null
+}
+```
+
+**Devuelve (si acepta):**
+
+```json
+{
+  "id": 1,
+  "estado": "RESUELTO",
+  "evaluacion": {
+    "fueResuelto": true,
+    "fechaEvaluacion": "2025-08-07T15:30:00"
+  },
+  "mensaje": "Ticket marcado como resuelto exitosamente"
+}
+```
+
+**Recibe (rechazar):**
+
+```json
+{
+  "idTrabajador": 1,
+  "fueResuelto": false,
+  "motivoFalla": "El problema persiste, necesita más revisión"
+}
+```
+
+**Devuelve (si rechaza):**
+
+```json
+{
+  "id": 1,
+  "estado": "REABIERTO",
+  "evaluacion": {
+    "fueResuelto": false,
+    "motivoFalla": "El problema persiste, necesita más revisión",
+    "fechaEvaluacion": "2025-08-07T15:30:00"
+  },
+  "mensaje": "Ticket reabierto para nueva revisión"
+}
 ```
 
 ## 📊 **Estados de Tickets**
@@ -157,170 +706,139 @@ POST /api/trabajador/tickets/{id}/evaluar # Evaluar ticket
 ```javascript
 const EstadosTicket = {
   NO_ATENDIDO: "No atendido", // Ticket recién creado
-  ATENDIDO: "Atendido", // Técnico asignado
-  FINALIZADO: "Finalizado", // Técnico finalizó trabajo
-  RESUELTO: "Resuelto", // Trabajador confirmó solución
-  REABIERTO: "Reabierto", // Ticket reabierto por admin
+  ATENDIDO: "Atendido", // Técnico asignado trabajando en él
+  RESUELTO: "Resuelto", // Técnico finalizó trabajo, esperando validación del trabajador
+  FINALIZADO: "Finalizado", // Trabajador aceptó la solución - ticket cerrado
+  REABIERTO: "Reabierto", // Trabajador rechazó la solución, técnico debe retomar
 };
 ```
 
 ## 🔔 **Sistema de Notificaciones**
 
-### **Obtener Notificaciones**
+#### `GET /api/notificaciones?userId=1`
 
-```bash
-GET /api/notificaciones?userId=1
-```
+**Recibe:** Solo headers con token + parámetro userId
 
-### **Contar Notificaciones**
+**Devuelve:**
 
-```bash
-GET /api/notificaciones/count?userId=1
-```
-
-### **Eliminar Notificaciones**
-
-```bash
-DELETE /api/notificaciones?userId=1
-```
-
-## 📈 **Estadísticas**
-
-### **Generales**
-
-```bash
-GET /api/estadisticas/usuarios/total
-GET /api/estadisticas/tickets/total
-GET /api/estadisticas/tecnicos/total
-GET /api/estadisticas/trabajadores/total
-```
-
-### **Por Estado**
-
-```bash
-GET /api/estadisticas/tickets/estado?estado=No atendido
-```
-
-## 🛠️ **Integración Frontend**
-
-### **React/Next.js Example**
-
-```javascript
-// API Client
-class TicketAPI {
-  constructor(baseURL = "http://localhost:8081") {
-    this.baseURL = baseURL;
-    this.token = localStorage.getItem("token");
+```json
+[
+  {
+    "id": 1,
+    "mensaje": "Tu ticket 'Problema con impresora' ha sido asignado al técnico María González",
+    "tipo": "ASIGNACION",
+    "leida": false,
+    "fechaCreacion": "2025-08-07T10:15:00",
+    "ticketId": 1
+  },
+  {
+    "id": 2,
+    "mensaje": "Tu ticket 'Problema con impresora' ha sido finalizado",
+    "tipo": "FINALIZACION",
+    "leida": true,
+    "fechaCreacion": "2025-08-07T14:20:00",
+    "ticketId": 1
   }
+]
+```
 
-  async login(email, password) {
-    const response = await fetch(`${this.baseURL}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+#### `GET /api/notificaciones/count?userId=1`
 
-    const data = await response.json();
+**Recibe:** Solo headers con token + parámetro userId
 
-    if (response.ok) {
-      this.token = data.token;
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.usuario));
+**Devuelve:**
+
+```json
+{
+  "total": 5,
+  "noLeidas": 2,
+  "leidas": 3
+}
+```
+
+#### `DELETE /api/notificaciones?userId=1`
+
+**Recibe:** Solo headers con token + parámetro userId
+
+**Devuelve:**
+
+```json
+{
+  "mensaje": "Notificaciones eliminadas exitosamente",
+  "cantidad": 5,
+  "fecha": "2025-08-07T16:00:00"
+}
+```
+
+## 📈 **Estadísticas del Sistema**
+
+#### `GET /api/estadisticas/usuarios/total`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+{
+  "total": 25,
+  "activos": 23,
+  "bloqueados": 2,
+  "porRol": {
+    "SUPER_ADMIN": 1,
+    "ADMIN": 2,
+    "TECNICO": 5,
+    "TRABAJADOR": 17
+  }
+}
+```
+
+#### `GET /api/estadisticas/tickets/total`
+
+**Recibe:** Solo headers con token
+
+**Devuelve:**
+
+```json
+{
+  "total": 157,
+  "porEstado": {
+    "NO_ATENDIDO": 12,
+    "ATENDIDO": 8,
+    "FINALIZADO": 5,
+    "RESUELTO": 132
+  },
+  "estadisticasHoy": {
+    "creados": 3,
+    "finalizados": 5,
+    "resueltos": 4
+  }
+}
+```
+
+#### `GET /api/estadisticas/tickets/estado?estado=NO_ATENDIDO`
+
+**Recibe:** Solo headers con token + parámetro estado
+
+**Devuelve:**
+
+```json
+{
+  "estado": "NO_ATENDIDO",
+  "cantidad": 12,
+  "tickets": [
+    {
+      "id": 15,
+      "titulo": "Error en sistema de ventas",
+      "fechaCreacion": "2025-08-07T15:30:00",
+      "trabajador": "Juan Pérez"
+    },
+    {
+      "id": 16,
+      "titulo": "Computadora lenta",
+      "fechaCreacion": "2025-08-07T16:00:00",
+      "trabajador": "Ana López"
     }
-
-    return data;
-  }
-
-  async getTickets() {
-    const response = await fetch(`${this.baseURL}/api/tickets`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
-
-    return response.json();
-  }
-
-  async createTicket(ticketData) {
-    const response = await fetch(`${this.baseURL}/api/tickets`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.token}`,
-      },
-      body: JSON.stringify(ticketData),
-    });
-
-    return response.json();
-  }
-}
-
-// Hook para React
-import { useState, useEffect } from "react";
-
-export function useTickets() {
-  const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const api = new TicketAPI();
-
-  useEffect(() => {
-    api
-      .getTickets()
-      .then(setTickets)
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { tickets, loading, api };
-}
-```
-
-### **Vue.js Example**
-
-```javascript
-// composables/useAPI.js
-import { ref, computed } from "vue";
-
-export function useTicketAPI() {
-  const token = ref(localStorage.getItem("token"));
-  const user = ref(JSON.parse(localStorage.getItem("user") || "null"));
-
-  const isAuthenticated = computed(() => !!token.value);
-
-  const api = {
-    async login(email, password) {
-      const response = await fetch("http://localhost:8081/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        token.value = data.token;
-        user.value = data.usuario;
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.usuario));
-      }
-
-      return data;
-    },
-
-    async request(endpoint, options = {}) {
-      return fetch(`http://localhost:8081${endpoint}`, {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
-          ...options.headers,
-        },
-      });
-    },
-  };
-
-  return { api, isAuthenticated, user };
+  ]
 }
 ```
 
@@ -369,7 +887,7 @@ POST /api/superadmin/usuarios
 
 ```json
 {
-  "baseUrl": "http://localhost:8081",
+  "baseUrl": "http://localhost:8080",
   "token": "{{token}}"
 }
 ```
@@ -402,13 +920,13 @@ if (pm.response.code === 200) {
 Accede a la documentación interactiva en:
 
 ```
-http://localhost:8081/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html
 ```
 
 **Endpoint de OpenAPI JSON:**
 
 ```
-http://localhost:8081/v3/api-docs
+http://localhost:8080/v3/api-docs
 ```
 
 ## ⚙️ **Configuración del Entorno**
@@ -428,7 +946,7 @@ JWT_SECRET=tu_clave_secreta_muy_larga_y_segura
 JWT_EXPIRATION=86400000
 
 # Aplicación
-SERVER_PORT=8081
+SERVER_PORT=8080
 PROFILE=mysql
 
 # Logs
@@ -454,7 +972,7 @@ jwt.secret=${JWT_SECRET:default_secret_key}
 jwt.expiration=${JWT_EXPIRATION:86400000}
 
 # Servidor
-server.port=${SERVER_PORT:8081}
+server.port=${SERVER_PORT:8080}
 
 # Swagger
 springdoc.api-docs.path=/v3/api-docs
@@ -486,10 +1004,10 @@ java -jar target/miapi-*.jar
 
 ```bash
 # Verificar que la API esté funcionando
-curl http://localhost:8081/actuator/health
+curl http://localhost:8080/actuator/health
 
 # Acceder a Swagger
-open http://localhost:8081/swagger-ui/index.html
+open http://localhost:8080/swagger-ui/index.html
 ```
 
 ---

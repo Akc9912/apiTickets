@@ -41,11 +41,11 @@ public class TecnicoController {
 
         // POST /api/tecnico/tickets/{ticketId}/tomar
         @PostMapping("/tickets/{ticketId}/tomar")
-        @Operation(summary = "Tomar ticket", description = "Permite a un técnico tomar la responsabilidad de un ticket")
+        @Operation(summary = "Tomar ticket", description = "Permite a un técnico tomar tickets NO_ATENDIDO o REABIERTO")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Ticket tomado correctamente"),
                         @ApiResponse(responseCode = "404", description = "Técnico o ticket no encontrado"),
-                        @ApiResponse(responseCode = "400", description = "El ticket ya está asignado")
+                        @ApiResponse(responseCode = "400", description = "El ticket ya está asignado o no está disponible")
         })
         public ResponseEntity<String> tomarTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,

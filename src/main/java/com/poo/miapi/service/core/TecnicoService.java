@@ -99,13 +99,15 @@ public class TecnicoService {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO)) {
-            throw new IllegalStateException("El ticket ya está siendo atendido");
+        if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO) && 
+            !ticket.getEstado().equals(EstadoTicket.REABIERTO)) {
+            throw new IllegalStateException("El ticket ya está siendo atendido o no está disponible");
         }
 
+        EstadoTicket estadoAnterior = ticket.getEstado();
         ticket.setEstado(EstadoTicket.ATENDIDO);
 
-        TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, EstadoTicket.NO_ATENDIDO,
+        TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, estadoAnterior,
                 EstadoTicket.ATENDIDO, null);
         tecnicoPorTicketRepository.save(historial);
 

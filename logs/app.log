@@ -2123,3 +2123,401 @@ Caused by: java.lang.ClassNotFoundException: UsernameNotFoundException
 2025-08-07 15:25:07 - Secured GET /v3/api-docs
 2025-08-07 15:25:09 - Init duration for springdoc-openapi is: 1502 ms
 2025-08-07 15:25:09 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-07 16:46:02 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 16:46:02 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 16:46:02 - Graceful shutdown complete
+2025-08-07 16:46:02 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 16:46:02 - HikariPool-12 - Shutdown initiated...
+2025-08-07 16:46:02 - HikariPool-12 - Shutdown completed.
+2025-08-07 16:46:02 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 16:46:02 - The following 1 profile is active: "mysql"
+2025-08-07 16:46:03 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 16:46:03 - Finished Spring Data repository scanning in 74 ms. Found 9 JPA repository interfaces.
+2025-08-07 16:46:04 - Tomcat initialized with port 8081 (http)
+2025-08-07 16:46:04 - Starting service [Tomcat]
+2025-08-07 16:46:04 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 16:46:04 - Initializing Spring embedded WebApplicationContext
+2025-08-07 16:46:04 - Root WebApplicationContext: initialization completed in 1298 ms
+2025-08-07 16:46:04 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 16:46:04 - HHH000026: Second-level cache disabled
+2025-08-07 16:46:04 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 16:46:04 - HikariPool-13 - Starting...
+2025-08-07 16:46:04 - HikariPool-13 - Added connection com.mysql.cj.jdbc.ConnectionImpl@437c3dfe
+2025-08-07 16:46:04 - HikariPool-13 - Start completed.
+2025-08-07 16:46:04 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 16:46:04 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 16:46:04 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-13)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 16:46:04 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 16:46:05 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 16:46:05 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 16:46:05 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 16:46:06 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 16:46:06 - LiveReload server is running on port 35729
+2025-08-07 16:46:06 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 16:46:06 - Started MiapiApplication in 3.799 seconds (process running for 5404.27)
+2025-08-07 16:46:06 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 16:46:06 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 16:46:06 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 16:46:06 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 16:46:06 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 16:46:06 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 16:46:06 -    🆔 ID: 21
+2025-08-07 16:46:06 -    📧 Email: superadmin@sistema.com
+2025-08-07 16:46:06 -    👤 Nombre: Super Admin
+2025-08-07 16:46:06 -    🔑 Password: secret
+2025-08-07 16:46:06 -    ⚡ Rol: SUPERADMIN
+2025-08-07 16:46:06 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 16:46:06 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 16:46:06 - 🔄 Verificación post-creación: count = 1
+2025-08-07 16:46:06 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 16:46:06 - 🎉 Configuración inicial completada
+2025-08-07 16:46:06 - Condition evaluation unchanged
+2025-08-07 16:47:24 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 16:47:24 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 16:47:24 - Graceful shutdown complete
+2025-08-07 16:47:24 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 16:47:24 - HikariPool-13 - Shutdown initiated...
+2025-08-07 16:47:24 - HikariPool-13 - Shutdown completed.
+2025-08-07 16:47:24 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 16:47:24 - The following 1 profile is active: "mysql"
+2025-08-07 16:47:25 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 16:47:25 - Finished Spring Data repository scanning in 57 ms. Found 9 JPA repository interfaces.
+2025-08-07 16:47:25 - Tomcat initialized with port 8081 (http)
+2025-08-07 16:47:25 - Starting service [Tomcat]
+2025-08-07 16:47:25 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 16:47:25 - Initializing Spring embedded WebApplicationContext
+2025-08-07 16:47:25 - Root WebApplicationContext: initialization completed in 632 ms
+2025-08-07 16:47:25 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 16:47:25 - HHH000026: Second-level cache disabled
+2025-08-07 16:47:25 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 16:47:25 - HikariPool-14 - Starting...
+2025-08-07 16:47:25 - HikariPool-14 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1d533cf9
+2025-08-07 16:47:25 - HikariPool-14 - Start completed.
+2025-08-07 16:47:25 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 16:47:25 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 16:47:25 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-14)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 16:47:25 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 16:47:25 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 16:47:26 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 16:47:26 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 16:47:26 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 16:47:26 - LiveReload server is running on port 35729
+2025-08-07 16:47:26 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 16:47:26 - Started MiapiApplication in 1.504 seconds (process running for 5484.081)
+2025-08-07 16:47:26 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 16:47:26 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 16:47:26 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 16:47:26 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 16:47:26 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 16:47:26 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 16:47:26 -    🆔 ID: 22
+2025-08-07 16:47:26 -    📧 Email: superadmin@sistema.com
+2025-08-07 16:47:26 -    👤 Nombre: Super Admin
+2025-08-07 16:47:26 -    🔑 Password: secret
+2025-08-07 16:47:26 -    ⚡ Rol: SUPERADMIN
+2025-08-07 16:47:26 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 16:47:26 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 16:47:26 - 🔄 Verificación post-creación: count = 1
+2025-08-07 16:47:26 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 16:47:26 - 🎉 Configuración inicial completada
+2025-08-07 16:47:26 - Condition evaluation unchanged
+2025-08-07 17:06:13 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 17:06:13 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:06:13 - Graceful shutdown complete
+2025-08-07 17:06:13 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:06:13 - HikariPool-14 - Shutdown initiated...
+2025-08-07 17:06:13 - HikariPool-14 - Shutdown completed.
+2025-08-07 17:06:13 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 17:06:13 - The following 1 profile is active: "mysql"
+2025-08-07 17:06:14 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 17:06:14 - Finished Spring Data repository scanning in 24 ms. Found 9 JPA repository interfaces.
+2025-08-07 17:06:14 - Tomcat initialized with port 8081 (http)
+2025-08-07 17:06:14 - Starting service [Tomcat]
+2025-08-07 17:06:14 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 17:06:14 - Initializing Spring embedded WebApplicationContext
+2025-08-07 17:06:14 - Root WebApplicationContext: initialization completed in 649 ms
+2025-08-07 17:06:14 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 17:06:14 - HHH000026: Second-level cache disabled
+2025-08-07 17:06:14 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 17:06:14 - HikariPool-15 - Starting...
+2025-08-07 17:06:14 - HikariPool-15 - Added connection com.mysql.cj.jdbc.ConnectionImpl@35b34cec
+2025-08-07 17:06:14 - HikariPool-15 - Start completed.
+2025-08-07 17:06:14 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 17:06:14 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 17:06:14 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-15)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 17:06:14 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 17:06:14 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:06:14 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 17:06:14 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 17:06:14 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 17:06:15 - LiveReload server is running on port 35729
+2025-08-07 17:06:15 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 17:06:15 - Started MiapiApplication in 1.556 seconds (process running for 6612.712)
+2025-08-07 17:06:15 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 17:06:15 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 17:06:15 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 17:06:15 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 17:06:15 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 17:06:15 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 17:06:15 -    🆔 ID: 23
+2025-08-07 17:06:15 -    📧 Email: superadmin@sistema.com
+2025-08-07 17:06:15 -    👤 Nombre: Super Admin
+2025-08-07 17:06:15 -    🔑 Password: secret
+2025-08-07 17:06:15 -    ⚡ Rol: SUPERADMIN
+2025-08-07 17:06:15 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 17:06:15 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 17:06:15 - 🔄 Verificación post-creación: count = 1
+2025-08-07 17:06:15 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 17:06:15 - 🎉 Configuración inicial completada
+2025-08-07 17:06:15 - Condition evaluation unchanged
+2025-08-07 17:09:14 - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+2025-08-07 17:09:14 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:09:14 - Graceful shutdown complete
+2025-08-07 17:09:14 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:09:14 - HikariPool-15 - Shutdown initiated...
+2025-08-07 17:09:14 - HikariPool-15 - Shutdown completed.
+2025-08-07 17:09:14 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 17:09:14 - The following 1 profile is active: "mysql"
+2025-08-07 17:09:15 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 17:09:15 - Finished Spring Data repository scanning in 45 ms. Found 9 JPA repository interfaces.
+2025-08-07 17:09:15 - Tomcat initialized with port 8081 (http)
+2025-08-07 17:09:15 - Starting service [Tomcat]
+2025-08-07 17:09:15 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 17:09:15 - Initializing Spring embedded WebApplicationContext
+2025-08-07 17:09:15 - Root WebApplicationContext: initialization completed in 813 ms
+2025-08-07 17:09:15 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 17:09:15 - HHH000026: Second-level cache disabled
+2025-08-07 17:09:15 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 17:09:15 - HikariPool-16 - Starting...
+2025-08-07 17:09:15 - HikariPool-16 - Added connection com.mysql.cj.jdbc.ConnectionImpl@539552bc
+2025-08-07 17:09:15 - HikariPool-16 - Start completed.
+2025-08-07 17:09:15 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 17:09:15 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 17:09:15 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-16)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 17:09:15 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 17:09:15 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:09:16 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 17:09:16 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 17:09:16 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 17:09:16 - LiveReload server is running on port 35729
+2025-08-07 17:09:16 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 17:09:16 - Started MiapiApplication in 1.959 seconds (process running for 6794.121)
+2025-08-07 17:09:16 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 17:09:16 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 17:09:16 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 17:09:16 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 17:09:16 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 17:09:16 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 17:09:16 -    🆔 ID: 24
+2025-08-07 17:09:16 -    📧 Email: superadmin@sistema.com
+2025-08-07 17:09:16 -    👤 Nombre: Super Admin
+2025-08-07 17:09:16 -    🔑 Password: secret
+2025-08-07 17:09:16 -    ⚡ Rol: SUPERADMIN
+2025-08-07 17:09:16 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 17:09:16 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 17:09:16 - 🔄 Verificación post-creación: count = 1
+2025-08-07 17:09:16 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 17:09:16 - 🎉 Configuración inicial completada
+2025-08-07 17:09:16 - Condition evaluation unchanged
+2025-08-07 17:10:40 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 17:10:40 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:10:40 - Graceful shutdown complete
+2025-08-07 17:10:40 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:10:40 - HikariPool-16 - Shutdown initiated...
+2025-08-07 17:10:40 - HikariPool-16 - Shutdown completed.
+2025-08-07 17:10:40 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 17:10:40 - The following 1 profile is active: "mysql"
+2025-08-07 17:10:40 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 17:10:40 - Finished Spring Data repository scanning in 40 ms. Found 9 JPA repository interfaces.
+2025-08-07 17:10:40 - Tomcat initialized with port 8081 (http)
+2025-08-07 17:10:40 - Starting service [Tomcat]
+2025-08-07 17:10:40 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 17:10:40 - Initializing Spring embedded WebApplicationContext
+2025-08-07 17:10:40 - Root WebApplicationContext: initialization completed in 660 ms
+2025-08-07 17:10:40 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 17:10:40 - HHH000026: Second-level cache disabled
+2025-08-07 17:10:40 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 17:10:40 - HikariPool-17 - Starting...
+2025-08-07 17:10:40 - HikariPool-17 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f680528
+2025-08-07 17:10:40 - HikariPool-17 - Start completed.
+2025-08-07 17:10:40 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 17:10:40 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 17:10:40 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-17)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 17:10:41 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 17:10:41 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:10:41 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 17:10:41 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 17:10:41 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 17:10:41 - LiveReload server is running on port 35729
+2025-08-07 17:10:41 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 17:10:41 - Started MiapiApplication in 1.755 seconds (process running for 6879.556)
+2025-08-07 17:10:41 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 17:10:41 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 17:10:41 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 17:10:41 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 17:10:41 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 17:10:42 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 17:10:42 -    🆔 ID: 25
+2025-08-07 17:10:42 -    📧 Email: superadmin@sistema.com
+2025-08-07 17:10:42 -    👤 Nombre: Super Admin
+2025-08-07 17:10:42 -    🔑 Password: secret
+2025-08-07 17:10:42 -    ⚡ Rol: SUPERADMIN
+2025-08-07 17:10:42 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 17:10:42 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 17:10:42 - 🔄 Verificación post-creación: count = 1
+2025-08-07 17:10:42 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 17:10:42 - 🎉 Configuración inicial completada
+2025-08-07 17:10:42 - Condition evaluation unchanged
+2025-08-07 17:11:07 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 17:11:07 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:11:07 - Graceful shutdown complete
+2025-08-07 17:11:07 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:11:07 - HikariPool-17 - Shutdown initiated...
+2025-08-07 17:11:07 - HikariPool-17 - Shutdown completed.
+2025-08-07 17:11:07 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 17:11:07 - The following 1 profile is active: "mysql"
+2025-08-07 17:11:08 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 17:11:08 - Finished Spring Data repository scanning in 41 ms. Found 9 JPA repository interfaces.
+2025-08-07 17:11:08 - Tomcat initialized with port 8081 (http)
+2025-08-07 17:11:08 - Starting service [Tomcat]
+2025-08-07 17:11:08 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 17:11:08 - Initializing Spring embedded WebApplicationContext
+2025-08-07 17:11:08 - Root WebApplicationContext: initialization completed in 593 ms
+2025-08-07 17:11:08 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 17:11:08 - HHH000026: Second-level cache disabled
+2025-08-07 17:11:08 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 17:11:08 - HikariPool-18 - Starting...
+2025-08-07 17:11:08 - HikariPool-18 - Added connection com.mysql.cj.jdbc.ConnectionImpl@69b6aa1c
+2025-08-07 17:11:08 - HikariPool-18 - Start completed.
+2025-08-07 17:11:08 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 17:11:08 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 17:11:08 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-18)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 17:11:08 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 17:11:08 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:11:09 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 17:11:09 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 17:11:09 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 17:11:09 - LiveReload server is running on port 35729
+2025-08-07 17:11:09 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 17:11:09 - Started MiapiApplication in 1.393 seconds (process running for 6906.914)
+2025-08-07 17:11:09 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 17:11:09 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 17:11:09 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 17:11:09 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 17:11:09 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 17:11:09 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 17:11:09 -    🆔 ID: 26
+2025-08-07 17:11:09 -    📧 Email: superadmin@sistema.com
+2025-08-07 17:11:09 -    👤 Nombre: Super Admin
+2025-08-07 17:11:09 -    🔑 Password: secret
+2025-08-07 17:11:09 -    ⚡ Rol: SUPERADMIN
+2025-08-07 17:11:09 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 17:11:09 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 17:11:09 - 🔄 Verificación post-creación: count = 1
+2025-08-07 17:11:09 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 17:11:09 - 🎉 Configuración inicial completada
+2025-08-07 17:11:09 - Condition evaluation unchanged
+2025-08-07 17:12:11 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 17:12:11 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:12:11 - Graceful shutdown complete
+2025-08-07 17:12:11 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:12:11 - HikariPool-18 - Shutdown initiated...
+2025-08-07 17:12:11 - HikariPool-18 - Shutdown completed.
+2025-08-07 17:12:11 - Starting MiapiApplication using Java 24.0.2 with PID 20264 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-07 17:12:11 - The following 1 profile is active: "mysql"
+2025-08-07 17:12:12 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-07 17:12:12 - Finished Spring Data repository scanning in 33 ms. Found 9 JPA repository interfaces.
+2025-08-07 17:12:12 - Tomcat initialized with port 8081 (http)
+2025-08-07 17:12:12 - Starting service [Tomcat]
+2025-08-07 17:12:12 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-07 17:12:12 - Initializing Spring embedded WebApplicationContext
+2025-08-07 17:12:12 - Root WebApplicationContext: initialization completed in 509 ms
+2025-08-07 17:12:12 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-07 17:12:12 - HHH000026: Second-level cache disabled
+2025-08-07 17:12:12 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-07 17:12:12 - HikariPool-19 - Starting...
+2025-08-07 17:12:12 - HikariPool-19 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1db0d161
+2025-08-07 17:12:12 - HikariPool-19 - Start completed.
+2025-08-07 17:12:12 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-07 17:12:12 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-07 17:12:12 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-19)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-07 17:12:12 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-07 17:12:12 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:12:12 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-07 17:12:13 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-07 17:12:13 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-07 17:12:13 - LiveReload server is running on port 35729
+2025-08-07 17:12:13 - Tomcat started on port 8081 (http) with context path '/'
+2025-08-07 17:12:13 - Started MiapiApplication in 1.286 seconds (process running for 6970.912)
+2025-08-07 17:12:13 - 🚀 Iniciando configuración inicial de datos...
+2025-08-07 17:12:13 - 📊 Total de usuarios en la base de datos: 1
+2025-08-07 17:12:13 - 🧹 Limpieza completada: eliminados registros previos con discriminador inconsistente
+2025-08-07 17:12:13 - 🔍 ¿Existe SuperAdmin con email 'superadmin@sistema.com'? false (count: 0)
+2025-08-07 17:12:13 - 📦 Creando SuperAdmin por defecto...
+2025-08-07 17:12:13 - ✅ SuperAdmin creado exitosamente:
+2025-08-07 17:12:13 -    🆔 ID: 27
+2025-08-07 17:12:13 -    📧 Email: superadmin@sistema.com
+2025-08-07 17:12:13 -    👤 Nombre: Super Admin
+2025-08-07 17:12:13 -    🔑 Password: secret
+2025-08-07 17:12:13 -    ⚡ Rol: SUPERADMIN
+2025-08-07 17:12:13 -    📝 Tipo Usuario: SUPERADMIN
+2025-08-07 17:12:13 -    ⚠️  IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-07 17:12:13 - 🔄 Verificación post-creación: count = 1
+2025-08-07 17:12:13 - 📊 Total final de usuarios en la base de datos: 1
+2025-08-07 17:12:13 - 🎉 Configuración inicial completada
+2025-08-07 17:12:13 - Condition evaluation unchanged
+2025-08-07 17:12:40 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-08-07 17:12:40 - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-07 17:12:40 - Graceful shutdown complete
+2025-08-07 17:12:40 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-07 17:12:40 - HikariPool-19 - Shutdown initiated...
+2025-08-07 17:12:40 - HikariPool-19 - Shutdown completed.
