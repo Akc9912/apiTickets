@@ -10,6 +10,7 @@ import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -34,9 +35,9 @@ public class HistorialValidacionService {
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
                 Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
-                                .orElseThrow(() -> new IllegalArgumentException("Trabajador no encontrado"));
+                                .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado con ID: " + dto.getIdTrabajador()));
                 Ticket ticket = ticketRepository.findById(dto.getIdTicket())
-                                .orElseThrow(() -> new IllegalArgumentException("Ticket no encontrado"));
+                                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + dto.getIdTicket()));
 
                 HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
                                 trabajador,

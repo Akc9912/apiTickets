@@ -9,7 +9,7 @@ public class Notificacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id")
@@ -31,7 +31,7 @@ public class Notificacion {
         this.fechaCreacion = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

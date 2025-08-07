@@ -2,7 +2,11 @@ package com.poo.miapi.repository.core;
 
 import com.poo.miapi.model.core.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,30 +19,34 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     boolean existsByEmail(String email);
 
+    @Query(value = "SELECT COUNT(*) FROM usuario WHERE email = :email", nativeQuery = true)
+    long countByEmail(@Param("email") String email);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM usuario WHERE email = :email", nativeQuery = true)
+    void deleteByEmail(@Param("email") String email);
+
     List<Usuario> findByActivoTrue();
 
     List<Usuario> findByBloqueadoTrue();
 
-    long countByActivoTrue();
-
-    long count();
+    int countByActivoTrue();
 
     List<Usuario> findByNombreContainingIgnoreCase(String nombre);
 
     List<Usuario> findByRol(Rol rol);
-
-    Optional<Usuario> findById(Long id);
 
     // List<Usuario> findByTipoUsuario(String tipoUsuario);
 
     List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
 
     // Métodos para SuperAdminService
-    long countByRol(Rol rol);
+    int countByRol(Rol rol);
 
-    long countByRolAndActivoTrue(Rol rol);
+    int countByRolAndActivoTrue(Rol rol);
 
-    long countByBloqueadoTrue();
+    int countByBloqueadoTrue();
 
     List<Usuario> findByRolIn(List<Rol> roles);
 }

@@ -10,15 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
-  Optional<Ticket> findById(Long id);
 
   List<Ticket> findByEstado(EstadoTicket estado);
 
-  List<Ticket> findByCreadorId(Long idTrabajador);
+  List<Ticket> findByCreadorId(int idTrabajador);
 
   List<Ticket> findByTituloContainingIgnoreCase(String palabra);
 
@@ -44,7 +42,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
   List<Ticket> findByEstadoAndTecnicoActual(@Param("estado") EstadoTicket estado, @Param("tecnico") Tecnico tecnico);
 
   // Buscar tickets por estado y creador
-  List<Ticket> findByEstadoAndCreadorId(EstadoTicket estado, Long idTrabajador);
+  List<Ticket> findByEstadoAndCreadorId(EstadoTicket estado, int idTrabajador);
 
   // Métodos para estadísticas de SuperAdminService
   long countByEstado(EstadoTicket estado);

@@ -1,20 +1,20 @@
 package com.poo.miapi.dto.auth;
 
 public class ResetPasswordDto {
-    private Long userId;
+    private int userId;
 
     public ResetPasswordDto() {
     }
 
-    public ResetPasswordDto(Long userId) {
+    public ResetPasswordDto(int userId) {
         this.userId = userId;
     }
 
-    public Long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 }

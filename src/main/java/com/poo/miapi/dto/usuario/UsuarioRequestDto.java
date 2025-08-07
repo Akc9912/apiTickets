@@ -12,7 +12,7 @@ public class UsuarioRequestDto {
     @NotNull
     @Email
     private String email;
-    private String rol;
+    private Rol rol;
 
     public UsuarioRequestDto() {
     }
@@ -41,19 +41,25 @@ public class UsuarioRequestDto {
         this.email = email;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 
-    public Rol getRolEnum() {
-        try {
-            return rol != null ? Rol.valueOf(rol) : null;
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    /**
+     * Método helper para retrocompatibilidad con String
+     */
+    public void setRol(String rolString) {
+        this.rol = rolString != null ? Rol.fromString(rolString) : null;
+    }
+
+    /**
+     * Método helper para obtener el rol como String
+     */
+    public String getRolAsString() {
+        return rol != null ? rol.name() : null;
     }
 }

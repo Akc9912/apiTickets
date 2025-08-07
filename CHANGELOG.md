@@ -13,6 +13,45 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - Optimizaciones de rendimiento
 - Nuevas funcionalidades de reportes
 
+## [1.0.0] - 2025-08-07
+
+### ✨ Added
+
+- **🚀 Inicialización automática del SuperAdmin**
+  - Creación automática del usuario SuperAdmin al iniciar la aplicación
+  - Configuración inicial de datos del sistema
+  - Credenciales por defecto: `superadmin@sistema.com` / `secret`
+  - Logging detallado del proceso de inicialización con emojis
+
+### 🔧 Fixed
+
+- **🛠️ Corrección del sistema de discriminadores JPA**
+
+  - Unificación de valores discriminadores para entidades Usuario
+  - Corrección de inconsistencias entre "SUPER_ADMIN" y "SUPERADMIN"
+  - Limpieza automática de registros corruptos en base de datos
+  - Uso de consultas nativas SQL para evitar conflictos de mapeo
+
+- **🗄️ Mejoras en repositorios**
+  - Nuevos métodos con consultas nativas para operaciones robustas
+  - Método `existsByEmailNative()` para verificaciones sin conflictos de discriminador
+  - Método `deleteByEmail()` con consulta nativa y transaccional
+
+### 🔐 Security
+
+- **⚡ Configuración mejorada de roles y permisos**
+  - Validación consistente de roles de usuario
+  - Corrección en métodos de verificación de SuperAdmin
+  - Mejor manejo de errores en inicialización de datos
+
+### 🏗️ Technical
+
+- **📋 DataInitializer mejorado**
+  - Manejo robusto de errores durante la inicialización
+  - Logging comprensivo con información detallada del estado del sistema
+  - Verificaciones pre y post creación de usuarios
+  - Constructor injection para mejor testabilidad
+
 ## [0.2.0] - 2025-07-16
 
 ### ✨ Added
@@ -100,6 +139,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ## Enlaces
 
-- [Unreleased]: https://github.com/Akc9912/apiTickets/compare/v0.2.0...HEAD
+- [Unreleased]: https://github.com/Akc9912/apiTickets/compare/v1.0.0...HEAD
+- [1.0.0]: https://github.com/Akc9912/apiTickets/compare/v0.2.0...v1.0.0
 - [0.2.0]: https://github.com/Akc9912/apiTickets/compare/v0.1.0...v0.2.0
 - [0.1.0]: https://github.com/Akc9912/apiTickets/releases/tag/v0.1.0

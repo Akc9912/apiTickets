@@ -4,7 +4,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("SUPER_ADMIN")
+@DiscriminatorValue("SUPERADMIN")
 public class SuperAdmin extends Usuario {
 
     public SuperAdmin() {
@@ -19,6 +19,6 @@ public class SuperAdmin extends Usuario {
 
     @Override
     public String getTipoUsuario() {
-        return "SUPER_ADMIN";
+        return "SUPERADMIN";
     }
 }

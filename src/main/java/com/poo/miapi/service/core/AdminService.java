@@ -59,7 +59,7 @@ public class AdminService {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new IllegalArgumentException("El email ya está en uso");
         }
-        Rol rolEnum = usuario.getRolEnum();
+        Rol rolEnum = usuario.getRol();
         if (rolEnum == null) {
             throw new IllegalArgumentException("Rol no válido: " + usuario.getRol());
         }
@@ -73,7 +73,7 @@ public class AdminService {
     }
 
     // Editar usuario
-    public UsuarioResponseDto editarUsuario(Long id, UsuarioRequestDto usuarioDto) {
+    public UsuarioResponseDto editarUsuario(int id, UsuarioRequestDto usuarioDto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         validarDatosUsuario(usuarioDto);
@@ -87,7 +87,7 @@ public class AdminService {
         usuario.setApellido(usuarioDto.getApellido());
         usuario.setEmail(usuarioDto.getEmail());
         // No se actualiza password aquí porque UsuarioRequestDto no tiene password
-        Rol rolEnum = usuarioDto.getRolEnum();
+        Rol rolEnum = usuarioDto.getRol();
         if (rolEnum == null) {
             throw new IllegalArgumentException("Rol no válido: " + usuarioDto.getRol());
         }
@@ -97,11 +97,11 @@ public class AdminService {
     }
 
     // Cambiar rol de usuario (crea nuevo usuario y da de baja lógica al anterior)
-    public UsuarioResponseDto cambiarRolUsuario(Long id, UsuarioRequestDto usuarioCambioRol) {
+    public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
-        Rol rolEnum = usuarioCambioRol.getRolEnum();
+        Rol rolEnum = usuarioCambioRol.getRol();
         if (rolEnum == null) {
             throw new IllegalArgumentException("Rol no válido: " + usuarioCambioRol.getRol());
         }
@@ -118,7 +118,7 @@ public class AdminService {
     }
 
     // Activar usuario
-    public UsuarioResponseDto activarUsuario(Long id) {
+    public UsuarioResponseDto activarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         usuario.setActivo(true);
@@ -127,7 +127,7 @@ public class AdminService {
     }
 
     // Desactivar usuario
-    public UsuarioResponseDto desactivarUsuario(Long id) {
+    public UsuarioResponseDto desactivarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         usuario.setActivo(false);
@@ -136,7 +136,7 @@ public class AdminService {
     }
 
     // Bloquear usuario
-    public UsuarioResponseDto bloquearUsuario(Long idUsuario) {
+    public UsuarioResponseDto bloquearUsuario(int idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(true);
@@ -145,7 +145,7 @@ public class AdminService {
     }
 
     // Desbloquear usuario
-    public UsuarioResponseDto desbloquearUsuario(Long idUsuario) {
+    public UsuarioResponseDto desbloquearUsuario(int idUsuario) {
         Usuario u = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         u.setBloqueado(false);
@@ -157,7 +157,7 @@ public class AdminService {
     }
 
     // Blanquear password
-    public UsuarioResponseDto blanquearPassword(Long id) {
+    public UsuarioResponseDto blanquearPassword(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
@@ -174,7 +174,7 @@ public class AdminService {
                 .toList();
     }
 
-    public UsuarioResponseDto verUsuarioPorId(Long id) {
+    public UsuarioResponseDto verUsuarioPorId(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         return mapToUsuarioDto(usuario);
@@ -210,7 +210,7 @@ public class AdminService {
     }
 
     // Reabrir ticket
-    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 
@@ -252,21 +252,22 @@ public class AdminService {
         validarRol(usuarioDto.getRol());
     }
 
-    private void validarRol(String rol) {
-        if (!rol.equalsIgnoreCase("ADMIN") &&
-                !rol.equalsIgnoreCase("TECNICO") &&
-                !rol.equalsIgnoreCase("TRABAJADOR")) {
-            throw new IllegalArgumentException("Rol no válido: " + rol);
+    private void validarRol(Rol rol) {
+        if (rol == null) {
+            throw new IllegalArgumentException("El rol no puede ser nulo");
+        }
+        if (rol == Rol.SUPERADMIN) {
+            throw new IllegalArgumentException("No se puede asignar rol SUPERADMIN");
         }
     }
 
     private Usuario crearUsuarioPorRol(UsuarioRequestDto cambiarRolDto) {
-        switch (cambiarRolDto.getRol().toUpperCase()) {
-            case "ADMIN":
+        switch (cambiarRolDto.getRol()) {
+            case ADMIN:
                 return crearAdmin(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
-            case "TECNICO":
+            case TECNICO:
                 return crearTecnico(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
-            case "TRABAJADOR":
+            case TRABAJADOR:
                 return crearTrabajador(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(),
                         cambiarRolDto.getEmail());
             default:

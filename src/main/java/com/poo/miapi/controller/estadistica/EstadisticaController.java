@@ -2,7 +2,6 @@ package com.poo.miapi.controller.estadistica;
 
 import com.poo.miapi.model.core.EstadoTicket;
 import com.poo.miapi.service.estadistica.EstadisticaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Estadísticas", description = "Endpoints para obtener estadísticas del sistema")
 public class EstadisticaController {
 
-    @Autowired
     private final EstadisticaService estadisticaService;
 
     public EstadisticaController(EstadisticaService estadisticaService) {

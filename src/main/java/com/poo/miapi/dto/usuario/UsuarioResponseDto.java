@@ -1,11 +1,13 @@
 package com.poo.miapi.dto.usuario;
 
+import com.poo.miapi.model.core.Rol;
+
 public class UsuarioResponseDto {
-    private Long id;
+    private int id;
     private String nombre;
     private String apellido;
     private String email;
-    private String rol;
+    private Rol rol;
     private boolean activo;
     private boolean bloqueado;
 
@@ -14,7 +16,7 @@ public class UsuarioResponseDto {
     }
 
     // Constructor para crear un DTO a partir de un usuario
-    public UsuarioResponseDto(Long id, String nombre, String apellido, String email, String rol, boolean activo,
+    public UsuarioResponseDto(int id, String nombre, String apellido, String email, Rol rol, boolean activo,
             boolean bloqueado) {
         this.id = id;
         this.nombre = nombre;
@@ -25,12 +27,18 @@ public class UsuarioResponseDto {
         this.bloqueado = bloqueado;
     }
 
+    // Constructor helper para retrocompatibilidad con String
+    public UsuarioResponseDto(int id, String nombre, String apellido, String email, String rolString, boolean activo,
+            boolean bloqueado) {
+        this(id, nombre, apellido, email, rolString != null ? Rol.fromString(rolString) : null, activo, bloqueado);
+    }
+
     // Getters y setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -58,12 +66,26 @@ public class UsuarioResponseDto {
         this.email = email;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    /**
+     * Método helper para retrocompatibilidad con String
+     */
+    public void setRol(String rolString) {
+        this.rol = rolString != null ? Rol.fromString(rolString) : null;
+    }
+
+    /**
+     * Método helper para obtener el rol como String
+     */
+    public String getRolAsString() {
+        return rol != null ? rol.name() : null;
     }
 
     public boolean isActivo() {

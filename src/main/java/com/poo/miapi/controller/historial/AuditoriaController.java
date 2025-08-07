@@ -2,7 +2,6 @@ package com.poo.miapi.controller.historial;
 
 import com.poo.miapi.dto.historial.AuditoriaResponseDto;
 import com.poo.miapi.service.historial.AuditoriaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import java.util.List;
 @Tag(name = "Auditoría", description = "Endpoints para consulta de logs de auditoría del sistema")
 public class AuditoriaController {
 
-    @Autowired
     private final AuditoriaService auditoriaService;
 
     public AuditoriaController(AuditoriaService auditoriaService) {

@@ -24,7 +24,7 @@ public class NotificacionService {
     }
 
     // Enviar una notificación a un usuario (devuelve DTO)
-    public NotificacionResponseDto enviarNotificacion(Long idUsuario, String mensaje) {
+    public NotificacionResponseDto enviarNotificacion(int idUsuario, String mensaje) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         Notificacion n = new Notificacion(usuario, mensaje);
@@ -33,19 +33,19 @@ public class NotificacionService {
     }
 
     // Obtener todas las notificaciones de un usuario (devuelve DTOs)
-    public List<NotificacionResponseDto> obtenerNotificaciones(Long idUsuario) {
+    public List<NotificacionResponseDto> obtenerNotificaciones(int idUsuario) {
         return notificacionRepository.findAllByUsuarioId(idUsuario).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
     // Eliminar todas las notificaciones de un usuario
-    public void eliminarTodasDelUsuario(Long idUsuario) {
+    public void eliminarTodasDelUsuario(int idUsuario) {
         notificacionRepository.deleteAllByUsuarioId(idUsuario);
     }
 
     // Contar notificaciones de un usuario
-    public long contarNotificaciones(Long idUsuario) {
+    public int contarNotificaciones(int idUsuario) {
         return notificacionRepository.countByUsuarioId(idUsuario);
     }
 

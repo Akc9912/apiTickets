@@ -20,7 +20,6 @@ import com.poo.miapi.service.core.TecnicoService;
 @Tag(name = "Técnicos", description = "Endpoints para gestión de técnicos y asignación de tickets")
 public class TecnicoController {
 
-        @Autowired
         private final TecnicoService tecnicoService;
 
         public TecnicoController(TecnicoService tecnicoService) {
@@ -35,7 +34,7 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "404", description = "Técnico no encontrado")
         })
         public ResponseEntity<List<TicketResponseDto>> verMisTickets(
-                        @Parameter(description = "ID del técnico") @RequestParam Long userId) {
+                        @Parameter(description = "ID del técnico") @RequestParam int userId) {
                 List<TicketResponseDto> tickets = tecnicoService.verTicketsAsignados(userId);
                 return ResponseEntity.ok(tickets);
         }
@@ -49,8 +48,8 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "400", description = "El ticket ya está asignado")
         })
         public ResponseEntity<String> tomarTicket(
-                        @Parameter(description = "ID del técnico") @RequestParam Long idTecnico,
-                        @Parameter(description = "ID del ticket") @PathVariable Long ticketId) {
+                        @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
+                        @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
                 tecnicoService.tomarTicket(idTecnico, ticketId);
                 return ResponseEntity.ok("Ticket tomado correctamente");
         }
@@ -64,8 +63,8 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "400", description = "El ticket no está asignado a este técnico")
         })
         public ResponseEntity<String> finalizarTicket(
-                        @Parameter(description = "ID del técnico") @RequestParam Long idTecnico,
-                        @Parameter(description = "ID del ticket") @PathVariable Long ticketId) {
+                        @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
+                        @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
                 tecnicoService.finalizarTicket(idTecnico, ticketId);
                 return ResponseEntity.ok("Estado de ticket actualizado a: Finalizado");
         }
@@ -79,8 +78,8 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "400", description = "El ticket no está asignado a este técnico")
         })
         public ResponseEntity<String> devolverTicket(
-                        @Parameter(description = "ID del técnico") @RequestParam Long idTecnico,
-                        @Parameter(description = "ID del ticket") @PathVariable Long ticketId,
+                        @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
+                        @Parameter(description = "ID del ticket") @PathVariable int ticketId,
                         @Parameter(description = "Motivo de la devolución del ticket") @RequestParam String motivo) {
                 tecnicoService.devolverTicket(idTecnico, ticketId, motivo);
                 return ResponseEntity.ok("Ticket devuelto");
@@ -104,7 +103,7 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "404", description = "Técnico no encontrado")
         })
         public ResponseEntity<List<IncidenteTecnicoResponseDto>> obtenerHistorialIncidentes(
-                        @Parameter(description = "ID del técnico") @RequestParam Long tecnicoId) {
+                        @Parameter(description = "ID del técnico") @RequestParam int tecnicoId) {
                 List<IncidenteTecnicoResponseDto> incidentes = tecnicoService.obtenerHistorialIncidentes(tecnicoId);
                 return ResponseEntity.ok(incidentes);
         }

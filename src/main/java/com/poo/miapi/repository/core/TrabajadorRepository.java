@@ -19,6 +19,4 @@ public interface TrabajadorRepository extends JpaRepository<Trabajador, Integer>
     List<Trabajador> findByApellidoContainingIgnoreCase(String apellido);
 
     List<Trabajador> findByActivo(boolean activo);
-
-    Optional<Trabajador> findById(Long id);
 }

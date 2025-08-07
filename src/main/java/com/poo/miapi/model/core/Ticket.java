@@ -11,7 +11,7 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(nullable = false)
     private String titulo;
@@ -53,7 +53,7 @@ public class Ticket {
     }
 
     // Getters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

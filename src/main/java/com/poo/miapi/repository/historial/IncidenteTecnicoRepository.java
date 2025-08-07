@@ -7,13 +7,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IncidenteTecnicoRepository extends JpaRepository<IncidenteTecnico, Long> {
+public interface IncidenteTecnicoRepository extends JpaRepository<IncidenteTecnico, Integer> {
 
-    List<IncidenteTecnico> findByTecnicoId(Long tecnicoId);
+    List<IncidenteTecnico> findByTecnicoId(int tecnicoId);
 
-    List<IncidenteTecnico> findByTicketId(Long ticketId);
+    List<IncidenteTecnico> findByTicketId(int ticketId);
 
-    long countByTecnicoId(int tecnicoId);
+    int countByTecnicoId(int tecnicoId);
 
     List<IncidenteTecnico> findByTipo(IncidenteTecnico.TipoIncidente tipo);
 }

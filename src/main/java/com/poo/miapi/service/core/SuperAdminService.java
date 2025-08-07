@@ -1,6 +1,5 @@
 package com.poo.miapi.service.core;
 
-import com.poo.miapi.constants.UserRole;
 import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
@@ -31,10 +30,9 @@ public class SuperAdminService {
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
-    private final TecnicoPorTicketService tecnicoPorTicketService;
-
     @Value("${app.default-password}")
     private String defaultPassword;
+    private TecnicoPorTicketService tecnicoPorTicketService;
 
     public SuperAdminService(
             UsuarioRepository usuarioRepository,
@@ -63,8 +61,8 @@ public class SuperAdminService {
         }
 
         // Si el rol es SUPERADMIN, asegurarse de que no exista otro
-        if (usuarioDto.getRol() != null && usuarioDto.getRol().equalsIgnoreCase("SUPERADMIN")) {
-            long superAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
+        if (usuarioDto.getRol() != null && usuarioDto.getRol() == Rol.SUPERADMIN) {
+            long superAdmins = usuarioRepository.countByRol(Rol.SUPERADMIN);
             if (superAdmins > 0) {
                 throw new IllegalStateException("Ya existe un SuperAdmin en el sistema. No se puede crear otro.");
             }
@@ -75,7 +73,7 @@ public class SuperAdminService {
         String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
         nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
         nuevoUsuario.setCambiarPass(true);
-        nuevoUsuario.setRol(com.poo.miapi.model.core.Rol.valueOf(usuarioDto.getRol().toUpperCase()));
+        nuevoUsuario.setRol(usuarioDto.getRol());
         usuarioRepository.save(nuevoUsuario);
         return mapToUsuarioDto(nuevoUsuario);
     }
@@ -86,13 +84,13 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public UsuarioResponseDto verUsuarioPorId(Long id) {
+    public UsuarioResponseDto verUsuarioPorId(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto editarUsuario(Long id, UsuarioRequestDto usuarioDto) {
+    public UsuarioResponseDto editarUsuario(int id, UsuarioRequestDto usuarioDto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         validarDatosUsuario(usuarioDto);
@@ -107,13 +105,13 @@ public class SuperAdminService {
         usuario.setEmail(usuarioDto.getEmail());
         String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
         usuario.setPassword(passwordEncoder.encode(rawPassword));
-        usuario.setRol(com.poo.miapi.model.core.Rol.valueOf(usuarioDto.getRol().toUpperCase()));
+        usuario.setRol(usuarioDto.getRol());
         usuarioRepository.save(usuario);
 
         return mapToUsuarioDto(usuario);
     }
 
-    public void eliminarUsuario(Long id) {
+    public void eliminarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
@@ -128,7 +126,7 @@ public class SuperAdminService {
         usuarioRepository.delete(usuario);
     }
 
-    public UsuarioResponseDto activarUsuario(Long id) {
+    public UsuarioResponseDto activarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         usuario.setActivo(true);
@@ -136,7 +134,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desactivarUsuario(Long id) {
+    public UsuarioResponseDto desactivarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
@@ -154,7 +152,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto bloquearUsuario(Long id) {
+    public UsuarioResponseDto bloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -168,7 +166,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desbloquearUsuario(Long id) {
+    public UsuarioResponseDto desbloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         usuario.setBloqueado(false);
@@ -179,7 +177,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto resetearPassword(Long id) {
+    public UsuarioResponseDto resetearPassword(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
@@ -188,16 +186,16 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto cambiarRolUsuario(Long id, UsuarioRequestDto usuarioCambioRol) {
+    public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         validarRol(usuarioCambioRol.getRol());
 
         // Verificar restricciones de SuperAdmin
-        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN
-                && usuarioCambioRol.getRolEnum() != com.poo.miapi.model.core.Rol.SUPERADMIN) {
-            long totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
+        if (usuario.getRol() == Rol.SUPERADMIN
+                && usuarioCambioRol.getRol() != Rol.SUPERADMIN) {
+            long totalSuperAdmins = usuarioRepository.countByRol(Rol.SUPERADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede cambiar el rol del último SuperAdmin");
             }
@@ -218,7 +216,7 @@ public class SuperAdminService {
         if (rol == null || rol.isBlank()) {
             throw new IllegalArgumentException("El rol no puede ser nulo o vacío");
         }
-        return usuarioRepository.findByRol(com.poo.miapi.model.core.Rol.valueOf(rol.toUpperCase())).stream()
+        return usuarioRepository.findByRol(Rol.fromString(rol)).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
@@ -231,7 +229,7 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public UsuarioResponseDto promoverAAdmin(Long id) {
+    public UsuarioResponseDto promoverAAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -244,16 +242,16 @@ public class SuperAdminService {
         adminDto.setApellido(usuario.getApellido());
         adminDto.setEmail(usuario.getEmail());
         // adminDto.setPassword(defaultPassword); // No existe campo password en el DTO
-        adminDto.setRol(UserRole.ADMIN);
+        adminDto.setRol(Rol.ADMIN);
 
         return cambiarRolUsuario(id, adminDto);
     }
 
-    public UsuarioResponseDto degradarAdmin(Long id) {
+    public UsuarioResponseDto degradarAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if (!UserRole.ADMIN.equals(usuario.getRol())) {
+        if (usuario.getRol() != Rol.ADMIN) {
             throw new IllegalStateException("Solo se pueden degradar usuarios con rol ADMIN");
         }
 
@@ -263,7 +261,7 @@ public class SuperAdminService {
         trabajadorDto.setEmail(usuario.getEmail());
         // trabajadorDto.setPassword(defaultPassword); // No existe campo password en el
         // DTO
-        trabajadorDto.setRol(UserRole.TRABAJADOR);
+        trabajadorDto.setRol(Rol.TRABAJADOR);
 
         return cambiarRolUsuario(id, trabajadorDto);
     }
@@ -276,7 +274,7 @@ public class SuperAdminService {
                 .toList();
     }
 
-    public TicketResponseDto reabrirTicket(Long idTicket, String comentario) {
+    public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
 
@@ -308,7 +306,7 @@ public class SuperAdminService {
         return mapToTicketDto(ticket);
     }
 
-    public void eliminarTicket(Long id) {
+    public void eliminarTicket(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         ticketRepository.delete(ticket);
@@ -358,21 +356,22 @@ public class SuperAdminService {
         validarRol(usuarioDto.getRol());
     }
 
-    private void validarRol(String rol) {
-        if (!UserRole.isValidRole(rol)) {
-            throw new IllegalArgumentException("Rol no válido: " + rol);
+    private void validarRol(Rol rol) {
+        if (rol == null) {
+            throw new IllegalArgumentException("El rol no puede ser nulo");
         }
+        // No necesitamos validación adicional ya que el enum garantiza valores válidos
     }
 
     private Usuario crearUsuarioPorRol(UsuarioRequestDto usuarioDto) {
-        switch (usuarioDto.getRol().toUpperCase()) {
-            case "SUPER_ADMIN":
+        switch (usuarioDto.getRol()) {
+            case SUPERADMIN:
                 return crearSuperAdmin(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
-            case "ADMIN":
+            case ADMIN:
                 return crearAdmin(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
-            case "TECNICO":
+            case TECNICO:
                 return crearTecnico(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
-            case "TRABAJADOR":
+            case TRABAJADOR:
                 return crearTrabajador(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
             default:
                 throw new IllegalArgumentException("Rol no válido: " + usuarioDto.getRol());

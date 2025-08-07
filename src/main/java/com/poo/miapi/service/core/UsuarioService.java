@@ -96,14 +96,14 @@ public class UsuarioService {
 
     // Estado del usuario
 
-    public UsuarioResponseDto bloquearUsuario(Long userId) {
+    public UsuarioResponseDto bloquearUsuario(int userId) {
         Usuario usuario = buscarPorId(userId);
         usuario.setBloqueado(true);
         usuarioRepository.save(usuario);
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desbloquearUsuario(Long userId) {
+    public UsuarioResponseDto desbloquearUsuario(int userId) {
         Usuario usuario = buscarPorId(userId);
         usuario.setBloqueado(false);
 
@@ -115,14 +115,14 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto bajaLogicaUsuario(Long id) {
+    public UsuarioResponseDto bajaLogicaUsuario(int id) {
         Usuario usuario = buscarPorId(id);
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto altaLogicaUsuario(Long id) {
+    public UsuarioResponseDto altaLogicaUsuario(int id) {
         Usuario usuario = buscarPorId(id);
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
@@ -131,7 +131,7 @@ public class UsuarioService {
 
     // Consultas y operaciones sobre usuarios
 
-    public Usuario buscarPorId(Long id) {
+    public Usuario buscarPorId(int id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
@@ -159,7 +159,7 @@ public class UsuarioService {
                 .toList();
     }
 
-    public UsuarioResponseDto actualizarDatos(Long id, UsuarioRequestDto dto) {
+    public UsuarioResponseDto actualizarDatos(int id, UsuarioRequestDto dto) {
         Usuario usuario = buscarPorId(id);
         usuario.setNombre(dto.getNombre());
         usuario.setApellido(dto.getApellido());
@@ -169,17 +169,17 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    public String getTipoUsuario(Long id) {
+    public String getTipoUsuario(int id) {
         return buscarPorId(id).getTipoUsuario();
     }
 
-    public UsuarioResponseDto obtenerDatos(Long id) {
+    public UsuarioResponseDto obtenerDatos(int id) {
         Usuario usuario = buscarPorId(id);
         return mapToUsuarioDto(usuario);
     }
 
     // Editar datos del usuario
-    public UsuarioResponseDto editarDatosUsuario(Long id, UsuarioRequestDto dto) {
+    public UsuarioResponseDto editarDatosUsuario(int id, UsuarioRequestDto dto) {
         Usuario usuario = buscarPorId(id);
         usuario.setNombre(dto.getNombre());
         usuario.setApellido(dto.getApellido());
@@ -190,7 +190,7 @@ public class UsuarioService {
     }
 
     // Ver mis tickets (como trabajador o técnico).
-    public List<TicketResponseDto> verMisTickets(Long userId) {
+    public List<TicketResponseDto> verMisTickets(int userId) {
         Usuario usuario = buscarPorId(userId);
         List<Ticket> tickets;
         if (usuario instanceof Trabajador trabajador) {
@@ -214,7 +214,7 @@ public class UsuarioService {
     }
 
     // Ver mis notificaciones (todos los usuarios)
-    public List<NotificacionResponseDto> verMisNotificaciones(Long userId) {
+    public List<NotificacionResponseDto> verMisNotificaciones(int userId) {
         return notificacionService.obtenerNotificaciones(userId);
     }
 

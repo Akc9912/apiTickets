@@ -43,131 +43,224 @@ public class SuperAdminController {
     }
 
     @Operation(summary = "Listar todos los usuarios", description = "Obtener lista completa de usuarios del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
+    })
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioResponseDto>> listarTodosLosUsuarios() {
         return ResponseEntity.ok(superAdminService.listarTodosLosUsuarios());
     }
 
     @Operation(summary = "Ver usuario por ID", description = "Obtener detalles de un usuario específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @GetMapping("/usuarios/{id}")
     public ResponseEntity<UsuarioResponseDto> verUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id) {
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.verUsuarioPorId(id));
     }
 
-    // PUT /api/superadmin/usuarios/{id} - Editar cualquier usuario
+    @Operation(summary = "Editar usuario", description = "Actualizar datos de cualquier usuario del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PutMapping("/usuarios/{id}")
-    public ResponseEntity<UsuarioResponseDto> editarUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDto usuarioDto) {
+    public ResponseEntity<UsuarioResponseDto> editarUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id,
+            @Parameter(description = "Nuevos datos del usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
         return ResponseEntity.ok(superAdminService.editarUsuario(id, usuarioDto));
     }
 
-    // DELETE /api/superadmin/usuarios/{id} - Eliminar permanentemente un usuario
+    @Operation(summary = "Eliminar usuario", description = "Eliminar permanentemente un usuario del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @DeleteMapping("/usuarios/{id}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
+    public ResponseEntity<String> eliminarUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         superAdminService.eliminarUsuario(id);
         return ResponseEntity.ok("Usuario eliminado permanentemente");
     }
 
-    // PUT /api/superadmin/usuarios/{id}/activar - Activar usuario
+    @Operation(summary = "Activar usuario", description = "Activar un usuario desactivado del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario activado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PutMapping("/usuarios/{id}/activar")
-    public ResponseEntity<UsuarioResponseDto> activarUsuario(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> activarUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.activarUsuario(id));
     }
 
-    // PUT /api/superadmin/usuarios/{id}/desactivar - Desactivar usuario
+    @Operation(summary = "Desactivar usuario", description = "Desactivar un usuario activo del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario desactivado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PutMapping("/usuarios/{id}/desactivar")
-    public ResponseEntity<UsuarioResponseDto> desactivarUsuario(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> desactivarUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.desactivarUsuario(id));
     }
 
-    // POST /api/superadmin/usuarios/{id}/bloquear - Bloquear usuario
+    @Operation(summary = "Bloquear usuario", description = "Bloquear un usuario del sistema por mal comportamiento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario bloqueado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PostMapping("/usuarios/{id}/bloquear")
-    public ResponseEntity<UsuarioResponseDto> bloquearUsuario(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> bloquearUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.bloquearUsuario(id));
     }
 
-    // POST /api/superadmin/usuarios/{id}/desbloquear - Desbloquear usuario
+    @Operation(summary = "Desbloquear usuario", description = "Desbloquear un usuario previamente bloqueado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario desbloqueado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PostMapping("/usuarios/{id}/desbloquear")
-    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.desbloquearUsuario(id));
     }
 
-    // POST /api/superadmin/usuarios/{id}/reset-password - Resetear contraseña
+    @Operation(summary = "Resetear contraseña", description = "Resetear la contraseña de un usuario a la contraseña por defecto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contraseña reseteada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PostMapping("/usuarios/{id}/reset-password")
-    public ResponseEntity<UsuarioResponseDto> resetearPassword(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> resetearPassword(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.resetearPassword(id));
     }
 
-    // PUT /api/superadmin/usuarios/{id}/rol - Cambiar rol de usuario
+    @Operation(summary = "Cambiar rol de usuario", description = "Cambiar el rol de cualquier usuario del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rol cambiado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "Rol inválido")
+    })
     @PutMapping("/usuarios/{id}/rol")
-    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
+    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id,
+            @Parameter(description = "Nuevo rol del usuario") @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
         return ResponseEntity.ok(superAdminService.cambiarRolUsuario(id, cambiarRolDto));
     }
 
-    // GET /api/superadmin/usuarios/rol?rol=ADMIN - Listar usuarios por rol
+    @Operation(summary = "Listar usuarios por rol", description = "Obtener lista de usuarios filtrados por rol específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Rol inválido")
+    })
     @GetMapping("/usuarios/rol")
-    public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(@RequestParam String rol) {
+    public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(
+            @Parameter(description = "Rol a filtrar (SUPERADMIN, ADMIN, TECNICO, TRABAJADOR)") @RequestParam String rol) {
         return ResponseEntity.ok(superAdminService.listarUsuariosPorRol(rol));
     }
 
     // === GESTIÓN DE ADMINISTRADORES ===
 
-    // GET /api/superadmin/admins - Listar todos los administradores
+    @Operation(summary = "Listar administradores", description = "Obtener lista de todos los administradores del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de administradores obtenida exitosamente")
+    })
     @GetMapping("/admins")
     public ResponseEntity<List<UsuarioResponseDto>> listarAdministradores() {
         return ResponseEntity.ok(superAdminService.listarAdministradores());
     }
 
-    // POST /api/superadmin/admins/{id}/promover - Promover usuario a Admin
+    @Operation(summary = "Promover a administrador", description = "Promover un usuario a rol de administrador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario promovido exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "El usuario ya es administrador")
+    })
     @PostMapping("/admins/{id}/promover")
-    public ResponseEntity<UsuarioResponseDto> promoverAAdmin(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> promoverAAdmin(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.promoverAAdmin(id));
     }
 
-    // POST /api/superadmin/admins/{id}/degradar - Degradar Admin a Trabajador
+    @Operation(summary = "Degradar administrador", description = "Degradar un administrador a rol de trabajador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Administrador degradado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "El usuario no es administrador")
+    })
     @PostMapping("/admins/{id}/degradar")
-    public ResponseEntity<UsuarioResponseDto> degradarAdmin(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> degradarAdmin(
+            @Parameter(description = "ID del administrador") @PathVariable int id) {
         return ResponseEntity.ok(superAdminService.degradarAdmin(id));
     }
 
     // === GESTIÓN DEL SISTEMA ===
 
-    // GET /api/superadmin/tickets - Ver todos los tickets del sistema
+    @Operation(summary = "Listar todos los tickets", description = "Obtener lista completa de todos los tickets del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente")
+    })
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketResponseDto>> listarTodosLosTickets() {
         return ResponseEntity.ok(superAdminService.listarTodosLosTickets());
     }
 
-    // POST /api/superadmin/tickets/{id}/reabrir - Reabrir cualquier ticket
+    @Operation(summary = "Reabrir ticket", description = "Reabrir cualquier ticket del sistema con comentario explicativo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ticket reabierto exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
+            @ApiResponse(responseCode = "400", description = "El ticket no puede ser reabierto")
+    })
     @PostMapping("/tickets/{id}/reabrir")
-    public ResponseEntity<TicketResponseDto> reabrirTicket(@PathVariable Long id, @RequestParam String comentario) {
+    public ResponseEntity<TicketResponseDto> reabrirTicket(
+            @Parameter(description = "ID del ticket") @PathVariable int id,
+            @Parameter(description = "Comentario sobre la reapertura") @RequestParam String comentario) {
         return ResponseEntity.ok(superAdminService.reabrirTicket(id, comentario));
     }
 
-    // DELETE /api/superadmin/tickets/{id} - Eliminar ticket permanentemente
+    @Operation(summary = "Eliminar ticket", description = "Eliminar permanentemente un ticket del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ticket eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Ticket no encontrado")
+    })
     @DeleteMapping("/tickets/{id}")
-    public ResponseEntity<String> eliminarTicket(@PathVariable Long id) {
+    public ResponseEntity<String> eliminarTicket(
+            @Parameter(description = "ID del ticket") @PathVariable int id) {
         superAdminService.eliminarTicket(id);
         return ResponseEntity.ok("Ticket eliminado permanentemente");
     }
 
     // === ESTADÍSTICAS GLOBALES ===
 
-    // GET /api/superadmin/estadisticas/usuarios
+    @Operation(summary = "Estadísticas de usuarios", description = "Obtener estadísticas completas de usuarios del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente")
+    })
     @GetMapping("/estadisticas/usuarios")
     public ResponseEntity<?> obtenerEstadisticasUsuarios() {
         return ResponseEntity.ok(superAdminService.obtenerEstadisticasUsuarios());
     }
 
-    // GET /api/superadmin/estadisticas/tickets
+    @Operation(summary = "Estadísticas de tickets", description = "Obtener estadísticas completas de tickets del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente")
+    })
     @GetMapping("/estadisticas/tickets")
     public ResponseEntity<?> obtenerEstadisticasTickets() {
         return ResponseEntity.ok(superAdminService.obtenerEstadisticasTickets());
     }
 
-    // GET /api/superadmin/estadisticas/sistema
+    @Operation(summary = "Estadísticas del sistema", description = "Obtener estadísticas globales del sistema completo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estadísticas del sistema obtenidas exitosamente")
+    })
     @GetMapping("/estadisticas/sistema")
     public ResponseEntity<?> obtenerEstadisticasSistema() {
         return ResponseEntity.ok(superAdminService.obtenerEstadisticasSistema());

@@ -2,7 +2,6 @@ package com.poo.miapi.controller.notificacion;
 
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.service.notificacion.NotificacionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,6 @@ import java.util.List;
 @Tag(name = "Notificaciones", description = "Endpoints para gestión de notificaciones del sistema")
 public class NotificacionController {
 
-    @Autowired
     private final NotificacionService notificacionService;
 
     public NotificacionController(NotificacionService notificacionService) {
@@ -36,7 +34,7 @@ public class NotificacionController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<List<NotificacionResponseDto>> verMisNotificaciones(
-            @Parameter(description = "ID del usuario") @RequestParam Long userId) {
+            @Parameter(description = "ID del usuario") @RequestParam int userId) {
         List<NotificacionResponseDto> notificaciones = notificacionService.obtenerNotificaciones(userId);
         return ResponseEntity.ok(notificaciones);
     }
@@ -50,7 +48,7 @@ public class NotificacionController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<Void> eliminarTodasMisNotificaciones(
-            @Parameter(description = "ID del usuario") @RequestParam Long userId) {
+            @Parameter(description = "ID del usuario") @RequestParam int userId) {
         notificacionService.eliminarTodasDelUsuario(userId);
         return ResponseEntity.noContent().build();
     }
@@ -65,7 +63,7 @@ public class NotificacionController {
             @ApiResponse(responseCode = "400", description = "Mensaje inválido")
     })
     public ResponseEntity<NotificacionResponseDto> enviarNotificacion(
-            @Parameter(description = "ID del usuario destinatario") @RequestParam Long idUsuario,
+            @Parameter(description = "ID del usuario destinatario") @RequestParam int idUsuario,
             @Parameter(description = "Mensaje de la notificación") @RequestParam String mensaje) {
         NotificacionResponseDto dto = notificacionService.enviarNotificacion(idUsuario, mensaje);
         return ResponseEntity.ok(dto);
@@ -80,7 +78,7 @@ public class NotificacionController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<Long> contarNotificaciones(
-            @Parameter(description = "ID del usuario") @RequestParam Long userId) {
+            @Parameter(description = "ID del usuario") @RequestParam int userId) {
         long count = notificacionService.contarNotificaciones(userId);
         return ResponseEntity.ok(count);
     }

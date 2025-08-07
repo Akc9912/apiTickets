@@ -33,7 +33,7 @@ public class TecnicoService {
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
     }
 
-    public Tecnico buscarPorId(Long idTecnico) {
+    public Tecnico buscarPorId(int idTecnico) {
         return tecnicoRepository.findById(idTecnico)
                 .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
     }
@@ -61,12 +61,12 @@ public class TecnicoService {
         tecnicoRepository.save(tecnico);
     }
 
-    public void reiniciarFallasYMarcas(Long idTecnico) {
+    public void reiniciarFallasYMarcas(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
         reiniciarFallasYMarcas(tecnico);
     }
 
-    public void marcarFalla(Long idTecnico, String motivo, Ticket ticket) {
+    public void marcarFalla(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarFalla(tecnico);
 
@@ -79,7 +79,7 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
-    public void marcarMarca(Long idTecnico, String motivo, Ticket ticket) {
+    public void marcarMarca(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarMarca(tecnico);
 
@@ -94,7 +94,7 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
-    public TicketResponseDto tomarTicket(Long idTecnico, Long idTicket) {
+    public TicketResponseDto tomarTicket(int idTecnico, int idTicket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
@@ -115,7 +115,7 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto finalizarTicket(Long idTecnico, Long idTicket) {
+    public TicketResponseDto finalizarTicket(int idTecnico, int idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -129,14 +129,14 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto devolverTicket(Long idTecnico, Long idTicket, String motivo) {
+    public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         // Usa el método utilitario del modelo para obtener el técnico actual
         Tecnico tecnicoActual = ticket.getTecnicoActual();
-        if (tecnicoActual == null || !tecnicoActual.getId().equals(tecnico.getId())) {
+        if (tecnicoActual == null || tecnicoActual.getId() != tecnico.getId()) {
             throw new IllegalArgumentException("Este ticket no pertenece a este técnico");
         }
 
@@ -152,7 +152,7 @@ public class TecnicoService {
     }
 
     // Devuelve historial de incidentes como DTOs
-    public List<IncidenteTecnicoResponseDto> obtenerHistorialIncidentes(Long idTecnico) {
+    public List<IncidenteTecnicoResponseDto> obtenerHistorialIncidentes(int idTecnico) {
         return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
                 .map(this::mapToIncidenteDto)
                 .toList();
@@ -166,7 +166,7 @@ public class TecnicoService {
     }
 
     // Devuelve tickets asignados como DTOs
-    public List<TicketResponseDto> verTicketsAsignados(Long idTecnico) {
+    public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
         return tecnico.getTicketsActuales().stream()
                 .map(this::mapToTicketDto)

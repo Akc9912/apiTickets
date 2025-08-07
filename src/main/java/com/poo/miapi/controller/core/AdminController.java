@@ -60,7 +60,7 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<UsuarioResponseDto> verUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id) {
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.verUsuarioPorId(id));
     }
 
@@ -73,7 +73,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     public ResponseEntity<UsuarioResponseDto> editarUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id,
+            @Parameter(description = "ID del usuario") @PathVariable int id,
             @Parameter(description = "Nuevos datos del usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
         return ResponseEntity.ok(adminService.editarUsuario(id, usuarioDto));
     }
@@ -86,7 +86,7 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<UsuarioResponseDto> activarUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id) {
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.activarUsuario(id));
     }
 
@@ -98,50 +98,93 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<UsuarioResponseDto> desactivarUsuario(
-            @Parameter(description = "ID del usuario") @PathVariable Long id) {
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.desactivarUsuario(id));
     }
 
-    // POST /api/admin/usuarios/{id}/bloquear - Bloquear usuario
-    @PostMapping("/usuarios/{id}/bloquear")
-    public ResponseEntity<UsuarioResponseDto> bloquearUsuario(@PathVariable Long id) {
+    // PUT /api/admin/usuarios/{id}/bloquear - Bloquear usuario
+    @PutMapping("/usuarios/{id}/bloquear")
+    @Operation(summary = "Bloquear usuario", description = "Bloquea un usuario del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario bloqueado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<UsuarioResponseDto> bloquearUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.bloquearUsuario(id));
     }
 
-    // POST /api/admin/usuarios/{id}/desbloquear - Desbloquear usuario
-    @PostMapping("/usuarios/{id}/desbloquear")
-    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(@PathVariable Long id) {
+    // PUT /api/admin/usuarios/{id}/desbloquear - Desbloquear usuario
+    @PutMapping("/usuarios/{id}/desbloquear")
+    @Operation(summary = "Desbloquear usuario", description = "Desbloquea un usuario del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario desbloqueado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.desbloquearUsuario(id));
     }
 
     // POST /api/admin/usuarios/{id}/reset-password - Resetear contraseña de usuario
     @PostMapping("/usuarios/{id}/reset-password")
-    public ResponseEntity<UsuarioResponseDto> resetearPassword(@PathVariable Long id) {
+    @Operation(summary = "Resetear contraseña", description = "Resetea la contraseña de un usuario a la por defecto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contraseña reseteada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<UsuarioResponseDto> resetearPassword(
+            @Parameter(description = "ID del usuario") @PathVariable int id) {
         return ResponseEntity.ok(adminService.blanquearPassword(id));
     }
 
     // PUT /api/admin/usuarios/{id}/rol - Cambiar el rol de un usuario
     @PutMapping("/usuarios/{id}/rol")
-    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
+    @Operation(summary = "Cambiar rol de usuario", description = "Cambia el rol de un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rol cambiado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "Rol inválido")
+    })
+    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(
+            @Parameter(description = "ID del usuario") @PathVariable int id,
+            @Parameter(description = "Datos del nuevo rol") @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
         return ResponseEntity.ok(adminService.cambiarRolUsuario(id, cambiarRolDto));
     }
 
     // GET /api/admin/tickets - Listar todos los tickets del sistema
     @GetMapping("/tickets")
+    @Operation(summary = "Listar todos los tickets", description = "Obtiene una lista de todos los tickets del sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente")
+    })
     public ResponseEntity<List<TicketResponseDto>> listarTickets() {
         return ResponseEntity.ok(adminService.listarTodosLosTickets());
     }
 
     // POST /api/admin/tickets/{id}/reabrir - Reabrir un ticket cerrado
     @PostMapping("/tickets/{id}/reabrir")
-    public ResponseEntity<TicketResponseDto> reabrirTicket(@PathVariable Long id, @RequestParam String comentario) {
+    @Operation(summary = "Reabrir ticket", description = "Reabre un ticket que fue cerrado previamente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ticket reabierto exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
+            @ApiResponse(responseCode = "400", description = "El ticket no puede ser reabierto")
+    })
+    public ResponseEntity<TicketResponseDto> reabrirTicket(
+            @Parameter(description = "ID del ticket") @PathVariable int id,
+            @Parameter(description = "Comentario sobre la reapertura") @RequestParam String comentario) {
         return ResponseEntity.ok(adminService.reabrirTicket(id, comentario));
     }
 
     // GET /api/admin/usuarios/rol?rol=TECNICO - Listar usuarios por rol
     @GetMapping("/usuarios/rol")
-    public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(@RequestParam String rol) {
+    @Operation(summary = "Listar usuarios por rol", description = "Obtiene una lista de usuarios filtrados por rol")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios por rol obtenida exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Rol inválido")
+    })
+    public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(
+            @Parameter(description = "Rol a filtrar (ADMIN, TECNICO, TRABAJADOR, SUPERADMIN)") @RequestParam String rol) {
         return ResponseEntity.ok(adminService.listarUsuariosPorRol(rol));
     }
 

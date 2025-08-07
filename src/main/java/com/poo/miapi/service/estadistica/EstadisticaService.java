@@ -30,27 +30,27 @@ public class EstadisticaService {
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
     }
 
-    public long cantidadTotalTickets() {
-        return ticketRepository.count();
+    public int cantidadTotalTickets() {
+        return (int) ticketRepository.count();
     }
 
-    public long cantidadTicketsPorEstado(EstadoTicket estado) {
+    public int cantidadTicketsPorEstado(EstadoTicket estado) {
         return ticketRepository.findByEstado(estado).size();
     }
 
-    public long cantidadTotalUsuarios() {
-        return usuarioRepository.count();
+    public int cantidadTotalUsuarios() {
+        return (int) usuarioRepository.count();
     }
 
-    public long cantidadTotalTecnicos() {
-        return tecnicoRepository.count();
+    public int cantidadTotalTecnicos() {
+        return (int) tecnicoRepository.count();
     }
 
-    public long cantidadTotalTrabajadores() {
-        return trabajadorRepository.count();
+    public int cantidadTotalTrabajadores() {
+        return (int) trabajadorRepository.count();
     }
 
-    public long cantidadIncidentesTecnicos() {
-        return incidenteTecnicoRepository.count();
+    public int cantidadIncidentesTecnicos() {
+        return (int) incidenteTecnicoRepository.count();
     }
 }

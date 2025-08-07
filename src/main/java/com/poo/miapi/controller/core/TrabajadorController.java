@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class TrabajadorController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el ticket")
     })
     public TicketResponseDto crearTicket(
-            @Parameter(description = "Datos del nuevo ticket") @RequestBody TicketRequestDto dto) {
+            @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto) {
         return trabajadorService.crearTicket(dto);
     }
 
