@@ -60,6 +60,21 @@ public class DataInitializer implements CommandLineRunner {
                 }
             }
             
+            // Verificar si el Admin ya existe
+            String adminEmail = "admin@sistema.com";
+            long countAdmin = usuarioRepository.countByEmail(adminEmail);
+            boolean existeAdmin = countAdmin > 0;
+            logger.info("Verificando existencia del Admin:");
+            logger.info("   Email a buscar: {}", adminEmail);
+            logger.info("   Cantidad encontrada: {}", countAdmin);
+            logger.info("   ¿Ya existe?: {}", existeAdmin);
+            if (!existeAdmin) {
+                logger.info("Admin no existe. Procediendo a crear...");
+                crearAdminPorDefecto(adminEmail);
+            } else {
+                logger.info("Admin ya existe en el sistema. No es necesario crear uno nuevo.");
+            }
+            
             // Mostrar el total final de usuarios
             long totalFinal = usuarioRepository.count();
             logger.info("Total final de usuarios en la base de datos: {}", totalFinal);
@@ -103,6 +118,38 @@ public class DataInitializer implements CommandLineRunner {
             
         } catch (Exception e) {
             logger.error("Error al crear SuperAdmin: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+    
+    private void crearAdminPorDefecto(String email) {
+        try {
+            logger.info("Creando Admin por defecto...");
+            com.poo.miapi.model.core.Admin admin = new com.poo.miapi.model.core.Admin();
+            admin.setNombre("Admin");
+            admin.setApellido("Sistema");
+            admin.setEmail(email);
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRol(com.poo.miapi.model.enums.Rol.ADMIN);
+            admin.setActivo(true);
+            admin.setBloqueado(false);
+            admin.setCambiarPass(true);
+            logger.info("Datos del Admin a crear:");
+            logger.info("   Email: {}", admin.getEmail());
+            logger.info("   Nombre: {} {}", admin.getNombre(), admin.getApellido());
+            logger.info("   Rol: {}", admin.getRol());
+            logger.info("   Tipo Usuario: {}", admin.getTipoUsuario());
+            logger.info("   Activo: {}", admin.isActivo());
+            logger.info("   Bloqueado: {}", admin.isBloqueado());
+            com.poo.miapi.model.core.Admin savedAdmin = usuarioRepository.save(admin);
+            logger.info("Admin creado exitosamente:");
+            logger.info("   ID generado: {}", savedAdmin.getId());
+            logger.info("   Password inicial: admin123");
+            logger.info("   IMPORTANTE: Cambiar la contraseña después del primer login");
+            long countVerificacion = usuarioRepository.countByEmail(email);
+            logger.info("Verificación post-creación: count = {}", countVerificacion);
+        } catch (Exception e) {
+            logger.error("Error al crear Admin: {}", e.getMessage(), e);
             throw e;
         }
     }

@@ -56,8 +56,8 @@ public class SecurityConfig {
             .requestMatchers("/webjars/**").permitAll()
             .requestMatchers("/").permitAll()
             .requestMatchers("/index.html").permitAll()
-            .requestMatchers("/api/superadmin/**").hasRole("SUPERADMIN")
-            .requestMatchers("/api/admin/**").hasAnyRole("SUPERADMIN", "ADMIN")
+            .requestMatchers("/api/superadmin/**").hasRole("SUPER_ADMIN")
+            .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

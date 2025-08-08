@@ -1932,3 +1932,1160 @@ java.lang.IllegalArgumentException: Contraseña incorrecta
 2025-08-08 01:01:49 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
 2025-08-08 01:01:49 - Secured POST /api/auth/login
 2025-08-08 01:01:49 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:02:54 - Securing OPTIONS /api/auth/login
+2025-08-08 01:02:54 - Securing POST /api/auth/login
+2025-08-08 01:02:54 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:02:54 - Secured POST /api/auth/login
+2025-08-08 01:02:54 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:05:21 - Securing OPTIONS /api/auth/login
+2025-08-08 01:05:21 - Securing POST /api/auth/login
+2025-08-08 01:05:21 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:05:21 - Secured POST /api/auth/login
+2025-08-08 01:05:21 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:06:32 - Securing OPTIONS /api/auth/login
+2025-08-08 01:06:32 - Securing POST /api/auth/login
+2025-08-08 01:06:32 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:06:32 - Secured POST /api/auth/login
+2025-08-08 01:06:32 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:07:34 - Securing OPTIONS /api/auth/login
+2025-08-08 01:07:34 - Securing POST /api/auth/login
+2025-08-08 01:07:34 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:07:34 - Secured POST /api/auth/login
+2025-08-08 01:07:34 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:07:39 - Securing OPTIONS /api/auth/login
+2025-08-08 01:07:39 - Securing POST /api/auth/login
+2025-08-08 01:07:39 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:07:39 - Secured POST /api/auth/login
+2025-08-08 01:07:39 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:09:04 - Securing OPTIONS /api/auth/login
+2025-08-08 01:09:04 - Securing POST /api/auth/login
+2025-08-08 01:09:04 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:09:04 - Secured POST /api/auth/login
+2025-08-08 01:09:04 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:09:26 - Securing OPTIONS /api/auth/login
+2025-08-08 01:09:26 - Securing POST /api/auth/login
+2025-08-08 01:09:26 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:09:26 - Secured POST /api/auth/login
+2025-08-08 01:09:27 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:08 - Securing GET /api/admin/usuarios
+2025-08-08 01:11:08 - No se encontró el header Authorization o no es Bearer. Request: GET /api/admin/usuarios
+2025-08-08 01:11:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:11:08 - Securing GET /error
+2025-08-08 01:11:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:11:08 - Securing GET /api/admin/usuarios
+2025-08-08 01:11:08 - No se encontró el header Authorization o no es Bearer. Request: GET /api/admin/usuarios
+2025-08-08 01:11:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:11:08 - Securing GET /error
+2025-08-08 01:11:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:11:22 - Securing OPTIONS /api/usuarios
+2025-08-08 01:11:22 - Securing POST /api/usuarios
+2025-08-08 01:11:22 - No se encontró el header Authorization o no es Bearer. Request: POST /api/usuarios
+2025-08-08 01:11:22 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:22 - Saved request http://localhost:8080/api/usuarios?continue to session
+2025-08-08 01:11:22 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:11:22 - Securing POST /error
+2025-08-08 01:11:22 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:11:22 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:11:22 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:15:00 - Securing OPTIONS /api/usuarios
+2025-08-08 01:15:00 - Securing POST /api/usuarios
+2025-08-08 01:15:00 - No se encontró el header Authorization o no es Bearer. Request: POST /api/usuarios
+2025-08-08 01:15:00 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:15:00 - Saved request http://localhost:8080/api/usuarios?continue to session
+2025-08-08 01:15:00 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:15:00 - Securing POST /error
+2025-08-08 01:15:00 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:15:00 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:15:00 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:25:17 - Securing OPTIONS /api/auth/login
+2025-08-08 01:25:17 - Securing POST /api/auth/login
+2025-08-08 01:25:17 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:25:17 - Secured POST /api/auth/login
+2025-08-08 01:25:17 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:28:23 - Securing OPTIONS /api/auth/login
+2025-08-08 01:28:23 - Securing POST /api/auth/login
+2025-08-08 01:28:23 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:28:23 - Secured POST /api/auth/login
+2025-08-08 01:28:23 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:28:25 - Securing POST /api/auth/login
+2025-08-08 01:28:25 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:28:25 - Secured POST /api/auth/login
+2025-08-08 01:28:25 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:28:27 - Securing POST /api/auth/login
+2025-08-08 01:28:27 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:28:27 - Secured POST /api/auth/login
+2025-08-08 01:28:27 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:29:36 - Securing OPTIONS /api/auth/login
+2025-08-08 01:29:36 - Securing POST /api/auth/login
+2025-08-08 01:29:36 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:29:36 - Secured POST /api/auth/login
+2025-08-08 01:29:36 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:29:43 - Securing OPTIONS /api/auth/login
+2025-08-08 01:29:43 - Securing POST /api/auth/login
+2025-08-08 01:29:43 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:29:43 - Secured POST /api/auth/login
+2025-08-08 01:29:43 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:30:41 - Securing OPTIONS /api/auth/login
+2025-08-08 01:30:41 - Securing POST /api/auth/login
+2025-08-08 01:30:41 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:30:41 - Secured POST /api/auth/login
+2025-08-08 01:30:41 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:31:30 - Securing OPTIONS /api/auth/login
+2025-08-08 01:31:30 - Securing POST /api/auth/login
+2025-08-08 01:31:30 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:31:30 - Secured POST /api/auth/login
+2025-08-08 01:31:30 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:32:22 - Securing OPTIONS /api/auth/login
+2025-08-08 01:32:22 - Securing POST /api/auth/login
+2025-08-08 01:32:22 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:32:22 - Secured POST /api/auth/login
+2025-08-08 01:32:22 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:32:40 - Securing OPTIONS /api/auth/login
+2025-08-08 01:32:40 - Securing POST /api/auth/login
+2025-08-08 01:32:40 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:32:40 - Secured POST /api/auth/login
+2025-08-08 01:32:40 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:32:50 - Securing OPTIONS /api/auth/login
+2025-08-08 01:32:50 - Securing POST /api/auth/login
+2025-08-08 01:32:50 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:32:50 - Secured POST /api/auth/login
+2025-08-08 01:32:50 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:34:34 - Securing OPTIONS /api/auth/login
+2025-08-08 01:34:34 - Securing POST /api/auth/login
+2025-08-08 01:34:34 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:34:34 - Secured POST /api/auth/login
+2025-08-08 01:34:34 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:35:37 - Securing OPTIONS /api/auth/login
+2025-08-08 01:35:37 - Securing POST /api/auth/login
+2025-08-08 01:35:37 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:35:37 - Secured POST /api/auth/login
+2025-08-08 01:35:37 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:43 - Securing OPTIONS /api/auth/login
+2025-08-08 01:36:43 - Securing POST /api/auth/login
+2025-08-08 01:36:43 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 01:36:43 - Secured POST /api/auth/login
+2025-08-08 01:36:43 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:43 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:36:43 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:36:44 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:36:44 - Securing OPTIONS /api/tickets
+2025-08-08 01:36:44 - Securing OPTIONS /api/tickets
+2025-08-08 01:36:44 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:36:44 - Securing GET /api/tickets
+2025-08-08 01:36:44 - Securing GET /api/admin/usuarios
+2025-08-08 01:36:44 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:36:44 - Secured GET /api/tickets
+2025-08-08 01:36:44 - Responding with 403 status code
+2025-08-08 01:36:44 - Securing GET /error
+2025-08-08 01:36:44 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:44 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:44 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:44 - Securing GET /api/admin/usuarios
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Securing GET /error
+2025-08-08 01:36:44 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:44 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:44 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Responding with 403 status code
+2025-08-08 01:36:44 - Securing GET /error
+2025-08-08 01:36:44 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:44 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:44 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:44 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:36:44 - Securing GET /error
+2025-08-08 01:36:44 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:44 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:44 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:44 - Securing GET /api/tickets
+2025-08-08 01:36:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:44 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:44 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:44 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:44 - Secured GET /api/tickets
+2025-08-08 01:36:55 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:36:55 - Securing OPTIONS /api/tickets
+2025-08-08 01:36:55 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:36:55 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:36:55 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:36:55 - Securing OPTIONS /api/tickets
+2025-08-08 01:36:55 - Securing GET /api/admin/usuarios
+2025-08-08 01:36:55 - Securing GET /api/tickets
+2025-08-08 01:36:55 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Secured GET /api/tickets
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:36:55 - Responding with 403 status code
+2025-08-08 01:36:55 - Securing GET /api/tickets
+2025-08-08 01:36:55 - Securing GET /error
+2025-08-08 01:36:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:55 - Securing GET /api/admin/usuarios
+2025-08-08 01:36:55 - Securing GET /error
+2025-08-08 01:36:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:55 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Secured GET /api/tickets
+2025-08-08 01:36:55 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:36:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:36:55 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:36:55 - Authentication actual en SecurityContext: null
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Responding with 403 status code
+2025-08-08 01:36:55 - Securing GET /error
+2025-08-08 01:36:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:55 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:36:55 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:36:55 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:36:55 - Securing GET /error
+2025-08-08 01:36:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:36:55 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:36:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:37:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:37:02 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Securing OPTIONS /api/tickets
+2025-08-08 01:37:02 - Securing OPTIONS /api/tickets
+2025-08-08 01:37:02 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:37:02 - Securing GET /api/tickets
+2025-08-08 01:37:02 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Secured GET /api/tickets
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Responding with 403 status code
+2025-08-08 01:37:02 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Securing GET /error
+2025-08-08 01:37:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:37:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:37:02 - Securing GET /error
+2025-08-08 01:37:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:37:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:37:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:37:02 - Securing GET /api/tickets
+2025-08-08 01:37:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:37:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Responding with 403 status code
+2025-08-08 01:37:02 - Securing GET /error
+2025-08-08 01:37:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:37:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:37:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:37:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:37:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:37:02 - Secured GET /api/tickets
+2025-08-08 01:37:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:37:02 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:37:02 - Securing GET /error
+2025-08-08 01:37:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:37:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:37:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:05 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:38:05 - Securing OPTIONS /api/tickets
+2025-08-08 01:38:05 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Securing GET /api/tickets
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:05 - Securing GET /error
+2025-08-08 01:38:05 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:05 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:05 - Secured GET /api/tickets
+2025-08-08 01:38:05 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:38:05 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:05 - Responding with 403 status code
+2025-08-08 01:38:05 - Securing GET /error
+2025-08-08 01:38:05 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:05 - Securing GET /error
+2025-08-08 01:38:05 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:05 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:05 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:05 - Securing GET /api/tickets
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Secured GET /api/tickets
+2025-08-08 01:38:05 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:05 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:05 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:05 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:05 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:05 - Responding with 403 status code
+2025-08-08 01:38:05 - Securing GET /error
+2025-08-08 01:38:05 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:05 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:05 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:16 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:38:16 - Securing OPTIONS /api/tickets
+2025-08-08 01:38:16 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:16 - Securing GET /api/tickets
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Secured GET /api/tickets
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:16 - Securing GET /error
+2025-08-08 01:38:16 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:16 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:16 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:38:16 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:16 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:16 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - Securing GET /api/tickets
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Responding with 403 status code
+2025-08-08 01:38:16 - Securing GET /error
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:16 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:16 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:16 - Secured GET /api/tickets
+2025-08-08 01:38:16 - Securing GET /error
+2025-08-08 01:38:16 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:16 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:16 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:16 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:16 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:16 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:16 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:16 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:16 - Responding with 403 status code
+2025-08-08 01:38:16 - Securing GET /error
+2025-08-08 01:38:16 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:16 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:16 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:20 - Securing GET /api/tickets
+2025-08-08 01:38:20 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:20 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Secured GET /api/tickets
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Responding with 403 status code
+2025-08-08 01:38:20 - Securing GET /error
+2025-08-08 01:38:20 - Securing GET /error
+2025-08-08 01:38:20 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:20 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:20 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:20 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:20 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:20 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:20 - Securing GET /api/tickets
+2025-08-08 01:38:20 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:20 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:20 - Securing GET /error
+2025-08-08 01:38:20 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:20 - Secured GET /api/tickets
+2025-08-08 01:38:20 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:20 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:20 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:20 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:20 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:20 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:20 - Responding with 403 status code
+2025-08-08 01:38:20 - Securing GET /error
+2025-08-08 01:38:20 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:20 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:20 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:29 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:38:29 - Securing OPTIONS /api/tickets
+2025-08-08 01:38:29 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:38:29 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:38:29 - Securing GET /api/tickets
+2025-08-08 01:38:29 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:29 - Securing OPTIONS /api/tickets
+2025-08-08 01:38:29 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:38:29 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Responding with 403 status code
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Secured GET /api/tickets
+2025-08-08 01:38:29 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:29 - Securing GET /error
+2025-08-08 01:38:29 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:29 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:29 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:29 - Securing GET /error
+2025-08-08 01:38:29 - Securing GET /api/admin/usuarios
+2025-08-08 01:38:29 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:29 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:29 - Securing GET /api/tickets
+2025-08-08 01:38:29 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:38:29 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:38:29 - Authentication actual en SecurityContext: null
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Secured GET /api/tickets
+2025-08-08 01:38:29 - Responding with 403 status code
+2025-08-08 01:38:29 - Securing GET /error
+2025-08-08 01:38:29 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:38:29 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:29 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:38:29 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:29 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:38:29 - Securing GET /error
+2025-08-08 01:38:29 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:38:29 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:38:29 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:09 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:41:09 - Securing OPTIONS /api/tickets
+2025-08-08 01:41:09 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:41:09 - Securing OPTIONS /api/tickets
+2025-08-08 01:41:09 - Securing OPTIONS /api/estadisticas/dashboard
+2025-08-08 01:41:09 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:41:09 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Securing GET /api/tickets
+2025-08-08 01:41:09 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - Securing GET /error
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:09 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Secured GET /api/tickets
+2025-08-08 01:41:09 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:09 - Securing GET /api/admin/usuarios
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Securing GET /api/estadisticas/dashboard
+2025-08-08 01:41:09 - Securing GET /api/tickets
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Responding with 403 status code
+2025-08-08 01:41:09 - Securing GET /error
+2025-08-08 01:41:09 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Secured GET /api/estadisticas/dashboard
+2025-08-08 01:41:09 - Secured GET /api/tickets
+2025-08-08 01:41:09 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:09 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:09 - Securing GET /error
+2025-08-08 01:41:09 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:09 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:09 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:09 - Securing GET /api/admin/usuarios
+2025-08-08 01:41:09 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:09 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:09 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:09 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:09 - Responding with 403 status code
+2025-08-08 01:41:09 - Securing GET /error
+2025-08-08 01:41:09 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:09 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:09 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:14 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:41:14 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:41:14 - Securing GET /api/admin/usuarios
+2025-08-08 01:41:14 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:14 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:14 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:14 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:14 - Responding with 403 status code
+2025-08-08 01:41:14 - Securing GET /error
+2025-08-08 01:41:14 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:14 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:14 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:41:14 - Securing GET /api/admin/usuarios
+2025-08-08 01:41:14 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:41:14 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:41:14 - Authentication actual en SecurityContext: null
+2025-08-08 01:41:14 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:41:14 - Responding with 403 status code
+2025-08-08 01:41:14 - Securing GET /error
+2025-08-08 01:41:14 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:41:14 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:41:14 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:48:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:48:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:48:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:48:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:48:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:48:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:48:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:48:02 - Responding with 403 status code
+2025-08-08 01:48:02 - Securing GET /error
+2025-08-08 01:48:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:48:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:48:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:48:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:48:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:48:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:48:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:48:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:48:02 - Responding with 403 status code
+2025-08-08 01:48:02 - Securing GET /error
+2025-08-08 01:48:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:48:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:48:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:49:42 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:49:42 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:49:42 - Securing GET /api/admin/usuarios
+2025-08-08 01:49:42 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:49:42 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:49:42 - Authentication actual en SecurityContext: null
+2025-08-08 01:49:42 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:49:42 - Responding with 403 status code
+2025-08-08 01:49:42 - Securing GET /error
+2025-08-08 01:49:42 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:49:42 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:49:42 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:49:42 - Securing GET /api/admin/usuarios
+2025-08-08 01:49:42 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:49:42 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:49:42 - Authentication actual en SecurityContext: null
+2025-08-08 01:49:42 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:49:42 - Responding with 403 status code
+2025-08-08 01:49:42 - Securing GET /error
+2025-08-08 01:49:42 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:49:42 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:49:42 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:51:31 - Securing OPTIONS /api/tickets
+2025-08-08 01:51:31 - Securing OPTIONS /api/tickets
+2025-08-08 01:51:31 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:51:31 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:51:31 - Securing GET /api/tickets
+2025-08-08 01:51:31 - Securing GET /api/admin/tecnicos
+2025-08-08 01:51:31 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:31 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:31 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:31 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:31 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:31 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:31 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:31 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:31 - Secured GET /api/tickets
+2025-08-08 01:51:31 - Responding with 403 status code
+2025-08-08 01:51:31 - Securing GET /error
+2025-08-08 01:51:31 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:51:31 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:51:31 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:51:31 - Securing GET /api/admin/tecnicos
+2025-08-08 01:51:31 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:31 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:31 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:31 - Securing GET /api/tickets
+2025-08-08 01:51:31 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:31 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:31 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:31 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:31 - Responding with 403 status code
+2025-08-08 01:51:31 - Securing GET /error
+2025-08-08 01:51:31 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:51:31 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:51:31 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:51:31 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:31 - Secured GET /api/tickets
+2025-08-08 01:51:33 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:51:33 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:51:33 - Securing GET /api/admin/usuarios
+2025-08-08 01:51:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:33 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:33 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:33 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:33 - Responding with 403 status code
+2025-08-08 01:51:33 - Securing GET /error
+2025-08-08 01:51:33 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:51:33 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:51:33 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:51:33 - Securing GET /api/admin/usuarios
+2025-08-08 01:51:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:51:33 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:51:33 - Authentication actual en SecurityContext: null
+2025-08-08 01:51:34 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:51:34 - Responding with 403 status code
+2025-08-08 01:51:34 - Securing GET /error
+2025-08-08 01:51:34 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:51:34 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:51:34 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:54:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:54:02 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:54:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:54:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:02 - Responding with 403 status code
+2025-08-08 01:54:02 - Securing GET /error
+2025-08-08 01:54:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:54:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:54:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:54:02 - Securing GET /api/admin/usuarios
+2025-08-08 01:54:02 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:02 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:02 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:02 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:02 - Responding with 403 status code
+2025-08-08 01:54:02 - Securing GET /error
+2025-08-08 01:54:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:54:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:54:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:54:08 - Securing OPTIONS /api/tickets
+2025-08-08 01:54:08 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:54:08 - Securing OPTIONS /api/tickets
+2025-08-08 01:54:08 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:54:08 - Securing GET /api/tickets
+2025-08-08 01:54:08 - Securing GET /api/admin/tecnicos
+2025-08-08 01:54:08 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:08 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:08 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:08 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:08 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:08 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:08 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:08 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:08 - Responding with 403 status code
+2025-08-08 01:54:08 - Secured GET /api/tickets
+2025-08-08 01:54:08 - Securing GET /error
+2025-08-08 01:54:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:54:08 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:54:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:54:08 - Securing GET /api/admin/tecnicos
+2025-08-08 01:54:08 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:08 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:08 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:08 - Securing GET /api/tickets
+2025-08-08 01:54:08 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:08 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:08 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:08 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:08 - Responding with 403 status code
+2025-08-08 01:54:08 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:08 - Securing GET /error
+2025-08-08 01:54:08 - Secured GET /api/tickets
+2025-08-08 01:54:08 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:54:08 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:54:08 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:54:45 - Securing OPTIONS /api/tickets
+2025-08-08 01:54:45 - Securing POST /api/tickets
+2025-08-08 01:54:45 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:54:45 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:54:45 - Authentication actual en SecurityContext: null
+2025-08-08 01:54:45 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:54:45 - Secured POST /api/tickets
+2025-08-08 01:54:45 - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: jakarta.persistence.EntityNotFoundException: Trabajador no encontrado] with root cause
+jakarta.persistence.EntityNotFoundException: Trabajador no encontrado
+	at com.poo.miapi.service.core.TicketService.lambda$6(TicketService.java:79)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.poo.miapi.service.core.TicketService.crearTicket(TicketService.java:79)
+	at com.poo.miapi.controller.core.TicketController.crearTicket(TicketController.java:73)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.poo.miapi.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:61)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-08-08 01:54:45 - Securing POST /error
+2025-08-08 01:54:45 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:54:45 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:54:45 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:56:52 - Securing OPTIONS /api/tickets
+2025-08-08 01:56:52 - Securing POST /api/tickets
+2025-08-08 01:56:52 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:56:52 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:56:52 - Authentication actual en SecurityContext: null
+2025-08-08 01:56:52 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:56:52 - Secured POST /api/tickets
+2025-08-08 01:56:52 - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: jakarta.persistence.EntityNotFoundException: Trabajador no encontrado] with root cause
+jakarta.persistence.EntityNotFoundException: Trabajador no encontrado
+	at com.poo.miapi.service.core.TicketService.lambda$6(TicketService.java:79)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.poo.miapi.service.core.TicketService.crearTicket(TicketService.java:79)
+	at com.poo.miapi.controller.core.TicketController.crearTicket(TicketController.java:73)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.poo.miapi.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:61)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-08-08 01:56:52 - Securing POST /error
+2025-08-08 01:56:52 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:56:52 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:56:52 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:57:28 - Securing OPTIONS /api/tickets
+2025-08-08 01:57:28 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:57:28 - Securing OPTIONS /api/tickets
+2025-08-08 01:57:28 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 01:57:28 - Securing GET /api/tickets
+2025-08-08 01:57:28 - Securing GET /api/admin/tecnicos
+2025-08-08 01:57:28 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:28 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:28 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:28 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:28 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:28 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:28 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:28 - Responding with 403 status code
+2025-08-08 01:57:28 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:28 - Securing GET /error
+2025-08-08 01:57:28 - Secured GET /api/tickets
+2025-08-08 01:57:28 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:57:28 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:57:28 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:57:28 - Securing GET /api/admin/tecnicos
+2025-08-08 01:57:28 - Securing GET /api/tickets
+2025-08-08 01:57:28 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:28 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:28 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:28 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:28 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:28 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:28 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:28 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:28 - Secured GET /api/tickets
+2025-08-08 01:57:28 - Responding with 403 status code
+2025-08-08 01:57:28 - Securing GET /error
+2025-08-08 01:57:28 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:57:28 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:57:28 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:57:30 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:57:30 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 01:57:30 - Securing GET /api/admin/usuarios
+2025-08-08 01:57:30 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:30 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:30 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:30 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:30 - Responding with 403 status code
+2025-08-08 01:57:30 - Securing GET /error
+2025-08-08 01:57:30 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:57:30 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:57:30 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 01:57:30 - Securing GET /api/admin/usuarios
+2025-08-08 01:57:30 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 01:57:30 - Email extraído del token: superadmin@sistema.com
+2025-08-08 01:57:30 - Authentication actual en SecurityContext: null
+2025-08-08 01:57:30 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 01:57:30 - Responding with 403 status code
+2025-08-08 01:57:30 - Securing GET /error
+2025-08-08 01:57:30 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 01:57:30 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 01:57:30 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:00:06 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:00:06 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:00:06 - Securing GET /api/admin/usuarios
+2025-08-08 02:00:06 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 02:00:06 - Email extraído del token: superadmin@sistema.com
+2025-08-08 02:00:06 - Authentication actual en SecurityContext: null
+2025-08-08 02:00:06 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 02:00:06 - Responding with 403 status code
+2025-08-08 02:00:06 - Securing GET /error
+2025-08-08 02:00:06 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:00:06 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:00:06 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:00:06 - Securing GET /api/admin/usuarios
+2025-08-08 02:00:06 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQHNpc3RlbWEuY29tIiwiaWQiOjIsInJvbCI6IlNVUEVSQURNSU4iLCJpYXQiOjE3NTQ2Mjc4MDMsImV4cCI6MTc1NDY2MzgwM30.04VBthiRpV8zIwMwIVgNFAvjrR1Kvqm0GYhPntTbbB8
+2025-08-08 02:00:06 - Email extraído del token: superadmin@sistema.com
+2025-08-08 02:00:06 - Authentication actual en SecurityContext: null
+2025-08-08 02:00:07 - Token válido para usuario: superadmin@sistema.com
+2025-08-08 02:00:07 - Responding with 403 status code
+2025-08-08 02:00:07 - Securing GET /error
+2025-08-08 02:00:07 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:00:07 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:00:07 - Pre-authenticated entry point called. Rejecting access
