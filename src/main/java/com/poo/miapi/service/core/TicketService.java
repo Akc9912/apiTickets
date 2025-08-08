@@ -2,7 +2,7 @@ package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.repository.core.TicketRepository;

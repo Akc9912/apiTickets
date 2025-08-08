@@ -1,6 +1,6 @@
 package com.poo.miapi.dto.usuario;
 
-import com.poo.miapi.model.core.Rol;
+import com.poo.miapi.model.enums.Rol;
 
 public class UsuarioResponseDto {
     private int id;
@@ -8,6 +8,7 @@ public class UsuarioResponseDto {
     private String apellido;
     private String email;
     private Rol rol;
+    private boolean cambiarPass;
     private boolean activo;
     private boolean bloqueado;
 
@@ -16,21 +17,22 @@ public class UsuarioResponseDto {
     }
 
     // Constructor para crear un DTO a partir de un usuario
-    public UsuarioResponseDto(int id, String nombre, String apellido, String email, Rol rol, boolean activo,
+    public UsuarioResponseDto(int id, String nombre, String apellido, String email, Rol rol, boolean cambiarPass, boolean activo,
             boolean bloqueado) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.rol = rol;
+        this.cambiarPass = cambiarPass;
         this.activo = activo;
         this.bloqueado = bloqueado;
     }
 
     // Constructor helper para retrocompatibilidad con String
-    public UsuarioResponseDto(int id, String nombre, String apellido, String email, String rolString, boolean activo,
+    public UsuarioResponseDto(int id, String nombre, String apellido, String email, String rolString, boolean cambiarPass, boolean activo,
             boolean bloqueado) {
-        this(id, nombre, apellido, email, rolString != null ? Rol.fromString(rolString) : null, activo, bloqueado);
+        this(id, nombre, apellido, email, rolString != null ? Rol.fromString(rolString) : null, cambiarPass, activo, bloqueado);
     }
 
     // Getters y setters
@@ -86,6 +88,14 @@ public class UsuarioResponseDto {
      */
     public String getRolAsString() {
         return rol != null ? rol.name() : null;
+    }
+
+    public boolean isCambiarPass() {
+        return cambiarPass;
+    }
+
+    public void setCambiarPass(boolean cambiarPass) {
+        this.cambiarPass = cambiarPass;
     }
 
     public boolean isActivo() {

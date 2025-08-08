@@ -4,6 +4,8 @@ import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
@@ -60,9 +62,9 @@ public class SuperAdminService {
             throw new IllegalArgumentException("El email ya está en uso");
         }
 
-        // Si el rol es SUPERADMIN, asegurarse de que no exista otro
-        if (usuarioDto.getRol() != null && usuarioDto.getRol() == Rol.SUPERADMIN) {
-            long superAdmins = usuarioRepository.countByRol(Rol.SUPERADMIN);
+        // Si el rol es SUPER_ADMIN, asegurarse de que no exista otro
+        if (usuarioDto.getRol() != null && usuarioDto.getRol() == Rol.SUPER_ADMIN) {
+            long superAdmins = usuarioRepository.countByRol(Rol.SUPER_ADMIN);
             if (superAdmins > 0) {
                 throw new IllegalStateException("Ya existe un SuperAdmin en el sistema. No se puede crear otro.");
             }
@@ -116,8 +118,8 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin
-        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN) {
-            long totalSuperAdmins = usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN);
+        if (usuario.getRol() == Rol.SUPER_ADMIN) {
+            long totalSuperAdmins = usuarioRepository.countByRol(Rol.SUPER_ADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede eliminar el último SuperAdmin del sistema");
             }
@@ -139,9 +141,9 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         // Verificar que no sea el último SuperAdmin activo
-        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN && usuario.isActivo()) {
+        if (usuario.getRol() == Rol.SUPER_ADMIN && usuario.isActivo()) {
             long superAdminsActivos = usuarioRepository
-                    .countByRolAndActivoTrue(com.poo.miapi.model.core.Rol.SUPERADMIN);
+                    .countByRolAndActivoTrue(Rol.SUPER_ADMIN);
             if (superAdminsActivos <= 1) {
                 throw new IllegalStateException("No se puede desactivar el último SuperAdmin activo");
             }
@@ -157,7 +159,7 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         // Los SuperAdmins no pueden ser bloqueados
-        if (usuario.getRol() == com.poo.miapi.model.core.Rol.SUPERADMIN) {
+        if (usuario.getRol() == Rol.SUPER_ADMIN) {
             throw new IllegalStateException("No se puede bloquear a un SuperAdmin");
         }
 
@@ -193,9 +195,9 @@ public class SuperAdminService {
         validarRol(usuarioCambioRol.getRol());
 
         // Verificar restricciones de SuperAdmin
-        if (usuario.getRol() == Rol.SUPERADMIN
-                && usuarioCambioRol.getRol() != Rol.SUPERADMIN) {
-            long totalSuperAdmins = usuarioRepository.countByRol(Rol.SUPERADMIN);
+        if (usuario.getRol() == Rol.SUPER_ADMIN
+                && usuarioCambioRol.getRol() != Rol.SUPER_ADMIN) {
+            long totalSuperAdmins = usuarioRepository.countByRol(Rol.SUPER_ADMIN);
             if (totalSuperAdmins <= 1) {
                 throw new IllegalStateException("No se puede cambiar el rol del último SuperAdmin");
             }
@@ -224,7 +226,7 @@ public class SuperAdminService {
     // === GESTIÓN DE ADMINISTRADORES ===
 
     public List<UsuarioResponseDto> listarAdministradores() {
-        return usuarioRepository.findByRolIn(List.of(Rol.SUPERADMIN, Rol.ADMIN)).stream()
+        return usuarioRepository.findByRolIn(List.of(Rol.SUPER_ADMIN, Rol.ADMIN)).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
@@ -233,7 +235,7 @@ public class SuperAdminService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if (usuario.getRol() == com.poo.miapi.model.core.Rol.ADMIN) {
+        if (usuario.getRol() == Rol.ADMIN) {
             throw new IllegalStateException("El usuario ya tiene permisos de administración");
         }
 
@@ -319,10 +321,10 @@ public class SuperAdminService {
         stats.put("totalUsuarios", usuarioRepository.count());
         stats.put("usuariosActivos", usuarioRepository.countByActivoTrue());
         stats.put("usuariosBloqueados", usuarioRepository.countByBloqueadoTrue());
-        stats.put("superAdmins", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.SUPERADMIN));
-        stats.put("admins", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.ADMIN));
-        stats.put("tecnicos", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.TECNICO));
-        stats.put("trabajadores", usuarioRepository.countByRol(com.poo.miapi.model.core.Rol.TRABAJADOR));
+        stats.put("superAdmins", usuarioRepository.countByRol(Rol.SUPER_ADMIN));
+        stats.put("admins", usuarioRepository.countByRol(Rol.ADMIN));
+        stats.put("tecnicos", usuarioRepository.countByRol(Rol.TECNICO));
+        stats.put("trabajadores", usuarioRepository.countByRol(Rol.TRABAJADOR));
         return stats;
     }
 
@@ -360,12 +362,11 @@ public class SuperAdminService {
         if (rol == null) {
             throw new IllegalArgumentException("El rol no puede ser nulo");
         }
-        // No necesitamos validación adicional ya que el enum garantiza valores válidos
     }
 
     private Usuario crearUsuarioPorRol(UsuarioRequestDto usuarioDto) {
         switch (usuarioDto.getRol()) {
-            case SUPERADMIN:
+            case SUPER_ADMIN:
                 return crearSuperAdmin(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
             case ADMIN:
                 return crearAdmin(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail());
@@ -402,6 +403,7 @@ public class SuperAdminService {
                 usuario.getApellido(),
                 usuario.getEmail(),
                 usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
     }

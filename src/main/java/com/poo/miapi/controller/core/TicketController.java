@@ -3,6 +3,7 @@ package com.poo.miapi.controller.core;
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.TicketService;
+import com.poo.miapi.model.enums.EstadoTicket;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+/**
+ * Controlador para gestión de tickets del sistema
+ * 
+ * NOTA IMPORTANTE sobre usuarios bloqueados:
+ * Los usuarios bloqueados pueden iniciar sesión pero NO pueden realizar acciones.
+ * Para verificar si un usuario puede realizar acciones, usar: usuario.puedeRealizarAcciones()
+ * 
+ * Ejemplo:
+ * if (!usuarioActual.puedeRealizarAcciones()) {
+ *     throw new IllegalStateException("Usuario bloqueado, no puede realizar acciones");
+ * }
+ */
 @RestController
 @RequestMapping("/api/tickets")
 @Tag(name = "Tickets", description = "Endpoints para gestión de tickets del sistema")
@@ -71,7 +84,7 @@ public class TicketController {
         public TicketResponseDto actualizarEstado(
                         @Parameter(description = "ID del ticket") @PathVariable int id,
                         @Parameter(description = "Nuevo estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                return ticketService.actualizarEstado(id, com.poo.miapi.model.core.EstadoTicket.valueOf(estado));
+                return ticketService.actualizarEstado(id, EstadoTicket.valueOf(estado));
         }
 
         // GET /api/tickets/estado?estado=NO_ATENDIDO - Listar tickets por estado
@@ -83,7 +96,7 @@ public class TicketController {
         })
         public List<TicketResponseDto> listarPorEstado(
                         @Parameter(description = "Estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                return ticketService.listarPorEstado(com.poo.miapi.model.core.EstadoTicket.valueOf(estado));
+                return ticketService.listarPorEstado(EstadoTicket.valueOf(estado));
         }
 
         // GET /api/tickets/creador?userId=... - Listar tickets por creador

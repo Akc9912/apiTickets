@@ -5,7 +5,7 @@ import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
-import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.enums.EstadoTicket;
 import org.springframework.stereotype.Service;
 
 @Service

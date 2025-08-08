@@ -4,6 +4,7 @@ import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.historial.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;

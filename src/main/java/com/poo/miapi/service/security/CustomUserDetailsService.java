@@ -19,8 +19,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Busca el usuario por email o username según tu modelo
-        return (UserDetails) usuarioRepository.findByEmail(username)
+        // Busca el usuario por email
+        var usuario = usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+        
+        // Verificación de seguridad: solo los usuarios INACTIVOS se tratan como si no existieran
+        // Los usuarios BLOQUEADOS pueden autenticarse pero no realizar acciones
+        if (!usuario.isActivo()) {
+            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+        }
+        
+        return (UserDetails) usuario;
     }
 }

@@ -4,6 +4,8 @@ import com.poo.miapi.dto.usuario.UsuarioRequestDto;
 import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
@@ -256,8 +258,8 @@ public class AdminService {
         if (rol == null) {
             throw new IllegalArgumentException("El rol no puede ser nulo");
         }
-        if (rol == Rol.SUPERADMIN) {
-            throw new IllegalArgumentException("No se puede asignar rol SUPERADMIN");
+        if (rol == Rol.SUPER_ADMIN) {
+            throw new IllegalArgumentException("No se puede asignar rol SUPER_ADMIN");
         }
     }
 
@@ -295,6 +297,7 @@ public class AdminService {
                 usuario.getApellido(),
                 usuario.getEmail(),
                 usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
     }

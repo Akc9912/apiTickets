@@ -5,6 +5,7 @@ import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;

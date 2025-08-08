@@ -28,16 +28,41 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    // Login: recibe LoginRequestDto, devuelve LoginResponseDto
+    /**
+     * Autenticación de usuario con medidas de seguridad mejoradas
+     * 
+     * Medidas de seguridad implementadas:
+     * 1. Los usuarios INACTIVOS se tratan como si no existieran (baja lógica)
+     * 2. Los usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones
+     * 3. Se ejecuta verificación de contraseña incluso para usuarios inexistentes 
+     *    para prevenir timing attacks
+     * 4. Mismo mensaje de error para usuarios inexistentes e inactivos
+     * 
+     * @param loginRequest Datos de login (email y contraseña)
+     * @return Token JWT y datos del usuario si la autenticación es exitosa
+     * @throws EntityNotFoundException Si el usuario no existe o está inactivo
+     * @throws IllegalArgumentException Si la contraseña es incorrecta
+     */
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+                .orElse(null);
 
-        if (!usuario.isActivo() || usuario.isBloqueado()) {
-            throw new IllegalStateException("Usuario inactivo o bloqueado");
+        // Siempre verificar la contraseña para evitar timing attacks
+        boolean passwordMatches = false;
+        if (usuario != null) {
+            passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword());
+        } else {
+            // Ejecutar una verificación dummy para mantener el mismo tiempo de respuesta
+            passwordEncoder.matches(loginRequest.getPassword(), "$2a$10$dummyHashToPreventTimingAttacks");
         }
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword())) {
+        // Verificación de seguridad: usuarios inexistentes o inactivos se tratan igual
+        // Los usuarios bloqueados SÍ pueden iniciar sesión pero no realizar acciones
+        if (usuario == null || !usuario.isActivo()) {
+            throw new EntityNotFoundException("Usuario no encontrado");
+        }
+
+        if (!passwordMatches) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
@@ -48,6 +73,7 @@ public class AuthService {
                 usuario.getApellido(),
                 usuario.getEmail(),
                 usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
 

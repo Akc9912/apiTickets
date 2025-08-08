@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import com.poo.miapi.model.core.Rol;
+import com.poo.miapi.model.enums.Rol;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {

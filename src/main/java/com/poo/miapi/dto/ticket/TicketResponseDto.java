@@ -2,7 +2,7 @@ package com.poo.miapi.dto.ticket;
 
 import java.time.LocalDateTime;
 
-import com.poo.miapi.model.core.EstadoTicket;
+import com.poo.miapi.model.enums.EstadoTicket;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
