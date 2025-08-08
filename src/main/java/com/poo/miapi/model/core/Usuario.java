@@ -1,12 +1,16 @@
+
 package com.poo.miapi.model.core;
 import com.poo.miapi.model.enums.Rol;
-
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_usuario")
 @Entity
-public abstract class Usuario {
+
+public abstract class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +61,38 @@ public abstract class Usuario {
 
     public String getEmail() {
         return this.email;
+    }
+
+    // Implementación de UserDetails
+    @Override
+    public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
+        // Usa el rol como autoridad
+        return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + (rol != null ? rol.name() : "USER")));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.bloqueado;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.activo;
     }
 
     public String getPassword() {

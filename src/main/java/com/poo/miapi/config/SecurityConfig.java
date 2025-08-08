@@ -16,6 +16,18 @@ import com.poo.miapi.service.security.JwtService;
 
 @Configuration
 public class SecurityConfig {
+    // Configuración global de CORS
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(java.util.List.of("*"));
+        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.List.of("*"));
+        configuration.setAllowCredentials(true);
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     // Bean para codificar contraseñas
     @Bean
@@ -33,22 +45,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
             throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/").permitAll()
-                        .requestMatchers("/api-docs/**", "/api-docs", "/v3/api-docs/**", "/v3/api-docs").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/webjars/**").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/index.html").permitAll()
-                        .requestMatchers("/api/superadmin/**").hasRole("SUPERADMIN")
-                        .requestMatchers("/api/admin/**").hasAnyRole("SUPERADMIN", "ADMIN")
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/").permitAll()
+            .requestMatchers("/api-docs/**", "/api-docs", "/v3/api-docs/**", "/v3/api-docs").permitAll()
+            .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers("/webjars/**").permitAll()
+            .requestMatchers("/").permitAll()
+            .requestMatchers("/index.html").permitAll()
+            .requestMatchers("/api/superadmin/**").hasRole("SUPERADMIN")
+            .requestMatchers("/api/admin/**").hasAnyRole("SUPERADMIN", "ADMIN")
+            .anyRequest().authenticated())
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+    return http.build();
     }
 
     @Bean
