@@ -225,7 +225,7 @@ SELECT
 🎯 SIGUIENTE PASO:
    Iniciar la aplicación Spring Boot:
    ./mvnw spring-boot:run
-
+ 
 🔐 CREDENCIALES SuperAdmin (creadas automáticamente):
    Email: superadmin@sistema.com
    Password: secret
