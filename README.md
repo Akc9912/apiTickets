@@ -55,8 +55,17 @@ cd apiTickets
 ### **2. Configurar Base de Datos**
 
 ```bash
-# Ejecutar el script único que hace todo
+# 1. Configurar archivo .env (copiar desde ejemplo)
+cp .env.example .env
+# Editar .env con tus credenciales de MySQL
+
+# 2. Ejecutar el script único que hace todo
 mysql -u root -p < create_database.sql
+
+# 3. Verificar configuración (opcional)
+chmod +x verify_db_config.sh
+./verify_db_config.sh
+# En Windows: verify_db_config.bat
 ```
 
 > 📋 **Nota**: El script `create_database.sql` incluye:
@@ -66,6 +75,8 @@ mysql -u root -p < create_database.sql
 > - ✅ Configuración de enums `Rol` y `EstadoTicket`
 > - ✅ Datos iniciales (SuperAdmin)
 > - ✅ Índices optimizados
+
+> 🔒 **Seguridad**: Todas las configuraciones de DB se cargan desde `.env` (nunca hardcodeadas)
 
 ### **3. Iniciar la Aplicación**
 
