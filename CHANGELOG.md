@@ -9,9 +9,14 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### 📚 En Desarrollo
 
-- Mejoras en la interfaz de usuario
-- Optimizaciones de rendimiento
-- Nuevas funcionalidades de reportes
+### 🐞 Fixed
+
+## [1.0.1] - 2025-08-08
+
+### 🐞 Fixed
+
+- Problema de CORS resuelto: ahora las peticiones desde frontend funcionan correctamente.
+- Filtro JWT ajustado: autenticación y autorización robusta en endpoints protegidos.
 
 ## [1.0.0] - 2025-08-07
 
