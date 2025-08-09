@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class EstadisticaController {
 
     private final EstadisticaService estadisticaService;
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(EstadisticaController.class);
 
     public EstadisticaController(EstadisticaService estadisticaService) {
         this.estadisticaService = estadisticaService;
@@ -27,7 +28,10 @@ public class EstadisticaController {
             @ApiResponse(responseCode = "200", description = "Cantidad obtenida exitosamente")
     })
     public long cantidadTotalTickets() {
-        return estadisticaService.cantidadTotalTickets();
+    logger.info("[EstadisticaController] GET /tickets/total");
+    long resp = estadisticaService.cantidadTotalTickets();
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/estadisticas/tickets/estado?estado=NO_ATENDIDO
@@ -38,7 +42,10 @@ public class EstadisticaController {
     })
     public long cantidadTicketsPorEstado(
             @Parameter(description = "Estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam EstadoTicket estado) {
-        return estadisticaService.cantidadTicketsPorEstado(estado);
+    logger.info("[EstadisticaController] GET /tickets/estado estado: {}", estado);
+    long resp = estadisticaService.cantidadTicketsPorEstado(estado);
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/estadisticas/usuarios/total
@@ -48,7 +55,10 @@ public class EstadisticaController {
             @ApiResponse(responseCode = "200", description = "Cantidad obtenida exitosamente")
     })
     public long cantidadTotalUsuarios() {
-        return estadisticaService.cantidadTotalUsuarios();
+    logger.info("[EstadisticaController] GET /usuarios/total");
+    long resp = estadisticaService.cantidadTotalUsuarios();
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/estadisticas/tecnicos/total
@@ -58,7 +68,10 @@ public class EstadisticaController {
             @ApiResponse(responseCode = "200", description = "Cantidad obtenida exitosamente")
     })
     public long cantidadTotalTecnicos() {
-        return estadisticaService.cantidadTotalTecnicos();
+    logger.info("[EstadisticaController] GET /tecnicos/total");
+    long resp = estadisticaService.cantidadTotalTecnicos();
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/estadisticas/trabajadores/total
@@ -68,7 +81,10 @@ public class EstadisticaController {
             @ApiResponse(responseCode = "200", description = "Cantidad obtenida exitosamente")
     })
     public long cantidadTotalTrabajadores() {
-        return estadisticaService.cantidadTotalTrabajadores();
+    logger.info("[EstadisticaController] GET /trabajadores/total");
+    long resp = estadisticaService.cantidadTotalTrabajadores();
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/estadisticas/incidentes/total
@@ -78,6 +94,9 @@ public class EstadisticaController {
             @ApiResponse(responseCode = "200", description = "Cantidad obtenida exitosamente")
     })
     public long cantidadIncidentesTecnicos() {
-        return estadisticaService.cantidadIncidentesTecnicos();
+    logger.info("[EstadisticaController] GET /incidentes/total");
+    long resp = estadisticaService.cantidadIncidentesTecnicos();
+    logger.info("[EstadisticaController] Respuesta: {}", resp);
+    return resp;
     }
 }

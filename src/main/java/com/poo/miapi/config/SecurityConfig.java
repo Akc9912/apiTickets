@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of("*"));
+        configuration.setAllowedOrigins(java.util.List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:4200"));
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(java.util.List.of("*"));
         configuration.setAllowCredentials(true);
@@ -56,8 +56,10 @@ public class SecurityConfig {
             .requestMatchers("/webjars/**").permitAll()
             .requestMatchers("/").permitAll()
             .requestMatchers("/index.html").permitAll()
-            .requestMatchers("/api/superadmin/**").hasRole("SUPERADMIN")
-            .requestMatchers("/api/admin/**").hasAnyRole("SUPERADMIN", "ADMIN")
+            .requestMatchers("/api/superadmin/**").hasRole("SUPER_ADMIN")
+            .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers("/api/usuarios/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "TECNICO", "TRABAJADOR")
+                .requestMatchers("/api/tickets/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "TECNICO", "TRABAJADOR")
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

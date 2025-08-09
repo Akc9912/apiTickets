@@ -1,5 +1,7 @@
 package com.poo.miapi.security;
 
+import com.poo.miapi.model.core.Usuario;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
+                logger.info("[JWT Filter] Método: {} Endpoint: {}", request.getMethod(), request.getRequestURI());
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.warn("No se encontró el header Authorization o no es Bearer. Request: {} {}", request.getMethod(), request.getRequestURI());
             filterChain.doFilter(request, response);
@@ -47,6 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         logger.info("Authentication actual en SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication());
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    String rol = null;
+                    if (userDetails instanceof Usuario usuario) {
+                        rol = usuario.getRol() != null ? usuario.getRol().name() : "NO_ROLE";
+                    }
+                    logger.info("[JWT Filter] Usuario autenticado: {} Rol: {}", username, rol);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 logger.info("Token válido para usuario: {}", username);
                 UsernamePasswordAuthenticationToken authToken = jwtService.getAuthentication(jwt, userDetails);

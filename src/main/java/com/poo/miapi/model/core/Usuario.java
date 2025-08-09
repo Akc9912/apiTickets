@@ -65,9 +65,10 @@ public abstract class Usuario implements UserDetails {
 
     // Implementación de UserDetails
     @Override
-    public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
-        // Usa el rol como autoridad
-        return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + (rol != null ? rol.name() : "USER")));
+        public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
+            // Usa siempre el formato ROLE_SUPER_ADMIN para el rol de superadmin
+            String roleName = rol != null ? rol.name() : "USER";
+            return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
     }
 
     @Override

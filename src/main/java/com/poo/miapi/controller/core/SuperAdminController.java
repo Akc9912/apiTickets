@@ -22,11 +22,12 @@ import jakarta.validation.Valid;
 @Tag(name = "SuperAdmin", description = "Endpoints exclusivos del SuperAdmin - Dueño del sistema con acceso total")
 @SecurityRequirement(name = "bearerAuth")
 public class SuperAdminController {
-    private final SuperAdminService superAdminService;
+        private final SuperAdminService superAdminService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SuperAdminController.class);
 
-    public SuperAdminController(SuperAdminService superAdminService) {
-        this.superAdminService = superAdminService;
-    }
+        public SuperAdminController(SuperAdminService superAdminService) {
+                this.superAdminService = superAdminService;
+        }
 
     // === GESTIÓN DE USUARIOS ===
 
@@ -39,7 +40,10 @@ public class SuperAdminController {
     @PostMapping("/usuarios")
     public ResponseEntity<UsuarioResponseDto> crearUsuario(
             @Parameter(description = "Datos del nuevo usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
-        return ResponseEntity.ok(superAdminService.crearUsuario(usuarioDto));
+        logger.info("[SuperAdminController] POST /usuarios datos: {}", usuarioDto);
+        UsuarioResponseDto resp = superAdminService.crearUsuario(usuarioDto);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Listar todos los usuarios", description = "Obtener lista completa de usuarios del sistema")
@@ -48,7 +52,10 @@ public class SuperAdminController {
     })
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioResponseDto>> listarTodosLosUsuarios() {
-        return ResponseEntity.ok(superAdminService.listarTodosLosUsuarios());
+        logger.info("[SuperAdminController] GET /usuarios");
+        List<UsuarioResponseDto> resp = superAdminService.listarTodosLosUsuarios();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Ver usuario por ID", description = "Obtener detalles de un usuario específico")
@@ -59,7 +66,10 @@ public class SuperAdminController {
     @GetMapping("/usuarios/{id}")
     public ResponseEntity<UsuarioResponseDto> verUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.verUsuarioPorId(id));
+        logger.info("[SuperAdminController] GET /usuarios/{}", id);
+        UsuarioResponseDto resp = superAdminService.verUsuarioPorId(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Editar usuario", description = "Actualizar datos de cualquier usuario del sistema")
@@ -72,7 +82,10 @@ public class SuperAdminController {
     public ResponseEntity<UsuarioResponseDto> editarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id,
             @Parameter(description = "Nuevos datos del usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
-        return ResponseEntity.ok(superAdminService.editarUsuario(id, usuarioDto));
+        logger.info("[SuperAdminController] PUT /usuarios/{} datos: {}", id, usuarioDto);
+        UsuarioResponseDto resp = superAdminService.editarUsuario(id, usuarioDto);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Eliminar usuario", description = "Eliminar permanentemente un usuario del sistema")
@@ -83,7 +96,9 @@ public class SuperAdminController {
     @DeleteMapping("/usuarios/{id}")
     public ResponseEntity<String> eliminarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
+        logger.info("[SuperAdminController] DELETE /usuarios/{}", id);
         superAdminService.eliminarUsuario(id);
+        logger.info("[SuperAdminController] Usuario eliminado permanentemente");
         return ResponseEntity.ok("Usuario eliminado permanentemente");
     }
 
@@ -95,7 +110,10 @@ public class SuperAdminController {
     @PutMapping("/usuarios/{id}/activar")
     public ResponseEntity<UsuarioResponseDto> activarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.activarUsuario(id));
+        logger.info("[SuperAdminController] PUT /usuarios/{}/activar", id);
+        UsuarioResponseDto resp = superAdminService.activarUsuario(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Desactivar usuario", description = "Desactivar un usuario activo del sistema")
@@ -106,7 +124,10 @@ public class SuperAdminController {
     @PutMapping("/usuarios/{id}/desactivar")
     public ResponseEntity<UsuarioResponseDto> desactivarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.desactivarUsuario(id));
+        logger.info("[SuperAdminController] PUT /usuarios/{}/desactivar", id);
+        UsuarioResponseDto resp = superAdminService.desactivarUsuario(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Bloquear usuario", description = "Bloquear un usuario del sistema por mal comportamiento")
@@ -117,7 +138,10 @@ public class SuperAdminController {
     @PostMapping("/usuarios/{id}/bloquear")
     public ResponseEntity<UsuarioResponseDto> bloquearUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.bloquearUsuario(id));
+        logger.info("[SuperAdminController] POST /usuarios/{}/bloquear", id);
+        UsuarioResponseDto resp = superAdminService.bloquearUsuario(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Desbloquear usuario", description = "Desbloquear un usuario previamente bloqueado")
@@ -128,7 +152,10 @@ public class SuperAdminController {
     @PostMapping("/usuarios/{id}/desbloquear")
     public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.desbloquearUsuario(id));
+        logger.info("[SuperAdminController] POST /usuarios/{}/desbloquear", id);
+        UsuarioResponseDto resp = superAdminService.desbloquearUsuario(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Resetear contraseña", description = "Resetear la contraseña de un usuario a la contraseña por defecto")
@@ -139,7 +166,10 @@ public class SuperAdminController {
     @PostMapping("/usuarios/{id}/reset-password")
     public ResponseEntity<UsuarioResponseDto> resetearPassword(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.resetearPassword(id));
+        logger.info("[SuperAdminController] POST /usuarios/{}/reset-password", id);
+        UsuarioResponseDto resp = superAdminService.resetearPassword(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Cambiar rol de usuario", description = "Cambiar el rol de cualquier usuario del sistema")
@@ -152,7 +182,10 @@ public class SuperAdminController {
     public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id,
             @Parameter(description = "Nuevo rol del usuario") @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
-        return ResponseEntity.ok(superAdminService.cambiarRolUsuario(id, cambiarRolDto));
+        logger.info("[SuperAdminController] PUT /usuarios/{}/rol datos: {}", id, cambiarRolDto);
+        UsuarioResponseDto resp = superAdminService.cambiarRolUsuario(id, cambiarRolDto);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Listar usuarios por rol", description = "Obtener lista de usuarios filtrados por rol específico")
@@ -163,7 +196,10 @@ public class SuperAdminController {
     @GetMapping("/usuarios/rol")
     public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(
             @Parameter(description = "Rol a filtrar (SUPERADMIN, ADMIN, TECNICO, TRABAJADOR)") @RequestParam String rol) {
-        return ResponseEntity.ok(superAdminService.listarUsuariosPorRol(rol));
+        logger.info("[SuperAdminController] GET /usuarios/rol rol: {}", rol);
+        List<UsuarioResponseDto> resp = superAdminService.listarUsuariosPorRol(rol);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // === GESTIÓN DE ADMINISTRADORES ===
@@ -174,7 +210,10 @@ public class SuperAdminController {
     })
     @GetMapping("/admins")
     public ResponseEntity<List<UsuarioResponseDto>> listarAdministradores() {
-        return ResponseEntity.ok(superAdminService.listarAdministradores());
+        logger.info("[SuperAdminController] GET /admins");
+        List<UsuarioResponseDto> resp = superAdminService.listarAdministradores();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Promover a administrador", description = "Promover un usuario a rol de administrador")
@@ -186,7 +225,10 @@ public class SuperAdminController {
     @PostMapping("/admins/{id}/promover")
     public ResponseEntity<UsuarioResponseDto> promoverAAdmin(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.promoverAAdmin(id));
+        logger.info("[SuperAdminController] POST /admins/{}/promover", id);
+        UsuarioResponseDto resp = superAdminService.promoverAAdmin(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Degradar administrador", description = "Degradar un administrador a rol de trabajador")
@@ -198,7 +240,10 @@ public class SuperAdminController {
     @PostMapping("/admins/{id}/degradar")
     public ResponseEntity<UsuarioResponseDto> degradarAdmin(
             @Parameter(description = "ID del administrador") @PathVariable int id) {
-        return ResponseEntity.ok(superAdminService.degradarAdmin(id));
+        logger.info("[SuperAdminController] POST /admins/{}/degradar", id);
+        UsuarioResponseDto resp = superAdminService.degradarAdmin(id);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // === GESTIÓN DEL SISTEMA ===
@@ -209,7 +254,10 @@ public class SuperAdminController {
     })
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketResponseDto>> listarTodosLosTickets() {
-        return ResponseEntity.ok(superAdminService.listarTodosLosTickets());
+        logger.info("[SuperAdminController] GET /tickets");
+        List<TicketResponseDto> resp = superAdminService.listarTodosLosTickets();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Reabrir ticket", description = "Reabrir cualquier ticket del sistema con comentario explicativo")
@@ -222,7 +270,10 @@ public class SuperAdminController {
     public ResponseEntity<TicketResponseDto> reabrirTicket(
             @Parameter(description = "ID del ticket") @PathVariable int id,
             @Parameter(description = "Comentario sobre la reapertura") @RequestParam String comentario) {
-        return ResponseEntity.ok(superAdminService.reabrirTicket(id, comentario));
+        logger.info("[SuperAdminController] POST /tickets/{}/reabrir comentario: {}", id, comentario);
+        TicketResponseDto resp = superAdminService.reabrirTicket(id, comentario);
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Eliminar ticket", description = "Eliminar permanentemente un ticket del sistema")
@@ -233,7 +284,9 @@ public class SuperAdminController {
     @DeleteMapping("/tickets/{id}")
     public ResponseEntity<String> eliminarTicket(
             @Parameter(description = "ID del ticket") @PathVariable int id) {
+        logger.info("[SuperAdminController] DELETE /tickets/{}", id);
         superAdminService.eliminarTicket(id);
+        logger.info("[SuperAdminController] Ticket eliminado permanentemente");
         return ResponseEntity.ok("Ticket eliminado permanentemente");
     }
 
@@ -245,7 +298,10 @@ public class SuperAdminController {
     })
     @GetMapping("/estadisticas/usuarios")
     public ResponseEntity<?> obtenerEstadisticasUsuarios() {
-        return ResponseEntity.ok(superAdminService.obtenerEstadisticasUsuarios());
+        logger.info("[SuperAdminController] GET /estadisticas/usuarios");
+        Object resp = superAdminService.obtenerEstadisticasUsuarios();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Estadísticas de tickets", description = "Obtener estadísticas completas de tickets del sistema")
@@ -254,7 +310,10 @@ public class SuperAdminController {
     })
     @GetMapping("/estadisticas/tickets")
     public ResponseEntity<?> obtenerEstadisticasTickets() {
-        return ResponseEntity.ok(superAdminService.obtenerEstadisticasTickets());
+        logger.info("[SuperAdminController] GET /estadisticas/tickets");
+        Object resp = superAdminService.obtenerEstadisticasTickets();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     @Operation(summary = "Estadísticas del sistema", description = "Obtener estadísticas globales del sistema completo")
@@ -263,6 +322,9 @@ public class SuperAdminController {
     })
     @GetMapping("/estadisticas/sistema")
     public ResponseEntity<?> obtenerEstadisticasSistema() {
-        return ResponseEntity.ok(superAdminService.obtenerEstadisticasSistema());
+        logger.info("[SuperAdminController] GET /estadisticas/sistema");
+        Object resp = superAdminService.obtenerEstadisticasSistema();
+        logger.info("[SuperAdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 }

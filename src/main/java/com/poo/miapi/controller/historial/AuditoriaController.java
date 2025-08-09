@@ -20,6 +20,7 @@ import java.util.List;
 public class AuditoriaController {
 
     private final AuditoriaService auditoriaService;
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuditoriaController.class);
 
     public AuditoriaController(AuditoriaService auditoriaService) {
         this.auditoriaService = auditoriaService;
@@ -32,7 +33,10 @@ public class AuditoriaController {
             @ApiResponse(responseCode = "200", description = "Registros de auditoría obtenidos exitosamente")
     })
     public ResponseEntity<List<AuditoriaResponseDto>> listarTodas() {
-        return ResponseEntity.ok(auditoriaService.listarTodas());
+    logger.info("[AuditoriaController] GET /api/auditoria");
+    List<AuditoriaResponseDto> resp = auditoriaService.listarTodas();
+    logger.info("[AuditoriaController] Respuesta: {}", resp);
+    return ResponseEntity.ok(resp);
     }
 
     // GET /api/auditoria/usuario
@@ -43,7 +47,10 @@ public class AuditoriaController {
     })
     public ResponseEntity<List<AuditoriaResponseDto>> listarPorUsuario(
             @Parameter(description = "Nombre del usuario") @RequestParam String usuario) {
-        return ResponseEntity.ok(auditoriaService.listarPorUsuario(usuario));
+    logger.info("[AuditoriaController] GET /api/auditoria/usuario usuario: {}", usuario);
+    List<AuditoriaResponseDto> resp = auditoriaService.listarPorUsuario(usuario);
+    logger.info("[AuditoriaController] Respuesta: {}", resp);
+    return ResponseEntity.ok(resp);
     }
 
     // GET /api/auditoria/entidad
@@ -54,7 +61,10 @@ public class AuditoriaController {
     })
     public ResponseEntity<List<AuditoriaResponseDto>> listarPorEntidad(
             @Parameter(description = "Nombre de la entidad") @RequestParam String entidad) {
-        return ResponseEntity.ok(auditoriaService.listarPorEntidad(entidad));
+    logger.info("[AuditoriaController] GET /api/auditoria/entidad entidad: {}", entidad);
+    List<AuditoriaResponseDto> resp = auditoriaService.listarPorEntidad(entidad);
+    logger.info("[AuditoriaController] Respuesta: {}", resp);
+    return ResponseEntity.ok(resp);
     }
 
     // GET /api/auditoria/accion
@@ -65,7 +75,10 @@ public class AuditoriaController {
     })
     public ResponseEntity<List<AuditoriaResponseDto>> listarPorAccion(
             @Parameter(description = "Tipo de acción") @RequestParam String accion) {
-        return ResponseEntity.ok(auditoriaService.listarPorAccion(accion));
+    logger.info("[AuditoriaController] GET /api/auditoria/accion accion: {}", accion);
+    List<AuditoriaResponseDto> resp = auditoriaService.listarPorAccion(accion);
+    logger.info("[AuditoriaController] Respuesta: {}", resp);
+    return ResponseEntity.ok(resp);
     }
 
     // GET /api/auditoria/fecha
@@ -78,6 +91,9 @@ public class AuditoriaController {
     public ResponseEntity<List<AuditoriaResponseDto>> listarPorFecha(
             @Parameter(description = "Fecha de inicio (formato ISO: YYYY-MM-DDTHH:mm:ss)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
             @Parameter(description = "Fecha de fin (formato ISO: YYYY-MM-DDTHH:mm:ss)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta) {
-        return ResponseEntity.ok(auditoriaService.listarPorFecha(desde, hasta));
+    logger.info("[AuditoriaController] GET /api/auditoria/fecha desde: {} hasta: {}", desde, hasta);
+    List<AuditoriaResponseDto> resp = auditoriaService.listarPorFecha(desde, hasta);
+    logger.info("[AuditoriaController] Respuesta: {}", resp);
+    return ResponseEntity.ok(resp);
     }
 }
