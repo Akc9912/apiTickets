@@ -34,6 +34,7 @@ import java.util.List;
 public class TicketController {
 
         private final TicketService ticketService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketController.class);
 
         public TicketController(TicketService ticketService) {
                 this.ticketService = ticketService;
@@ -46,7 +47,10 @@ public class TicketController {
                         @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente")
         })
         public List<TicketResponseDto> listarTickets() {
-                return ticketService.listarTodos();
+                logger.info("[TicketController] GET /api/tickets");
+                List<TicketResponseDto> resp = ticketService.listarTodos();
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // GET /api/tickets/{id} - Ver detalle de un ticket
@@ -58,7 +62,10 @@ public class TicketController {
         })
         public TicketResponseDto verTicket(
                         @Parameter(description = "ID del ticket") @PathVariable int id) {
-                return ticketService.buscarPorId(id);
+                logger.info("[TicketController] GET /api/tickets/{}", id);
+                TicketResponseDto resp = ticketService.buscarPorId(id);
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // POST /api/tickets - Crear un nuevo ticket
@@ -70,7 +77,10 @@ public class TicketController {
         })
         public TicketResponseDto crearTicket(
                         @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto) {
-                return ticketService.crearTicket(dto);
+                logger.info("[TicketController] POST /api/tickets datos: {}", dto);
+                TicketResponseDto resp = ticketService.crearTicket(dto);
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // PUT /api/tickets/{id}/estado - Actualizar estado de un ticket
@@ -84,7 +94,10 @@ public class TicketController {
         public TicketResponseDto actualizarEstado(
                         @Parameter(description = "ID del ticket") @PathVariable int id,
                         @Parameter(description = "Nuevo estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                return ticketService.actualizarEstado(id, EstadoTicket.valueOf(estado));
+                logger.info("[TicketController] PUT /api/tickets/{}/estado estado: {}", id, estado);
+                TicketResponseDto resp = ticketService.actualizarEstado(id, EstadoTicket.valueOf(estado));
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // GET /api/tickets/estado?estado=NO_ATENDIDO - Listar tickets por estado
@@ -96,7 +109,10 @@ public class TicketController {
         })
         public List<TicketResponseDto> listarPorEstado(
                         @Parameter(description = "Estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                return ticketService.listarPorEstado(EstadoTicket.valueOf(estado));
+                logger.info("[TicketController] GET /api/tickets/estado estado: {}", estado);
+                List<TicketResponseDto> resp = ticketService.listarPorEstado(EstadoTicket.valueOf(estado));
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // GET /api/tickets/creador?userId=... - Listar tickets por creador
@@ -108,7 +124,10 @@ public class TicketController {
         })
         public List<TicketResponseDto> listarPorCreador(
                         @Parameter(description = "ID del usuario creador") @RequestParam int userId) {
-                return ticketService.listarPorCreador(userId);
+                logger.info("[TicketController] GET /api/tickets/creador userId: {}", userId);
+                List<TicketResponseDto> resp = ticketService.listarPorCreador(userId);
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 
         // GET /api/tickets/buscar-titulo?palabra=... - Buscar tickets por título
@@ -119,6 +138,9 @@ public class TicketController {
         })
         public List<TicketResponseDto> buscarPorTitulo(
                         @Parameter(description = "Palabra a buscar en el título del ticket") @RequestParam String palabra) {
-                return ticketService.buscarPorTitulo(palabra);
+                logger.info("[TicketController] GET /api/tickets/buscar-titulo palabra: {}", palabra);
+                List<TicketResponseDto> resp = ticketService.buscarPorTitulo(palabra);
+                logger.info("[TicketController] Respuesta: {}", resp);
+                return resp;
         }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 public class UsuarioController {
 
         private final UsuarioService usuarioService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UsuarioController.class);
 
         public UsuarioController(UsuarioService usuarioService) {
                 this.usuarioService = usuarioService;
@@ -38,7 +39,9 @@ public class UsuarioController {
         })
         public ResponseEntity<UsuarioResponseDto> obtenerDatos(
                         @Parameter(description = "ID del usuario") @RequestParam int userId) {
+                logger.info("[UsuarioController] GET /obtener-datos userId: {}", userId);
                 UsuarioResponseDto usuario = usuarioService.obtenerDatos(userId);
+                logger.info("[UsuarioController] Respuesta: {}", usuario);
                 return ResponseEntity.ok(usuario);
         }
 
@@ -53,7 +56,9 @@ public class UsuarioController {
         public ResponseEntity<UsuarioResponseDto> editarDatos(
                         @Parameter(description = "ID del usuario") @RequestParam int userId,
                         @Parameter(description = "Nuevos datos del usuario") @RequestBody UsuarioRequestDto usuarioDto) {
+                logger.info("[UsuarioController] PUT /editar-datos userId: {} datos: {}", userId, usuarioDto);
                 UsuarioResponseDto usuarioActualizado = usuarioService.editarDatosUsuario(userId, usuarioDto);
+                logger.info("[UsuarioController] Respuesta: {}", usuarioActualizado);
                 return ResponseEntity.ok(usuarioActualizado);
         }
 
@@ -66,7 +71,9 @@ public class UsuarioController {
         })
         public ResponseEntity<String> cambiarPassword(
                         @Parameter(description = "Datos para cambiar la contraseña") @RequestBody ChangePasswordDto dto) {
+                logger.info("[UsuarioController] PUT /cambiar-password datos: {}", dto);
                 String mensaje = usuarioService.cambiarPassword(dto);
+                logger.info("[UsuarioController] Respuesta: {}", mensaje);
                 return ResponseEntity.ok(mensaje);
         }
 
@@ -79,7 +86,9 @@ public class UsuarioController {
         })
         public ResponseEntity<List<NotificacionResponseDto>> verMisNotificaciones(
                         @Parameter(description = "ID del usuario") @RequestParam int userId) {
+                logger.info("[UsuarioController] GET /notificaciones userId: {}", userId);
                 List<NotificacionResponseDto> notificaciones = usuarioService.verMisNotificaciones(userId);
+                logger.info("[UsuarioController] Respuesta: {}", notificaciones);
                 return ResponseEntity.ok(notificaciones);
         }
 
@@ -92,7 +101,9 @@ public class UsuarioController {
         })
         public ResponseEntity<List<TicketResponseDto>> verMisTickets(
                         @Parameter(description = "ID del usuario") @RequestParam int userId) {
+                logger.info("[UsuarioController] GET /mis-tickets userId: {}", userId);
                 List<TicketResponseDto> tickets = usuarioService.verMisTickets(userId);
+                logger.info("[UsuarioController] Respuesta: {}", tickets);
                 return ResponseEntity.ok(tickets);
         }
 
@@ -103,7 +114,10 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "200", description = "Conteo obtenido exitosamente")
         })
         public ResponseEntity<Long> contarUsuariosTotales() {
-                return ResponseEntity.ok(usuarioService.contarUsuariosTotales());
+                logger.info("[UsuarioController] GET /estadisticas/totales");
+                Long total = usuarioService.contarUsuariosTotales();
+                logger.info("[UsuarioController] Respuesta: {}", total);
+                return ResponseEntity.ok(total);
         }
 
         // GET /api/usuarios/estadisticas/activos
@@ -113,7 +127,10 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "200", description = "Conteo obtenido exitosamente")
         })
         public ResponseEntity<Long> contarUsuariosActivos() {
-                return ResponseEntity.ok(usuarioService.contarUsuariosActivos());
+                logger.info("[UsuarioController] GET /estadisticas/activos");
+                Long activos = usuarioService.contarUsuariosActivos();
+                logger.info("[UsuarioController] Respuesta: {}", activos);
+                return ResponseEntity.ok(activos);
         }
 
         // GET /api/usuarios/estadisticas/tecnicos-bloqueados
@@ -123,7 +140,10 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "200", description = "Conteo obtenido exitosamente")
         })
         public ResponseEntity<Long> contarTecnicosBloqueados() {
-                return ResponseEntity.ok(usuarioService.contarTecnicosBloqueados());
+                logger.info("[UsuarioController] GET /estadisticas/tecnicos-bloqueados");
+                Long bloqueados = usuarioService.contarTecnicosBloqueados();
+                logger.info("[UsuarioController] Respuesta: {}", bloqueados);
+                return ResponseEntity.ok(bloqueados);
         }
 
 }

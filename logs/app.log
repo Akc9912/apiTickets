@@ -3089,3 +3089,536 @@ jakarta.persistence.EntityNotFoundException: Trabajador no encontrado
 2025-08-08 02:00:07 - Set SecurityContextHolder to anonymous SecurityContext
 2025-08-08 02:00:07 - Saved request http://localhost:8080/error?continue to session
 2025-08-08 02:00:07 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:03:52 - Starting MiapiApplication using Java 24.0.2 with PID 15212 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-08 02:03:52 - Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-08-08 02:03:52 - The following 1 profile is active: "mysql"
+2025-08-08 02:03:54 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-08 02:03:54 - Finished Spring Data repository scanning in 170 ms. Found 9 JPA repository interfaces.
+2025-08-08 02:03:55 - Tomcat initialized with port 8080 (http)
+2025-08-08 02:03:55 - Starting service [Tomcat]
+2025-08-08 02:03:55 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-08 02:03:56 - Initializing Spring embedded WebApplicationContext
+2025-08-08 02:03:56 - Root WebApplicationContext: initialization completed in 3359 ms
+2025-08-08 02:03:56 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-08 02:03:56 - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-08-08 02:03:56 - HHH000026: Second-level cache disabled
+2025-08-08 02:03:57 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-08 02:03:57 - HikariPool-1 - Starting...
+2025-08-08 02:03:57 - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74a1d60e
+2025-08-08 02:03:57 - HikariPool-1 - Start completed.
+2025-08-08 02:03:57 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-08 02:03:57 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-08 02:03:57 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-08 02:03:59 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-08 02:03:59 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-08 02:03:59 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-08 02:03:59 - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-08 02:04:01 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-08 02:04:01 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-08 02:04:02 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-08 02:04:03 - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-08-08 02:04:03 - Tomcat started on port 8080 (http) with context path '/'
+2025-08-08 02:04:03 - Started MiapiApplication in 11.841 seconds (process running for 12.671)
+2025-08-08 02:04:03 - Iniciando configuración inicial de datos...
+2025-08-08 02:04:03 - Total de usuarios en la base de datos: 1
+2025-08-08 02:04:04 - Verificando existencia del SuperAdmin:
+2025-08-08 02:04:04 -    Email a buscar: superadmin@sistema.com
+2025-08-08 02:04:04 -    Cantidad encontrada: 1
+2025-08-08 02:04:04 -    ¿Ya existe?: true
+2025-08-08 02:04:04 - SuperAdmin ya existe en el sistema. No es necesario crear uno nuevo.
+2025-08-08 02:04:04 -    ID del SuperAdmin existente: 2
+2025-08-08 02:04:04 -    Nombre: Super Admin
+2025-08-08 02:04:04 -    Rol: Super Administrador
+2025-08-08 02:04:04 -    Activo: true
+2025-08-08 02:04:04 - Verificando existencia del Admin:
+2025-08-08 02:04:04 -    Email a buscar: admin@sistema.com
+2025-08-08 02:04:04 -    Cantidad encontrada: 0
+2025-08-08 02:04:04 -    ¿Ya existe?: false
+2025-08-08 02:04:04 - Admin no existe. Procediendo a crear...
+2025-08-08 02:04:04 - Creando Admin por defecto...
+2025-08-08 02:04:04 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-08 02:04:04 - Initializing Servlet 'dispatcherServlet'
+2025-08-08 02:04:04 - Completed initialization in 2 ms
+2025-08-08 02:04:04 - Datos del Admin a crear:
+2025-08-08 02:04:04 -    Email: admin@sistema.com
+2025-08-08 02:04:04 -    Nombre: Admin Sistema
+2025-08-08 02:04:04 -    Rol: Administrador
+2025-08-08 02:04:04 -    Tipo Usuario: ADMIN
+2025-08-08 02:04:04 -    Activo: true
+2025-08-08 02:04:04 -    Bloqueado: false
+2025-08-08 02:04:04 - Admin creado exitosamente:
+2025-08-08 02:04:04 -    ID generado: 3
+2025-08-08 02:04:04 -    Password inicial: admin123
+2025-08-08 02:04:04 -    IMPORTANTE: Cambiar la contraseña después del primer login
+2025-08-08 02:04:04 - Verificación post-creación: count = 1
+2025-08-08 02:04:04 - Total final de usuarios en la base de datos: 2
+2025-08-08 02:04:04 - Configuración inicial completada exitosamente
+2025-08-08 02:04:55 - Securing OPTIONS /api/auth/login
+2025-08-08 02:04:55 - Securing POST /api/auth/login
+2025-08-08 02:04:55 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 02:04:55 - Secured POST /api/auth/login
+2025-08-08 02:04:56 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:05:00 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:05:00 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:05:00 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:01 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:01 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:01 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:01 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:01 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:01 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:01 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:01 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:01 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:01 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:01 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:17 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:05:17 - Securing POST /api/admin/usuarios
+2025-08-08 02:05:17 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:17 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:17 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:17 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:17 - Secured POST /api/admin/usuarios
+2025-08-08 02:05:17 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poo.miapi.dto.usuario.UsuarioResponseDto> com.poo.miapi.controller.core.AdminController.crearUsuario(com.poo.miapi.dto.usuario.UsuarioRequestDto): [Field error in object 'usuarioRequestDto' on field 'apellido': rejected value [null]; codes [NotNull.usuarioRequestDto.apellido,NotNull.apellido,NotNull.java.lang.String,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [usuarioRequestDto.apellido,apellido]; arguments []; default message [apellido]]; default message [no debe ser nulo]] ]
+2025-08-08 02:05:17 - Securing POST /error
+2025-08-08 02:05:17 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:05:17 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:05:17 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:05:33 - Securing OPTIONS /api/tickets
+2025-08-08 02:05:33 - Securing OPTIONS /api/tickets
+2025-08-08 02:05:33 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 02:05:33 - Securing GET /api/tickets
+2025-08-08 02:05:33 - Securing OPTIONS /api/admin/tecnicos
+2025-08-08 02:05:33 - Securing GET /api/admin/tecnicos
+2025-08-08 02:05:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:33 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:33 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:33 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:33 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:33 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:33 - Secured GET /api/tickets
+2025-08-08 02:05:33 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:33 - Secured GET /api/admin/tecnicos
+2025-08-08 02:05:33 - Securing GET /error
+2025-08-08 02:05:33 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:05:33 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:05:33 - Securing GET /api/tickets
+2025-08-08 02:05:33 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:05:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:33 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:33 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:33 - Securing GET /api/admin/tecnicos
+2025-08-08 02:05:33 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:33 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:33 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:33 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:33 - Secured GET /api/tickets
+2025-08-08 02:05:33 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:34 - Secured GET /api/admin/tecnicos
+2025-08-08 02:05:34 - Securing GET /error
+2025-08-08 02:05:34 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:05:34 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:05:34 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:05:34 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:05:34 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:05:34 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:34 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:34 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:34 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:34 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:34 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:34 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:34 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:34 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:34 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:34 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:34 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:37 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:37 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:37 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:37 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:37 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:37 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:37 - Securing GET /api/admin/usuarios
+2025-08-08 02:05:37 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:37 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:37 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:37 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:37 - Secured GET /api/admin/usuarios
+2025-08-08 02:05:55 - Securing OPTIONS /api/admin/usuarios/3/block
+2025-08-08 02:05:55 - Securing PUT /api/admin/usuarios/3/block
+2025-08-08 02:05:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:05:55 - Email extraído del token: admin@sistema.com
+2025-08-08 02:05:55 - Authentication actual en SecurityContext: null
+2025-08-08 02:05:55 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:05:55 - Secured PUT /api/admin/usuarios/3/block
+2025-08-08 02:05:55 - Securing PUT /error
+2025-08-08 02:05:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:05:55 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:05:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:06:01 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:06:01 - Securing GET /api/admin/usuarios
+2025-08-08 02:06:01 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:01 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:01 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:01 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:01 - Secured GET /api/admin/usuarios
+2025-08-08 02:06:11 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:06:11 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:06:11 - Securing GET /api/admin/usuarios
+2025-08-08 02:06:11 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:11 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:11 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:11 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:11 - Secured GET /api/admin/usuarios
+2025-08-08 02:06:11 - Securing GET /api/admin/usuarios
+2025-08-08 02:06:11 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:11 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:11 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:11 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:11 - Secured GET /api/admin/usuarios
+2025-08-08 02:06:34 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:06:34 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:06:34 - Securing GET /api/admin/usuarios
+2025-08-08 02:06:34 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:34 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:34 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:34 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:34 - Secured GET /api/admin/usuarios
+2025-08-08 02:06:34 - Securing GET /api/admin/usuarios
+2025-08-08 02:06:34 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:34 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:34 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:34 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:34 - Secured GET /api/admin/usuarios
+2025-08-08 02:06:38 - Securing OPTIONS /api/admin/usuarios/3
+2025-08-08 02:06:38 - Securing DELETE /api/admin/usuarios/3
+2025-08-08 02:06:38 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:06:38 - Email extraído del token: admin@sistema.com
+2025-08-08 02:06:38 - Authentication actual en SecurityContext: null
+2025-08-08 02:06:38 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:06:38 - Secured DELETE /api/admin/usuarios/3
+2025-08-08 02:06:38 - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' is not supported]
+2025-08-08 02:06:38 - Securing DELETE /error
+2025-08-08 02:06:38 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:06:38 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:06:38 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:08:19 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:08:19 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:08:19 - Securing GET /api/admin/usuarios
+2025-08-08 02:08:19 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:08:19 - Email extraído del token: admin@sistema.com
+2025-08-08 02:08:19 - Authentication actual en SecurityContext: null
+2025-08-08 02:08:19 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:08:19 - Secured GET /api/admin/usuarios
+2025-08-08 02:08:19 - Securing GET /api/admin/usuarios
+2025-08-08 02:08:19 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:08:19 - Email extraído del token: admin@sistema.com
+2025-08-08 02:08:19 - Authentication actual en SecurityContext: null
+2025-08-08 02:08:19 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:08:19 - Secured GET /api/admin/usuarios
+2025-08-08 02:08:26 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:08:26 - Securing POST /api/admin/usuarios
+2025-08-08 02:08:26 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:08:26 - Email extraído del token: admin@sistema.com
+2025-08-08 02:08:26 - Authentication actual en SecurityContext: null
+2025-08-08 02:08:26 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:08:26 - Secured POST /api/admin/usuarios
+2025-08-08 02:08:26 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poo.miapi.dto.usuario.UsuarioResponseDto> com.poo.miapi.controller.core.AdminController.crearUsuario(com.poo.miapi.dto.usuario.UsuarioRequestDto): [Field error in object 'usuarioRequestDto' on field 'apellido': rejected value [null]; codes [NotNull.usuarioRequestDto.apellido,NotNull.apellido,NotNull.java.lang.String,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [usuarioRequestDto.apellido,apellido]; arguments []; default message [apellido]]; default message [no debe ser nulo]] ]
+2025-08-08 02:08:26 - Securing POST /error
+2025-08-08 02:08:26 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:08:26 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:08:26 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:13:37 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:13:37 - Securing POST /api/admin/usuarios
+2025-08-08 02:13:38 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:13:38 - Email extraído del token: admin@sistema.com
+2025-08-08 02:13:38 - Authentication actual en SecurityContext: null
+2025-08-08 02:13:38 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:13:38 - Secured POST /api/admin/usuarios
+2025-08-08 02:13:38 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poo.miapi.dto.usuario.UsuarioResponseDto> com.poo.miapi.controller.core.AdminController.crearUsuario(com.poo.miapi.dto.usuario.UsuarioRequestDto): [Field error in object 'usuarioRequestDto' on field 'apellido': rejected value [null]; codes [NotNull.usuarioRequestDto.apellido,NotNull.apellido,NotNull.java.lang.String,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [usuarioRequestDto.apellido,apellido]; arguments []; default message [apellido]]; default message [no debe ser nulo]] ]
+2025-08-08 02:13:38 - Securing POST /error
+2025-08-08 02:13:38 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:13:38 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:13:38 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 02:13:44 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:13:44 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:13:44 - Securing GET /api/admin/usuarios
+2025-08-08 02:13:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:13:44 - Email extraído del token: admin@sistema.com
+2025-08-08 02:13:44 - Authentication actual en SecurityContext: null
+2025-08-08 02:13:44 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:13:44 - Secured GET /api/admin/usuarios
+2025-08-08 02:13:44 - Securing GET /api/admin/usuarios
+2025-08-08 02:13:44 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:13:44 - Email extraído del token: admin@sistema.com
+2025-08-08 02:13:44 - Authentication actual en SecurityContext: null
+2025-08-08 02:13:44 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:13:44 - Secured GET /api/admin/usuarios
+2025-08-08 02:13:51 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 02:13:51 - Securing POST /api/admin/usuarios
+2025-08-08 02:13:51 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDYyOTQ5NSwiZXhwIjoxNzU0NjY1NDk1fQ.s4d1suGp9dc7uhxHIHDv-BD4ZVZUaAl72zflK_yxmAE
+2025-08-08 02:13:51 - Email extraído del token: admin@sistema.com
+2025-08-08 02:13:51 - Authentication actual en SecurityContext: null
+2025-08-08 02:13:51 - Token válido para usuario: admin@sistema.com
+2025-08-08 02:13:51 - Secured POST /api/admin/usuarios
+2025-08-08 02:13:51 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poo.miapi.dto.usuario.UsuarioResponseDto> com.poo.miapi.controller.core.AdminController.crearUsuario(com.poo.miapi.dto.usuario.UsuarioRequestDto): [Field error in object 'usuarioRequestDto' on field 'apellido': rejected value [null]; codes [NotNull.usuarioRequestDto.apellido,NotNull.apellido,NotNull.java.lang.String,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [usuarioRequestDto.apellido,apellido]; arguments []; default message [apellido]]; default message [no debe ser nulo]] ]
+2025-08-08 02:13:51 - Securing POST /error
+2025-08-08 02:13:51 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 02:13:51 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 02:13:51 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:06:51 - Starting MiapiApplication using Java 24.0.2 with PID 5312 (C:\Users\seba\Desktop\poo\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\poo\apiTickets)
+2025-08-08 14:06:51 - Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-08-08 14:06:51 - The following 1 profile is active: "mysql"
+2025-08-08 14:06:53 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-08 14:06:54 - Finished Spring Data repository scanning in 292 ms. Found 9 JPA repository interfaces.
+2025-08-08 14:06:55 - Tomcat initialized with port 8080 (http)
+2025-08-08 14:06:56 - Starting service [Tomcat]
+2025-08-08 14:06:56 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-08 14:06:56 - Initializing Spring embedded WebApplicationContext
+2025-08-08 14:06:56 - Root WebApplicationContext: initialization completed in 4457 ms
+2025-08-08 14:06:56 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-08 14:06:56 - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-08-08 14:06:56 - HHH000026: Second-level cache disabled
+2025-08-08 14:06:57 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-08 14:06:57 - HikariPool-1 - Starting...
+2025-08-08 14:06:57 - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@645c9f0f
+2025-08-08 14:06:57 - HikariPool-1 - Start completed.
+2025-08-08 14:06:57 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-08 14:06:57 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-08 14:06:57 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-08 14:06:59 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-08 14:07:00 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-08 14:07:01 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-08 14:07:01 - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-08 14:07:02 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-08 14:07:03 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-08 14:07:03 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-08 14:07:03 - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-08-08 14:07:04 - Tomcat started on port 8080 (http) with context path '/'
+2025-08-08 14:07:04 - Started MiapiApplication in 13.611 seconds (process running for 14.624)
+2025-08-08 14:07:04 - [DataInitializer] Inicio de configuración inicial de datos
+2025-08-08 14:07:04 - [DataInitializer] Verificando si existe SuperAdmin
+2025-08-08 14:07:04 - [DataInitializer] SuperAdmin ya existe
+2025-08-08 14:07:04 - [DataInitializer] Verificando si existe Admin
+2025-08-08 14:07:04 - [DataInitializer] Admin ya existe
+2025-08-08 14:07:04 - [DataInitializer] Usuarios totales: 2
+2025-08-08 14:07:04 - [DataInitializer] Configuración inicial completada
+2025-08-08 14:07:06 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-08 14:07:06 - Initializing Servlet 'dispatcherServlet'
+2025-08-08 14:07:06 - Completed initialization in 4 ms
+2025-08-08 14:10:23 - Securing OPTIONS /api/auth/login
+2025-08-08 14:10:23 - Securing POST /api/auth/login
+2025-08-08 14:10:23 - [JWT Filter] Método: POST Endpoint: /api/auth/login
+2025-08-08 14:10:23 - No se encontró el header Authorization o no es Bearer. Request: POST /api/auth/login
+2025-08-08 14:10:23 - Secured POST /api/auth/login
+2025-08-08 14:10:23 - [AuthController] POST /login datos: com.poo.miapi.dto.auth.LoginRequestDto@7d1913d7
+2025-08-08 14:10:24 - [AuthController] Respuesta: com.poo.miapi.dto.auth.LoginResponseDto@53c48df8
+2025-08-08 14:10:24 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:10:24 - Securing GET /api/admin/usuarios
+2025-08-08 14:10:24 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:10:24 - No se encontró el header Authorization o no es Bearer. Request: GET /api/admin/usuarios
+2025-08-08 14:10:24 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:10:24 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:10:24 - Securing GET /error
+2025-08-08 14:10:24 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:10:24 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:10:24 - Securing GET /api/admin/usuarios
+2025-08-08 14:10:24 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:10:24 - No se encontró el header Authorization o no es Bearer. Request: GET /api/admin/usuarios
+2025-08-08 14:10:24 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:10:24 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:10:24 - Securing GET /error
+2025-08-08 14:10:24 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:10:24 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:12:35 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:12:35 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:12:35 - Securing GET /api/admin/usuarios
+2025-08-08 14:12:35 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:12:35 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:12:35 - Email extraído del token: admin@sistema.com
+2025-08-08 14:12:35 - Authentication actual en SecurityContext: null
+2025-08-08 14:12:35 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:12:35 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:12:35 - Secured GET /api/admin/usuarios
+2025-08-08 14:12:35 - [AdminController] GET /usuarios
+2025-08-08 14:12:35 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@221798d8, com.poo.miapi.dto.usuario.UsuarioResponseDto@5b69ba05]
+2025-08-08 14:12:35 - Securing GET /api/admin/usuarios
+2025-08-08 14:12:35 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:12:35 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:12:35 - Email extraído del token: admin@sistema.com
+2025-08-08 14:12:35 - Authentication actual en SecurityContext: null
+2025-08-08 14:12:35 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:12:35 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:12:35 - Secured GET /api/admin/usuarios
+2025-08-08 14:12:35 - [AdminController] GET /usuarios
+2025-08-08 14:12:35 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@6101d47, com.poo.miapi.dto.usuario.UsuarioResponseDto@6b47fd48]
+2025-08-08 14:12:52 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:12:52 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:12:52 - Securing GET /api/admin/usuarios
+2025-08-08 14:12:52 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:12:52 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:12:52 - Email extraído del token: admin@sistema.com
+2025-08-08 14:12:52 - Authentication actual en SecurityContext: null
+2025-08-08 14:12:52 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:12:52 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:12:52 - Secured GET /api/admin/usuarios
+2025-08-08 14:12:52 - [AdminController] GET /usuarios
+2025-08-08 14:12:52 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@1adc12f6, com.poo.miapi.dto.usuario.UsuarioResponseDto@43426d81]
+2025-08-08 14:12:52 - Securing GET /api/admin/usuarios
+2025-08-08 14:12:52 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:12:52 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:12:52 - Email extraído del token: admin@sistema.com
+2025-08-08 14:12:52 - Authentication actual en SecurityContext: null
+2025-08-08 14:12:52 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:12:52 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:12:52 - Secured GET /api/admin/usuarios
+2025-08-08 14:12:52 - [AdminController] GET /usuarios
+2025-08-08 14:12:52 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@12a2289e, com.poo.miapi.dto.usuario.UsuarioResponseDto@20e5b1b3]
+2025-08-08 14:13:01 - Securing OPTIONS /api/usuarios
+2025-08-08 14:13:01 - Securing POST /api/usuarios
+2025-08-08 14:13:01 - [JWT Filter] Método: POST Endpoint: /api/usuarios
+2025-08-08 14:13:01 - No se encontró el header Authorization o no es Bearer. Request: POST /api/usuarios
+2025-08-08 14:13:01 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:13:02 - Saved request http://localhost:8080/api/usuarios?continue to session
+2025-08-08 14:13:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:13:02 - Securing POST /error
+2025-08-08 14:13:02 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:13:02 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 14:13:02 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:14:55 - Securing GET /api/tickets
+2025-08-08 14:14:55 - [JWT Filter] Método: GET Endpoint: /api/tickets
+2025-08-08 14:14:55 - No se encontró el header Authorization o no es Bearer. Request: GET /api/tickets
+2025-08-08 14:14:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:14:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:14:55 - Securing GET /error
+2025-08-08 14:14:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:14:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:14:55 - Securing GET /api/tickets
+2025-08-08 14:14:55 - [JWT Filter] Método: GET Endpoint: /api/tickets
+2025-08-08 14:14:55 - No se encontró el header Authorization o no es Bearer. Request: GET /api/tickets
+2025-08-08 14:14:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:14:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:14:55 - Securing GET /error
+2025-08-08 14:14:55 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:14:55 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:14:58 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:14:58 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:14:58 - Securing GET /api/admin/usuarios
+2025-08-08 14:14:58 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:14:58 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:14:58 - Email extraído del token: admin@sistema.com
+2025-08-08 14:14:58 - Authentication actual en SecurityContext: null
+2025-08-08 14:14:58 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:14:58 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:14:58 - Secured GET /api/admin/usuarios
+2025-08-08 14:14:58 - [AdminController] GET /usuarios
+2025-08-08 14:14:58 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@4bcf7175, com.poo.miapi.dto.usuario.UsuarioResponseDto@4ad1c032]
+2025-08-08 14:14:58 - Securing GET /api/admin/usuarios
+2025-08-08 14:14:58 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:14:58 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:14:58 - Email extraído del token: admin@sistema.com
+2025-08-08 14:14:58 - Authentication actual en SecurityContext: null
+2025-08-08 14:14:58 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:14:58 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:14:58 - Secured GET /api/admin/usuarios
+2025-08-08 14:14:58 - [AdminController] GET /usuarios
+2025-08-08 14:14:58 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@77cfae9b, com.poo.miapi.dto.usuario.UsuarioResponseDto@1cf1722c]
+2025-08-08 14:26:47 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:26:47 - Securing OPTIONS /api/admin/usuarios
+2025-08-08 14:26:47 - Securing GET /api/admin/usuarios
+2025-08-08 14:26:47 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:26:47 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:26:47 - Email extraído del token: admin@sistema.com
+2025-08-08 14:26:47 - Authentication actual en SecurityContext: null
+2025-08-08 14:26:47 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:26:47 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:26:47 - Secured GET /api/admin/usuarios
+2025-08-08 14:26:47 - [AdminController] GET /usuarios
+2025-08-08 14:26:47 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@6dfec904, com.poo.miapi.dto.usuario.UsuarioResponseDto@5b22c27b]
+2025-08-08 14:26:47 - Securing GET /api/admin/usuarios
+2025-08-08 14:26:47 - [JWT Filter] Método: GET Endpoint: /api/admin/usuarios
+2025-08-08 14:26:47 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:26:47 - Email extraído del token: admin@sistema.com
+2025-08-08 14:26:47 - Authentication actual en SecurityContext: null
+2025-08-08 14:26:47 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:26:47 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:26:47 - Secured GET /api/admin/usuarios
+2025-08-08 14:26:47 - [AdminController] GET /usuarios
+2025-08-08 14:26:47 - [AdminController] Respuesta: [com.poo.miapi.dto.usuario.UsuarioResponseDto@18c9a192, com.poo.miapi.dto.usuario.UsuarioResponseDto@4b0570a0]
+2025-08-08 14:26:50 - Securing OPTIONS /api/tickets
+2025-08-08 14:26:50 - Securing OPTIONS /api/tickets
+2025-08-08 14:26:50 - Securing GET /api/tickets
+2025-08-08 14:26:50 - [JWT Filter] Método: GET Endpoint: /api/tickets
+2025-08-08 14:26:50 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:26:50 - Email extraído del token: admin@sistema.com
+2025-08-08 14:26:50 - Authentication actual en SecurityContext: null
+2025-08-08 14:26:50 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:26:50 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:26:50 - Secured GET /api/tickets
+2025-08-08 14:26:50 - [TicketController] GET /api/tickets
+2025-08-08 14:26:50 - [TicketController] Respuesta: []
+2025-08-08 14:26:50 - Securing GET /api/tickets
+2025-08-08 14:26:50 - [JWT Filter] Método: GET Endpoint: /api/tickets
+2025-08-08 14:26:50 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:26:50 - Email extraído del token: admin@sistema.com
+2025-08-08 14:26:50 - Authentication actual en SecurityContext: null
+2025-08-08 14:26:50 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:26:50 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:26:50 - Secured GET /api/tickets
+2025-08-08 14:26:50 - [TicketController] GET /api/tickets
+2025-08-08 14:26:50 - [TicketController] Respuesta: []
+2025-08-08 14:26:59 - Securing OPTIONS /api/usuarios
+2025-08-08 14:26:59 - Securing POST /api/usuarios
+2025-08-08 14:26:59 - [JWT Filter] Método: POST Endpoint: /api/usuarios
+2025-08-08 14:26:59 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:26:59 - Email extraído del token: admin@sistema.com
+2025-08-08 14:26:59 - Authentication actual en SecurityContext: null
+2025-08-08 14:26:59 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:26:59 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:26:59 - Secured POST /api/usuarios
+2025-08-08 14:27:00 - Securing POST /error
+2025-08-08 14:27:00 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:27:00 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 14:27:00 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 14:37:51 - Securing OPTIONS /api/usuarios
+2025-08-08 14:37:52 - Securing POST /api/usuarios
+2025-08-08 14:37:52 - [JWT Filter] Método: POST Endpoint: /api/usuarios
+2025-08-08 14:37:52 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 14:37:52 - Email extraído del token: admin@sistema.com
+2025-08-08 14:37:52 - Authentication actual en SecurityContext: null
+2025-08-08 14:37:52 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 14:37:52 - Token válido para usuario: admin@sistema.com
+2025-08-08 14:37:52 - Secured POST /api/usuarios
+2025-08-08 14:37:52 - Securing POST /error
+2025-08-08 14:37:52 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 14:37:52 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 14:37:52 - Pre-authenticated entry point called. Rejecting access
+2025-08-08 16:28:51 - Securing OPTIONS /api/usuarios
+2025-08-08 16:28:51 - Securing POST /api/usuarios
+2025-08-08 16:28:51 - [JWT Filter] Método: POST Endpoint: /api/usuarios
+2025-08-08 16:28:51 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjozLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NDY3MzAyNCwiZXhwIjoxNzU0NzA5MDI0fQ.48Tj0rIYxUsaGSf5gf3x1lLaOkNKEt8UxAK2VU0DRL4
+2025-08-08 16:28:51 - Email extraído del token: admin@sistema.com
+2025-08-08 16:28:51 - Authentication actual en SecurityContext: null
+2025-08-08 16:28:51 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-08 16:28:51 - Token válido para usuario: admin@sistema.com
+2025-08-08 16:28:51 - Secured POST /api/usuarios
+2025-08-08 16:28:51 - Securing POST /error
+2025-08-08 16:28:51 - Set SecurityContextHolder to anonymous SecurityContext
+2025-08-08 16:28:51 - Saved request http://localhost:8080/error?continue to session
+2025-08-08 16:28:51 - Pre-authenticated entry point called. Rejecting access

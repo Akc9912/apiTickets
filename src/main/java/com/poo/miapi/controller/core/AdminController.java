@@ -22,11 +22,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/admin")
 @Tag(name = "Administradores", description = "Endpoints para gestión administrativa del sistema")
 public class AdminController {
-    private final AdminService adminService;
+        private final AdminService adminService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AdminController.class);
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+        public AdminController(AdminService adminService) {
+                this.adminService = adminService;
+        }
 
     // POST /api/admin/usuarios - Crear un nuevo usuario (admin, técnico,
     // trabajador)
@@ -39,7 +40,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> crearUsuario(
             @Parameter(description = "Datos del nuevo usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
-        return ResponseEntity.ok(adminService.crearUsuario(usuarioDto));
+        logger.info("[AdminController] POST /usuarios datos: {}", usuarioDto);
+        UsuarioResponseDto resp = adminService.crearUsuario(usuarioDto);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // GET /api/admin/usuarios - Listar todos los usuarios
@@ -49,7 +53,10 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
     })
     public ResponseEntity<List<UsuarioResponseDto>> listarUsuarios() {
-        return ResponseEntity.ok(adminService.listarTodosLosUsuarios());
+        logger.info("[AdminController] GET /usuarios");
+        List<UsuarioResponseDto> resp = adminService.listarTodosLosUsuarios();
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // GET /api/admin/usuarios/{id} - Ver detalles de un usuario
@@ -61,7 +68,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> verUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.verUsuarioPorId(id));
+        logger.info("[AdminController] GET /usuarios/{}", id);
+        UsuarioResponseDto resp = adminService.verUsuarioPorId(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id} - Editar datos de un usuario
@@ -75,7 +85,10 @@ public class AdminController {
     public ResponseEntity<UsuarioResponseDto> editarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id,
             @Parameter(description = "Nuevos datos del usuario") @Valid @RequestBody UsuarioRequestDto usuarioDto) {
-        return ResponseEntity.ok(adminService.editarUsuario(id, usuarioDto));
+        logger.info("[AdminController] PUT /usuarios/{} datos: {}", id, usuarioDto);
+        UsuarioResponseDto resp = adminService.editarUsuario(id, usuarioDto);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id}/activar - Activar usuario
@@ -87,7 +100,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> activarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.activarUsuario(id));
+        logger.info("[AdminController] PUT /usuarios/{}/activar", id);
+        UsuarioResponseDto resp = adminService.activarUsuario(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id}/desactivar - Desactivar usuario
@@ -99,7 +115,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> desactivarUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.desactivarUsuario(id));
+        logger.info("[AdminController] PUT /usuarios/{}/desactivar", id);
+        UsuarioResponseDto resp = adminService.desactivarUsuario(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id}/bloquear - Bloquear usuario
@@ -111,7 +130,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> bloquearUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.bloquearUsuario(id));
+        logger.info("[AdminController] PUT /usuarios/{}/bloquear", id);
+        UsuarioResponseDto resp = adminService.bloquearUsuario(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id}/desbloquear - Desbloquear usuario
@@ -123,7 +145,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> desbloquearUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.desbloquearUsuario(id));
+        logger.info("[AdminController] PUT /usuarios/{}/desbloquear", id);
+        UsuarioResponseDto resp = adminService.desbloquearUsuario(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // POST /api/admin/usuarios/{id}/reset-password - Resetear contraseña de usuario
@@ -135,7 +160,10 @@ public class AdminController {
     })
     public ResponseEntity<UsuarioResponseDto> resetearPassword(
             @Parameter(description = "ID del usuario") @PathVariable int id) {
-        return ResponseEntity.ok(adminService.blanquearPassword(id));
+        logger.info("[AdminController] POST /usuarios/{}/reset-password", id);
+        UsuarioResponseDto resp = adminService.blanquearPassword(id);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // PUT /api/admin/usuarios/{id}/rol - Cambiar el rol de un usuario
@@ -149,7 +177,10 @@ public class AdminController {
     public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(
             @Parameter(description = "ID del usuario") @PathVariable int id,
             @Parameter(description = "Datos del nuevo rol") @Valid @RequestBody UsuarioRequestDto cambiarRolDto) {
-        return ResponseEntity.ok(adminService.cambiarRolUsuario(id, cambiarRolDto));
+        logger.info("[AdminController] PUT /usuarios/{}/rol datos: {}", id, cambiarRolDto);
+        UsuarioResponseDto resp = adminService.cambiarRolUsuario(id, cambiarRolDto);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // GET /api/admin/tickets - Listar todos los tickets del sistema
@@ -159,7 +190,10 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente")
     })
     public ResponseEntity<List<TicketResponseDto>> listarTickets() {
-        return ResponseEntity.ok(adminService.listarTodosLosTickets());
+        logger.info("[AdminController] GET /tickets");
+        List<TicketResponseDto> resp = adminService.listarTodosLosTickets();
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // POST /api/admin/tickets/{id}/reabrir - Reabrir un ticket cerrado
@@ -173,7 +207,10 @@ public class AdminController {
     public ResponseEntity<TicketResponseDto> reabrirTicket(
             @Parameter(description = "ID del ticket") @PathVariable int id,
             @Parameter(description = "Comentario sobre la reapertura") @RequestParam String comentario) {
-        return ResponseEntity.ok(adminService.reabrirTicket(id, comentario));
+        logger.info("[AdminController] POST /tickets/{}/reabrir comentario: {}", id, comentario);
+        TicketResponseDto resp = adminService.reabrirTicket(id, comentario);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
     // GET /api/admin/usuarios/rol?rol=TECNICO - Listar usuarios por rol
@@ -185,7 +222,10 @@ public class AdminController {
     })
     public ResponseEntity<List<UsuarioResponseDto>> listarUsuariosPorRol(
             @Parameter(description = "Rol a filtrar (ADMIN, TECNICO, TRABAJADOR, SUPERADMIN)") @RequestParam String rol) {
-        return ResponseEntity.ok(adminService.listarUsuariosPorRol(rol));
+        logger.info("[AdminController] GET /usuarios/rol rol: {}", rol);
+        List<UsuarioResponseDto> resp = adminService.listarUsuariosPorRol(rol);
+        logger.info("[AdminController] Respuesta: {}", resp);
+        return ResponseEntity.ok(resp);
     }
 
 }

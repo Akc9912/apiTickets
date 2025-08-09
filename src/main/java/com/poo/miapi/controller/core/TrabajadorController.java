@@ -24,6 +24,7 @@ import java.util.List;
 public class TrabajadorController {
 
     private final TrabajadorService trabajadorService;
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TrabajadorController.class);
 
     public TrabajadorController(TrabajadorService trabajadorService) {
         this.trabajadorService = trabajadorService;
@@ -38,7 +39,10 @@ public class TrabajadorController {
     })
     public TicketResponseDto crearTicket(
             @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto) {
-        return trabajadorService.crearTicket(dto);
+    logger.info("[TrabajadorController] POST /tickets datos: {}", dto);
+    TicketResponseDto resp = trabajadorService.crearTicket(dto);
+    logger.info("[TrabajadorController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/trabajador/tickets - Ver todos mis tickets
@@ -50,7 +54,10 @@ public class TrabajadorController {
     })
     public List<TicketResponseDto> verTodosMisTickets(
             @Parameter(description = "ID del trabajador") @RequestParam int idTrabajador) {
-        return trabajadorService.verTodosMisTickets(idTrabajador);
+    logger.info("[TrabajadorController] GET /tickets idTrabajador: {}", idTrabajador);
+    List<TicketResponseDto> resp = trabajadorService.verTodosMisTickets(idTrabajador);
+    logger.info("[TrabajadorController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/trabajador/tickets/activos - Ver mis tickets activos
@@ -62,7 +69,10 @@ public class TrabajadorController {
     })
     public List<TicketResponseDto> verTicketsActivos(
             @Parameter(description = "ID del trabajador") @RequestParam int idTrabajador) {
-        return trabajadorService.verTicketsActivos(idTrabajador);
+    logger.info("[TrabajadorController] GET /tickets/activos idTrabajador: {}", idTrabajador);
+    List<TicketResponseDto> resp = trabajadorService.verTicketsActivos(idTrabajador);
+    logger.info("[TrabajadorController] Respuesta: {}", resp);
+    return resp;
     }
 
     // POST /api/trabajador/tickets/{ticketId}/evaluar - Validación final del trabajador
@@ -77,7 +87,10 @@ public class TrabajadorController {
     public TicketResponseDto evaluarTicket(
             @Parameter(description = "ID del ticket") @PathVariable int ticketId,
             @Parameter(description = "Datos de la evaluación") @RequestBody EvaluarTicketDto dto) {
-        return trabajadorService.evaluarTicket(ticketId, dto);
+    logger.info("[TrabajadorController] POST /tickets/{}/evaluar datos: {}", ticketId, dto);
+    TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
+    logger.info("[TrabajadorController] Respuesta: {}", resp);
+    return resp;
     }
 
     // GET /api/trabajador/listar-todos - Listar todos los trabajadores (admin)
@@ -87,6 +100,9 @@ public class TrabajadorController {
             @ApiResponse(responseCode = "200", description = "Lista de trabajadores obtenida exitosamente")
     })
     public List<TrabajadorResponseDto> listarTodos() {
-        return trabajadorService.listarTodos();
+    logger.info("[TrabajadorController] GET /listar-todos");
+    List<TrabajadorResponseDto> resp = trabajadorService.listarTodos();
+    logger.info("[TrabajadorController] Respuesta: {}", resp);
+    return resp;
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public class NotificacionController {
 
     private final NotificacionService notificacionService;
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(NotificacionController.class);
 
     public NotificacionController(NotificacionService notificacionService) {
         this.notificacionService = notificacionService;
@@ -35,8 +36,10 @@ public class NotificacionController {
     })
     public ResponseEntity<List<NotificacionResponseDto>> verMisNotificaciones(
             @Parameter(description = "ID del usuario") @RequestParam int userId) {
-        List<NotificacionResponseDto> notificaciones = notificacionService.obtenerNotificaciones(userId);
-        return ResponseEntity.ok(notificaciones);
+    logger.info("[NotificacionController] GET /api/notificaciones userId: {}", userId);
+    List<NotificacionResponseDto> notificaciones = notificacionService.obtenerNotificaciones(userId);
+    logger.info("[NotificacionController] Respuesta: {}", notificaciones);
+    return ResponseEntity.ok(notificaciones);
     }
 
     // DELETE /api/notificaciones
@@ -49,8 +52,10 @@ public class NotificacionController {
     })
     public ResponseEntity<Void> eliminarTodasMisNotificaciones(
             @Parameter(description = "ID del usuario") @RequestParam int userId) {
-        notificacionService.eliminarTodasDelUsuario(userId);
-        return ResponseEntity.noContent().build();
+    logger.info("[NotificacionController] DELETE /api/notificaciones userId: {}", userId);
+    notificacionService.eliminarTodasDelUsuario(userId);
+    logger.info("[NotificacionController] Notificaciones eliminadas");
+    return ResponseEntity.noContent().build();
     }
 
     // POST /api/notificaciones
@@ -65,8 +70,10 @@ public class NotificacionController {
     public ResponseEntity<NotificacionResponseDto> enviarNotificacion(
             @Parameter(description = "ID del usuario destinatario") @RequestParam int idUsuario,
             @Parameter(description = "Mensaje de la notificación") @RequestParam String mensaje) {
-        NotificacionResponseDto dto = notificacionService.enviarNotificacion(idUsuario, mensaje);
-        return ResponseEntity.ok(dto);
+    logger.info("[NotificacionController] POST /api/notificaciones idUsuario: {} mensaje: {}", idUsuario, mensaje);
+    NotificacionResponseDto dto = notificacionService.enviarNotificacion(idUsuario, mensaje);
+    logger.info("[NotificacionController] Respuesta: {}", dto);
+    return ResponseEntity.ok(dto);
     }
 
     // GET /api/notificaciones/count
@@ -79,7 +86,9 @@ public class NotificacionController {
     })
     public ResponseEntity<Long> contarNotificaciones(
             @Parameter(description = "ID del usuario") @RequestParam int userId) {
-        long count = notificacionService.contarNotificaciones(userId);
-        return ResponseEntity.ok(count);
+    logger.info("[NotificacionController] GET /api/notificaciones/count userId: {}", userId);
+    long count = notificacionService.contarNotificaciones(userId);
+    logger.info("[NotificacionController] Respuesta: {}", count);
+    return ResponseEntity.ok(count);
     }
 }

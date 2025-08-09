@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class AuthController {
 
     private final AuthService authService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -37,7 +38,9 @@ public class AuthController {
     })
     public ResponseEntity<LoginResponseDto> login(
             @Parameter(description = "Credenciales de login") @RequestBody @Valid LoginRequestDto request) {
+        logger.info("[AuthController] POST /login datos: {}", request);
         LoginResponseDto response = authService.login(request);
+        logger.info("[AuthController] Respuesta: {}", response);
         return ResponseEntity.ok(response);
     }
 
@@ -51,7 +54,9 @@ public class AuthController {
     })
     public ResponseEntity<String> cambiarPassword(
             @Parameter(description = "Datos para cambiar la contraseña") @RequestBody @Valid ChangePasswordDto dto) {
+        logger.info("[AuthController] POST /cambiar-password datos: {}", dto);
         authService.cambiarPassword(dto);
+        logger.info("[AuthController] Contraseña actualizada correctamente");
         return ResponseEntity.ok("Contraseña actualizada correctamente");
     }
 
@@ -65,7 +70,9 @@ public class AuthController {
     })
     public ResponseEntity<String> reiniciarPassword(
             @Parameter(description = "Datos para reiniciar la contraseña") @RequestBody @Valid ResetPasswordDto dto) {
+        logger.info("[AuthController] POST /reiniciar-password datos: {}", dto);
         authService.reiniciarPassword(dto);
+        logger.info("[AuthController] Contraseña reiniciada correctamente");
         return ResponseEntity.ok("Contraseña reiniciada correctamente");
     }
 }

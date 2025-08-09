@@ -19,6 +19,7 @@ import com.poo.miapi.service.core.TecnicoService;
 public class TecnicoController {
 
         private final TecnicoService tecnicoService;
+        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TecnicoController.class);
 
         public TecnicoController(TecnicoService tecnicoService) {
                 this.tecnicoService = tecnicoService;
@@ -33,7 +34,9 @@ public class TecnicoController {
         })
         public ResponseEntity<List<TicketResponseDto>> verMisTickets(
                         @Parameter(description = "ID del técnico") @RequestParam int userId) {
+                logger.info("[TecnicoController] GET /tickets/asignados userId: {}", userId);
                 List<TicketResponseDto> tickets = tecnicoService.verTicketsAsignados(userId);
+                logger.info("[TecnicoController] Respuesta: {}", tickets);
                 return ResponseEntity.ok(tickets);
         }
 
@@ -48,7 +51,9 @@ public class TecnicoController {
         public ResponseEntity<String> tomarTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
+                logger.info("[TecnicoController] POST /tickets/{}/tomar idTecnico: {}", ticketId, idTecnico);
                 tecnicoService.tomarTicket(idTecnico, ticketId);
+                logger.info("[TecnicoController] Ticket tomado correctamente");
                 return ResponseEntity.ok("Ticket tomado correctamente");
         }
 
@@ -63,7 +68,9 @@ public class TecnicoController {
         public ResponseEntity<String> finalizarTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
+                logger.info("[TecnicoController] POST /tickets/{}/finalizar idTecnico: {}", ticketId, idTecnico);
                 tecnicoService.finalizarTicket(idTecnico, ticketId);
+                logger.info("[TecnicoController] Estado de ticket actualizado a: Finalizado");
                 return ResponseEntity.ok("Estado de ticket actualizado a: Finalizado");
         }
 
@@ -79,7 +86,9 @@ public class TecnicoController {
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId,
                         @Parameter(description = "Motivo de la devolución del ticket") @RequestParam String motivo) {
+                logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId, idTecnico, motivo);
                 tecnicoService.devolverTicket(idTecnico, ticketId, motivo);
+                logger.info("[TecnicoController] Ticket devuelto");
                 return ResponseEntity.ok("Ticket devuelto");
         }
 
@@ -90,7 +99,10 @@ public class TecnicoController {
                         @ApiResponse(responseCode = "200", description = "Lista de técnicos obtenida exitosamente")
         })
         public ResponseEntity<List<TecnicoResponseDto>> listarTodos() {
-                return ResponseEntity.ok(tecnicoService.listarTodos());
+                logger.info("[TecnicoController] GET /listar-todos");
+                List<TecnicoResponseDto> resp = tecnicoService.listarTodos();
+                logger.info("[TecnicoController] Respuesta: {}", resp);
+                return ResponseEntity.ok(resp);
         }
 
         // GET /api/tecnico/incidentes?tecnicoId=...
@@ -102,7 +114,9 @@ public class TecnicoController {
         })
         public ResponseEntity<List<IncidenteTecnicoResponseDto>> obtenerHistorialIncidentes(
                         @Parameter(description = "ID del técnico") @RequestParam int tecnicoId) {
+                logger.info("[TecnicoController] GET /incidentes tecnicoId: {}", tecnicoId);
                 List<IncidenteTecnicoResponseDto> incidentes = tecnicoService.obtenerHistorialIncidentes(tecnicoId);
+                logger.info("[TecnicoController] Respuesta: {}", incidentes);
                 return ResponseEntity.ok(incidentes);
         }
 }
