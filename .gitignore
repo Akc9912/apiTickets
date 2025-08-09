@@ -34,3 +34,8 @@ build/
 
 # Ignorar archivo de configuración sensible
 .env
+
+# Ignorar archivos de logs
+logs/*.log
+logs/*.gz
+

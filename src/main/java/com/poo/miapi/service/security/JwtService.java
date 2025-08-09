@@ -75,7 +75,21 @@ public class JwtService {
     }
 
     // Para el filtro: genera el objeto de autenticación
-    public UsernamePasswordAuthenticationToken getAuthentication(String token, UserDetails userDetails) {
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
+public UsernamePasswordAuthenticationToken getAuthentication(String token, UserDetails userDetails) {
+    String rol = extractRole(token); // nuevo método que vamos a hacer
+    var authorities = java.util.List.of(
+        new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + rol)
+    );
+    return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+}
+
+// Nuevo método para extraer el rol del token
+public String extractRole(String token) {
+    return Jwts.parserBuilder()
+            .setSigningKey(getSigningKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .get("rol", String.class);
+}
 }
