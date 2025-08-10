@@ -1,8 +1,8 @@
 package com.poo.miapi.service.core;
 
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.enums.Rol;
@@ -402,7 +402,7 @@ public class SuperAdminService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.getRol(),
                 usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());

@@ -4,7 +4,7 @@ import com.poo.miapi.dto.auth.ChangePasswordDto;
 import com.poo.miapi.dto.auth.LoginRequestDto;
 import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.security.JwtService;
@@ -33,7 +33,7 @@ public class AuthService {
      * 
      * Medidas de seguridad implementadas:
      * 1. Los usuarios INACTIVOS se tratan como si no existieran (baja lógica)
-     * 2. Los usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones
+     * 2. Los usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones (ponerse de acuerdo si logea o no)
      * 3. Se ejecuta verificación de contraseña incluso para usuarios inexistentes 
      *    para prevenir timing attacks
      * 4. Mismo mensaje de error para usuarios inexistentes e inactivos
@@ -72,7 +72,7 @@ public class AuthService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.getRol(),
                 usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
