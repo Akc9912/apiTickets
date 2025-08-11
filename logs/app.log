@@ -859,3 +859,75 @@ Consider defining a bean of type 'com.poo.miapi.security.JwtAuthenticationFilter
 2025-08-11 16:45:09 - Token válido para usuario: trabajador@sistema.com
 2025-08-11 16:45:09 - Secured POST /api/tickets
 2025-08-11 16:45:09 - [TicketController] POST /api/tickets datos: com.poo.miapi.dto.ticket.TicketRequestDto@77876a2
+2025-08-11 16:54:09 - Starting MiapiApplication using Java 24.0.2 with PID 10640 (C:\Users\seba\Desktop\finalPOO\apiTickets\target\classes started by seba in C:\Users\seba\Desktop\finalPOO\apiTickets)
+2025-08-11 16:54:09 - Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-08-11 16:54:09 - The following 1 profile is active: "mysql"
+2025-08-11 16:54:15 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-11 16:54:15 - Finished Spring Data repository scanning in 367 ms. Found 11 JPA repository interfaces.
+2025-08-11 16:54:18 - Tomcat initialized with port 8080 (http)
+2025-08-11 16:54:18 - Starting service [Tomcat]
+2025-08-11 16:54:18 - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-11 16:54:19 - Initializing Spring embedded WebApplicationContext
+2025-08-11 16:54:19 - Root WebApplicationContext: initialization completed in 9291 ms
+2025-08-11 16:54:20 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-11 16:54:20 - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-08-11 16:54:21 - HHH000026: Second-level cache disabled
+2025-08-11 16:54:23 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-11 16:54:23 - HikariPool-1 - Starting...
+2025-08-11 16:54:24 - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@c697186
+2025-08-11 16:54:24 - HikariPool-1 - Start completed.
+2025-08-11 16:54:24 - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-11 16:54:24 - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-08-11 16:54:24 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-11 16:54:28 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-11 16:54:29 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-11 16:54:31 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-11 16:54:31 - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-11 16:54:34 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-11 16:54:35 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-08-11 16:54:37 - Exposing 14 endpoints beneath base path '/actuator'
+2025-08-11 16:54:37 - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-08-11 16:54:39 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-11 16:54:39 - Initializing Servlet 'dispatcherServlet'
+2025-08-11 16:54:39 - Completed initialization in 4 ms
+2025-08-11 16:54:39 - Tomcat started on port 8080 (http) with context path '/'
+2025-08-11 16:54:39 - Started MiapiApplication in 31.345 seconds (process running for 33.329)
+2025-08-11 16:54:39 - [DataInitializer] Inicio de configuración inicial de datos
+2025-08-11 16:54:39 - [DataInitializer] Verificando si existe SuperAdmin
+2025-08-11 16:54:40 - [DataInitializer] SuperAdmin ya existe
+2025-08-11 16:54:40 - [DataInitializer] Verificando si existe Admin
+2025-08-11 16:54:40 - [DataInitializer] Admin ya existe
+2025-08-11 16:54:40 - [DataInitializer] Verificando si existe Tecnico
+2025-08-11 16:54:40 - [DataInitializer] Tecnico ya existe
+2025-08-11 16:54:40 - [DataInitializer] Verificando si existe Trabajador
+2025-08-11 16:54:40 - [DataInitializer] Trabajador ya existe
+2025-08-11 16:54:40 - [DataInitializer] Usuarios totales: 4
+2025-08-11 16:54:40 - [DataInitializer] Configuración inicial completada
+2025-08-11 16:54:58 - Securing OPTIONS /api/tickets
+2025-08-11 16:54:58 - Securing POST /api/tickets
+2025-08-11 16:54:58 - [JWT Filter] Método: POST Endpoint: /api/tickets
+2025-08-11 16:54:58 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0cmFiYWphZG9yQHNpc3RlbWEuY29tIiwiaWQiOjQsInJvbCI6IlRSQUJBSkFET1IiLCJpYXQiOjE3NTQ5MzQ2NDEsImV4cCI6MTc1NDk3MDY0MX0.24LhAiT1PjaVdSRq1aMC0VzQ9qXfhmMUvV7ioYTu78w
+2025-08-11 16:54:58 - Email extraído del token: trabajador@sistema.com
+2025-08-11 16:54:58 - Authentication actual en SecurityContext: null
+2025-08-11 16:54:59 - [JWT Filter] Usuario autenticado: trabajador@sistema.com Rol: TRABAJADOR
+2025-08-11 16:54:59 - Token válido para usuario: trabajador@sistema.com
+2025-08-11 16:54:59 - Secured POST /api/tickets
+2025-08-11 16:54:59 - [TicketController] POST /api/tickets datos: com.poo.miapi.dto.ticket.TicketRequestDto@787483c6
+2025-08-11 16:54:59 - [TicketController] Principal: [TRABAJADOR] Trabajador (ID: 4)
+2025-08-11 16:54:59 - [TicketController] Email extraído: trabajador@sistema.com
+2025-08-11 16:54:59 - [TicketController] Usuario obtenido: trabajador@sistema.com Rol: Trabajador
+2025-08-11 16:54:59 - [TicketController] DTO recibido: titulo=demo, descripcion=23123, idTrabajador=0
+2025-08-11 16:54:59 - [TicketController] Rol del usuario autenticado: TRABAJADOR
+2025-08-11 16:54:59 - [TicketController] El creador del ticket será el usuario autenticado (TRABAJADOR): trabajador@sistema.com
+2025-08-11 16:54:59 - [TicketController] Llamando a TicketService.crearTicketConCreador con creador: trabajador@sistema.com (rol: Trabajador)
+2025-08-11 16:54:59 - [TicketService] Creando ticket: titulo=demo, descripcion=23123, creadorEmail=trabajador@sistema.com, creadorRol=Trabajador
+2025-08-11 16:54:59 - [TicketService] El creador es Trabajador, agregando ticket a su lista
+2025-08-11 16:54:59 - [TicketService] Ticket guardado con id 1
+2025-08-11 16:54:59 - [TicketController] Respuesta: com.poo.miapi.dto.ticket.TicketResponseDto@4eadd560

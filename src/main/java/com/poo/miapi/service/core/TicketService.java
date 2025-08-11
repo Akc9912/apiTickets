@@ -1,31 +1,43 @@
+
 package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.historial.TecnicoPorTicket;
+import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
+import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.Collections;
 
 @Service
 public class TicketService {
+    
 
     private final TicketRepository ticketRepository;
     private final TrabajadorRepository trabajadorRepository;
     private final UsuarioRepository usuarioRepository;
+    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
 
     public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository) {
-        this.ticketRepository = ticketRepository;
-        this.trabajadorRepository = trabajadorRepository;
-        this.usuarioRepository = usuarioRepository;
+        this(ticketRepository, trabajadorRepository, usuarioRepository, null);
+    }
+
+    public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository, com.poo.miapi.repository.historial.TecnicoPorTicketRepository tecnicoPorTicketRepository) {
+    this.ticketRepository = ticketRepository;
+    this.trabajadorRepository = trabajadorRepository;
+    this.usuarioRepository = usuarioRepository;
+    this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
     }
 
     public Usuario obtenerUsuarioPorEmail(String email) {
@@ -122,5 +134,59 @@ public class TicketService {
                 ticket.getTecnicoActual() != null ? ticket.getTecnicoActual().getNombre() : null,
                 ticket.getFechaCreacion(),
                 ticket.getFechaUltimaActualizacion());
+    }
+
+    // Tickets no asignados y reabiertos (para técnicos)
+    public List<TicketResponseDto> listarTicketsNoAsignadosYReabiertos() {
+        List<Ticket> noAsignados = ticketRepository.findByEstado(EstadoTicket.NO_ATENDIDO);
+        List<Ticket> reabiertos = ticketRepository.findByEstado(EstadoTicket.REABIERTO);
+        return Stream.concat(noAsignados.stream(), reabiertos.stream())
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // Tickets asignados al técnico en estado atendido o resuelto
+    public List<TicketResponseDto> listarTicketsAsignadosAlTecnico(int tecnicoId) {
+    Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
+    if (!(usuario instanceof Tecnico tecnico)) return Collections.emptyList();
+    List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
+    List<Ticket> resueltos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.RESUELTO, tecnico);
+    return Stream.concat(atendidos.stream(), resueltos.stream())
+            .map(this::mapToDto)
+            .toList();
+    }
+
+    // Historial de todos los tickets donde participó el técnico
+    public List<TicketResponseDto> listarHistorialTecnico(int tecnicoId) {
+    Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
+    if (!(usuario instanceof Tecnico)) return Collections.emptyList();
+    List<TecnicoPorTicket> historial = tecnicoPorTicketRepository.findByTecnicoId(tecnicoId);
+    return historial.stream()
+        .map(tpt -> mapToDto(tpt.getTicket()))
+        .toList();
+    }
+
+    // Lógica de negocio para determinar el creador según el rol
+    public TicketResponseDto crearTicketConRol(TicketRequestDto dto, Usuario usuario) {
+        Usuario creadorTicket = null;
+        switch (usuario.getRol().name()) {
+            case "TRABAJADOR":
+                creadorTicket = usuario;
+                break;
+            case "ADMIN":
+            case "SUPERADMIN":
+                if (dto.getIdTrabajador() != 0) {
+                    creadorTicket = obtenerTrabajadorPorId(dto.getIdTrabajador());
+                    if (creadorTicket == null) {
+                        throw new IllegalArgumentException("Trabajador no encontrado");
+                    }
+                } else {
+                    creadorTicket = usuario;
+                }
+                break;
+            default:
+                throw new IllegalStateException("Rol no autorizado para crear tickets");
+        }
+        return crearTicketConCreador(dto, creadorTicket);
     }
 }

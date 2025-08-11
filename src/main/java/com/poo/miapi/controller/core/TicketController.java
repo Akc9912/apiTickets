@@ -3,206 +3,129 @@ package com.poo.miapi.controller.core;
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.TicketService;
-import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.core.Usuario;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.AccessDeniedException;
 import jakarta.validation.Valid;
+import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
-
-/**
- * Controlador para gestión de tickets del sistema
- * 
- * NOTA IMPORTANTE sobre usuarios bloqueados:
- * Los usuarios bloqueados pueden iniciar sesión pero NO pueden realizar acciones.
- * Para verificar si un usuario puede realizar acciones, usar: usuario.puedeRealizarAcciones()
- * 
- * Ejemplo:
- * if (!usuarioActual.puedeRealizarAcciones()) {
- *     throw new IllegalStateException("Usuario bloqueado, no puede realizar acciones");
- * }
- */
 @RestController
 @RequestMapping("/api/tickets")
 @Tag(name = "Tickets", description = "Endpoints para gestión de tickets del sistema")
 public class TicketController {
 
         private final TicketService ticketService;
-        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketController.class);
 
         public TicketController(TicketService ticketService) {
                 this.ticketService = ticketService;
         }
 
-        // GET /api/tickets - Listar todos los tickets
-        @GetMapping
-        @Operation(summary = "Listar todos los tickets", description = "Obtiene una lista de todos los tickets del sistema")
+        // 1. /api/tickets/todos - Admin/SuperAdmin: ver todos los tickets
+        @Operation(summary = "Listar todos los tickets", description = "Devuelve todos los tickets del sistema. Solo Admin/SuperAdmin.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente")
+            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public List<TicketResponseDto> listarTickets() {
-                logger.info("[TicketController] GET /api/tickets");
-                List<TicketResponseDto> resp = ticketService.listarTodos();
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+        @GetMapping("/todos")
+        public List<TicketResponseDto> listarTodosTicketsAdmin(Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !(usuario.getRol().name().equals("ADMIN") || usuario.getRol().name().equals("SUPERADMIN"))) {
+                        throw new AccessDeniedException("No autorizado");
+                }
+                return ticketService.listarTodos();
         }
 
-        // GET /api/tickets/{id} - Ver detalle de un ticket
-        @GetMapping("/{id}")
-        @Operation(summary = "Ver detalle de ticket", description = "Obtiene los detalles de un ticket específico")
+        // 2. /api/tickets/trabajador/mis-tickets - Trabajador: ver sus tickets
+        @Operation(summary = "Listar mis tickets (Trabajador)", description = "Devuelve los tickets creados por el trabajador autenticado.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Ticket encontrado exitosamente", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
-                        @ApiResponse(responseCode = "404", description = "Ticket no encontrado")
+            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public TicketResponseDto verTicket(
-                        @Parameter(description = "ID del ticket") @PathVariable int id) {
-                logger.info("[TicketController] GET /api/tickets/{}", id);
-                TicketResponseDto resp = ticketService.buscarPorId(id);
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+        @GetMapping("/trabajador/mis-tickets")
+        public List<TicketResponseDto> listarMisTicketsTrabajador(Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !usuario.getRol().name().equals("TRABAJADOR")) {
+                        throw new AccessDeniedException("No autorizado");
+                }
+                return ticketService.listarPorCreador(usuario.getId());
         }
 
-        // POST /api/tickets - Crear un nuevo ticket
-        @PostMapping
-        @Operation(summary = "Crear nuevo ticket", description = "Crea un nuevo ticket en el sistema")
+        // 3. /api/tickets/tecnico/tickets-disponibles - Técnico: tickets no asignados y reabiertos
+        @Operation(summary = "Listar tickets disponibles (Técnico)", description = "Devuelve tickets no asignados y reabiertos para técnicos.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Ticket creado exitosamente", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
-                        @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el ticket")
+            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public TicketResponseDto crearTicket(
-                                @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto,
-                                org.springframework.security.core.Authentication authentication) {
-
-                                logger.info("[TicketController] POST /api/tickets datos: {}", dto);
-                                // Obtener usuario autenticado
-                                Object principal = authentication.getPrincipal();
-                                String email = null;
-                                if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
-                                        email = userDetails.getUsername();
-                                } else if (principal instanceof String) {
-                                        email = (String) principal;
-                                }
-                                logger.debug("[TicketController] Principal: {}", principal);
-                                logger.debug("[TicketController] Email extraído: {}", email);
-                                if (email == null) {
-                                        throw new IllegalStateException("No se pudo obtener el usuario autenticado");
-                                }
-
-                                // Obtener el usuario y su rol
-                                com.poo.miapi.model.core.Usuario usuario = ticketService.obtenerUsuarioPorEmail(email);
-                                logger.debug("[TicketController] Usuario obtenido: {} Rol: {}", usuario != null ? usuario.getEmail() : null, usuario != null ? usuario.getRol() : null);
-                                logger.debug("[TicketController] DTO recibido: titulo={}, descripcion={}, idTrabajador={}", dto.getTitulo(), dto.getDescripcion(), dto.getIdTrabajador());
-                                if (usuario == null || !usuario.puedeRealizarAcciones()) {
-                                        throw new IllegalStateException("Usuario bloqueado o no encontrado");
-                                }
-
-                                // Lógica por rol
-                                com.poo.miapi.model.core.Usuario creadorTicket = null;
-                                logger.debug("[TicketController] Rol del usuario autenticado: {}", usuario.getRol().name());
-                                switch (usuario.getRol().name()) {
-                                        case "TRABAJADOR":
-                                                creadorTicket = usuario;
-                                                logger.debug("[TicketController] El creador del ticket será el usuario autenticado (TRABAJADOR): {}", usuario.getEmail());
-                                                break;
-                                        case "ADMIN":
-                                        case "SUPERADMIN":
-                                                // Si se especifica idTrabajador, crear para ese trabajador
-                                                                                                if (dto.getIdTrabajador() != 0) {
-                                                                                                        creadorTicket = ticketService.obtenerTrabajadorPorId(dto.getIdTrabajador());
-                                                                                                        logger.debug("[TicketController] El creador del ticket será el trabajador con id {}", dto.getIdTrabajador());
-                                                                                                        if (creadorTicket == null) {
-                                                                                                                logger.error("[TicketController] Trabajador no encontrado para id {}", dto.getIdTrabajador());
-                                                                                                                throw new IllegalArgumentException("Trabajador no encontrado");
-                                                                                                        }
-                                                                                                } else {
-                                                                                                        // Si no, el admin/superadmin es el creador
-                                                                                                        creadorTicket = usuario;
-                                                                                                        logger.debug("[TicketController] El creador del ticket será el usuario autenticado (ADMIN/SUPERADMIN): {}", usuario.getEmail());
-                                                                                                }
-                                                break;
-                                        default:
-                                                throw new IllegalStateException("Rol no autorizado para crear tickets");
-                                }
-
-                                logger.debug("[TicketController] Llamando a TicketService.crearTicketConCreador con creador: {} (rol: {})", creadorTicket != null ? creadorTicket.getEmail() : null, creadorTicket != null ? creadorTicket.getRol() : null);
-                                TicketResponseDto resp = ticketService.crearTicketConCreador(dto, creadorTicket);
-                                logger.info("[TicketController] Respuesta: {}", resp);
-                                return resp;
+        @GetMapping("/tecnico/tickets-disponibles")
+        public List<TicketResponseDto> listarTicketsDisponiblesTecnico(Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !usuario.getRol().name().equals("TECNICO")) {
+                        throw new AccessDeniedException("No autorizado");
+                }
+                return ticketService.listarTicketsNoAsignadosYReabiertos();
         }
 
-        // PUT /api/tickets/{id}/estado - Actualizar estado de un ticket
-        @PutMapping("/{id}/estado")
-        @Operation(summary = "Actualizar estado del ticket", description = "Cambia el estado de un ticket existente")
+        // 4. /api/tickets/tecnico/mis-tickets - Técnico: sus tickets en estado atendido o resuelto
+        @Operation(summary = "Listar mis tickets (Técnico)", description = "Devuelve los tickets asignados al técnico autenticado en estado atendido o resuelto.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
-                        @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
-                        @ApiResponse(responseCode = "400", description = "Estado inválido")
+            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public TicketResponseDto actualizarEstado(
-                        @Parameter(description = "ID del ticket") @PathVariable int id,
-                        @Parameter(description = "Nuevo estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                logger.info("[TicketController] PUT /api/tickets/{}/estado estado: {}", id, estado);
-                TicketResponseDto resp = ticketService.actualizarEstado(id, EstadoTicket.valueOf(estado));
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+        @GetMapping("/tecnico/mis-tickets")
+        public List<TicketResponseDto> listarMisTicketsTecnico(Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !usuario.getRol().name().equals("TECNICO")) {
+                        throw new AccessDeniedException("No autorizado");
+                }
+                return ticketService.listarTicketsAsignadosAlTecnico(usuario.getId());
         }
 
-        // GET /api/tickets/estado?estado=NO_ATENDIDO - Listar tickets por estado
-        @GetMapping("/estado")
-        @Operation(summary = "Listar tickets por estado", description = "Obtiene tickets filtrados por estado específico")
+        // 5. /api/tickets/tecnico/historial - Técnico: historial de tickets donde participó
+        @Operation(summary = "Historial de tickets (Técnico)", description = "Devuelve el historial de tickets donde el técnico autenticado participó.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Lista de tickets filtrada exitosamente"),
-                        @ApiResponse(responseCode = "400", description = "Estado inválido")
+            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public List<TicketResponseDto> listarPorEstado(
-                        @Parameter(description = "Estado del ticket (NO_ATENDIDO, EN_PROCESO, RESUELTO, CERRADO)") @RequestParam String estado) {
-                logger.info("[TicketController] GET /api/tickets/estado estado: {}", estado);
-                List<TicketResponseDto> resp = ticketService.listarPorEstado(EstadoTicket.valueOf(estado));
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+        @GetMapping("/tecnico/historial")
+        public List<TicketResponseDto> listarHistorialTecnico(Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !usuario.getRol().name().equals("TECNICO")) {
+                        throw new AccessDeniedException("No autorizado");
+                }
+                return ticketService.listarHistorialTecnico(usuario.getId());
         }
 
-        // GET /api/tickets/creador?userId=... - Listar tickets por creador
-        @GetMapping("/creador")
-        @Operation(summary = "Listar tickets por creador", description = "Obtiene todos los tickets creados por un usuario específico")
+        // 6. /api/tickets/crear-ticket Endpoint para crear ticket
+        @Operation(summary = "Crear ticket", description = "Permite crear un ticket según el rol del usuario autenticado.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Lista de tickets del creador obtenida exitosamente"),
-                        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "201", description = "Ticket creado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
-        public List<TicketResponseDto> listarPorCreador(
-                        @Parameter(description = "ID del usuario creador") @RequestParam int userId) {
-                                logger.info("[TicketController] GET /api/tickets/creador userId: {}", userId);
-                                try {
-                                        logger.debug("[TicketController] Buscando tickets por creador con id: {}", userId);
-                                        List<TicketResponseDto> resp = ticketService.listarPorCreador(userId);
-                                        logger.info("[TicketController] Respuesta: {}", resp);
-                                        if (resp == null || resp.isEmpty()) {
-                                                logger.warn("[TicketController] No se encontraron tickets para el creador con id: {}", userId);
-                                        }
-                                        return resp;
-                                } catch (Exception e) {
-                                        logger.error("[TicketController] Error al obtener tickets por creador: {}", e.getMessage(), e);
-                                        throw e;
-                                }
-        }
-
-        // GET /api/tickets/buscar-titulo?palabra=... - Buscar tickets por título
-        @GetMapping("/buscar-titulo")
-        @Operation(summary = "Buscar tickets por título", description = "Busca tickets que contengan una palabra específica en el título")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente")
-        })
-        public List<TicketResponseDto> buscarPorTitulo(
-                        @Parameter(description = "Palabra a buscar en el título del ticket") @RequestParam String palabra) {
-                logger.info("[TicketController] GET /api/tickets/buscar-titulo palabra: {}", palabra);
-                List<TicketResponseDto> resp = ticketService.buscarPorTitulo(palabra);
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+        @PostMapping("/crear-ticket")
+        public TicketResponseDto crearTicket(@RequestBody @Valid TicketRequestDto dto, Authentication authentication) {
+                Object principal = authentication.getPrincipal();
+                String email = null;
+                if (principal instanceof UserDetails userDetails) {
+                        email = userDetails.getUsername();
+                } else if (principal instanceof String) {
+                        email = (String) principal;
+                }
+                if (email == null) {
+                        throw new IllegalStateException("No se pudo obtener el usuario autenticado");
+                }
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(email);
+                if (usuario == null || !usuario.puedeRealizarAcciones()) {
+                        throw new IllegalStateException("Usuario bloqueado o no encontrado");
+                }
+                return ticketService.crearTicketConRol(dto, usuario);
         }
 }
