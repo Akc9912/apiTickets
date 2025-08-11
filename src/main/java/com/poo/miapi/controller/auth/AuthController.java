@@ -36,12 +36,17 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
     })
-    public ResponseEntity<LoginResponseDto> login(
+    public ResponseEntity<?> login(
             @Parameter(description = "Credenciales de login") @RequestBody @Valid LoginRequestDto request) {
         logger.info("[AuthController] POST /login datos: {}", request);
-        LoginResponseDto response = authService.login(request);
-        logger.info("[AuthController] Respuesta: {}", response);
-        return ResponseEntity.ok(response);
+        try {
+            LoginResponseDto response = authService.login(request);
+            logger.info("[AuthController] Respuesta: {}", response);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            logger.warn("[AuthController] Login fallido: {}", ex.getMessage());
+            return ResponseEntity.status(401).body(java.util.Map.of("error", "Credenciales inválidas"));
+        }
     }
 
     // POST /api/auth/cambiar-password

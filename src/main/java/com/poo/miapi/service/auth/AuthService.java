@@ -7,6 +7,10 @@ import com.poo.miapi.dto.auth.ResetPasswordDto;
 import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
+import com.poo.miapi.repository.core.TrabajadorRepository;
+import com.poo.miapi.repository.core.TecnicoRepository;
+import com.poo.miapi.repository.core.AdminRepository;
+import com.poo.miapi.repository.core.SuperAdminRepository;
 import com.poo.miapi.service.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,14 +22,26 @@ public class AuthService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TrabajadorRepository trabajadorRepository;
+    private final TecnicoRepository tecnicoRepository;
+    private final AdminRepository adminRepository;
+    private final SuperAdminRepository superAdminRepository;
 
     public AuthService(
             UsuarioRepository usuarioRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            TrabajadorRepository trabajadorRepository,
+            TecnicoRepository tecnicoRepository,
+            AdminRepository adminRepository,
+            SuperAdminRepository superAdminRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.trabajadorRepository = trabajadorRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.adminRepository = adminRepository;
+        this.superAdminRepository = superAdminRepository;
     }
 
     /**
@@ -46,6 +62,56 @@ public class AuthService {
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElse(null);
+        // Instancia hija según rol
+        if (usuario != null && usuario.getRol() != null) {
+            switch (usuario.getRol().name()) {
+                case "TRABAJADOR":
+                    com.poo.miapi.model.core.Trabajador trabajador = null;
+                    try {
+                        trabajador = (com.poo.miapi.model.core.Trabajador) usuario;
+                    } catch (ClassCastException e) {
+                        // Si no es instancia, buscar por email
+                        if (trabajadorRepository != null) {
+                            trabajador = trabajadorRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+                        }
+                    }
+                    if (trabajador != null) usuario = trabajador;
+                    break;
+                case "TECNICO":
+                    com.poo.miapi.model.core.Tecnico tecnico = null;
+                    try {
+                        tecnico = (com.poo.miapi.model.core.Tecnico) usuario;
+                    } catch (ClassCastException e) {
+                        if (tecnicoRepository != null) {
+                            tecnico = tecnicoRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+                        }
+                    }
+                    if (tecnico != null) usuario = tecnico;
+                    break;
+                case "ADMIN":
+                    com.poo.miapi.model.core.Admin admin = null;
+                    try {
+                        admin = (com.poo.miapi.model.core.Admin) usuario;
+                    } catch (ClassCastException e) {
+                        if (adminRepository != null) {
+                            admin = adminRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+                        }
+                    }
+                    if (admin != null) usuario = admin;
+                    break;
+                case "SUPERADMIN":
+                    com.poo.miapi.model.core.SuperAdmin superAdmin = null;
+                    try {
+                        superAdmin = (com.poo.miapi.model.core.SuperAdmin) usuario;
+                    } catch (ClassCastException e) {
+                        if (superAdminRepository != null) {
+                            superAdmin = superAdminRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+                        }
+                    }
+                    if (superAdmin != null) usuario = superAdmin;
+                    break;
+            }
+        }
 
         // Siempre verificar la contraseña para evitar timing attacks
         boolean passwordMatches = false;

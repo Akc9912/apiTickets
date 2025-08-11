@@ -76,11 +76,64 @@ public class TicketController {
                         @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el ticket")
         })
         public TicketResponseDto crearTicket(
-                        @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto) {
-                logger.info("[TicketController] POST /api/tickets datos: {}", dto);
-                TicketResponseDto resp = ticketService.crearTicket(dto);
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+                                @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto,
+                                org.springframework.security.core.Authentication authentication) {
+
+                                logger.info("[TicketController] POST /api/tickets datos: {}", dto);
+                                // Obtener usuario autenticado
+                                Object principal = authentication.getPrincipal();
+                                String email = null;
+                                if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+                                        email = userDetails.getUsername();
+                                } else if (principal instanceof String) {
+                                        email = (String) principal;
+                                }
+                                logger.debug("[TicketController] Principal: {}", principal);
+                                logger.debug("[TicketController] Email extraído: {}", email);
+                                if (email == null) {
+                                        throw new IllegalStateException("No se pudo obtener el usuario autenticado");
+                                }
+
+                                // Obtener el usuario y su rol
+                                com.poo.miapi.model.core.Usuario usuario = ticketService.obtenerUsuarioPorEmail(email);
+                                logger.debug("[TicketController] Usuario obtenido: {} Rol: {}", usuario != null ? usuario.getEmail() : null, usuario != null ? usuario.getRol() : null);
+                                logger.debug("[TicketController] DTO recibido: titulo={}, descripcion={}, idTrabajador={}", dto.getTitulo(), dto.getDescripcion(), dto.getIdTrabajador());
+                                if (usuario == null || !usuario.puedeRealizarAcciones()) {
+                                        throw new IllegalStateException("Usuario bloqueado o no encontrado");
+                                }
+
+                                // Lógica por rol
+                                com.poo.miapi.model.core.Usuario creadorTicket = null;
+                                logger.debug("[TicketController] Rol del usuario autenticado: {}", usuario.getRol().name());
+                                switch (usuario.getRol().name()) {
+                                        case "TRABAJADOR":
+                                                creadorTicket = usuario;
+                                                logger.debug("[TicketController] El creador del ticket será el usuario autenticado (TRABAJADOR): {}", usuario.getEmail());
+                                                break;
+                                        case "ADMIN":
+                                        case "SUPERADMIN":
+                                                // Si se especifica idTrabajador, crear para ese trabajador
+                                                                                                if (dto.getIdTrabajador() != 0) {
+                                                                                                        creadorTicket = ticketService.obtenerTrabajadorPorId(dto.getIdTrabajador());
+                                                                                                        logger.debug("[TicketController] El creador del ticket será el trabajador con id {}", dto.getIdTrabajador());
+                                                                                                        if (creadorTicket == null) {
+                                                                                                                logger.error("[TicketController] Trabajador no encontrado para id {}", dto.getIdTrabajador());
+                                                                                                                throw new IllegalArgumentException("Trabajador no encontrado");
+                                                                                                        }
+                                                                                                } else {
+                                                                                                        // Si no, el admin/superadmin es el creador
+                                                                                                        creadorTicket = usuario;
+                                                                                                        logger.debug("[TicketController] El creador del ticket será el usuario autenticado (ADMIN/SUPERADMIN): {}", usuario.getEmail());
+                                                                                                }
+                                                break;
+                                        default:
+                                                throw new IllegalStateException("Rol no autorizado para crear tickets");
+                                }
+
+                                logger.debug("[TicketController] Llamando a TicketService.crearTicketConCreador con creador: {} (rol: {})", creadorTicket != null ? creadorTicket.getEmail() : null, creadorTicket != null ? creadorTicket.getRol() : null);
+                                TicketResponseDto resp = ticketService.crearTicketConCreador(dto, creadorTicket);
+                                logger.info("[TicketController] Respuesta: {}", resp);
+                                return resp;
         }
 
         // PUT /api/tickets/{id}/estado - Actualizar estado de un ticket
@@ -124,10 +177,19 @@ public class TicketController {
         })
         public List<TicketResponseDto> listarPorCreador(
                         @Parameter(description = "ID del usuario creador") @RequestParam int userId) {
-                logger.info("[TicketController] GET /api/tickets/creador userId: {}", userId);
-                List<TicketResponseDto> resp = ticketService.listarPorCreador(userId);
-                logger.info("[TicketController] Respuesta: {}", resp);
-                return resp;
+                                logger.info("[TicketController] GET /api/tickets/creador userId: {}", userId);
+                                try {
+                                        logger.debug("[TicketController] Buscando tickets por creador con id: {}", userId);
+                                        List<TicketResponseDto> resp = ticketService.listarPorCreador(userId);
+                                        logger.info("[TicketController] Respuesta: {}", resp);
+                                        if (resp == null || resp.isEmpty()) {
+                                                logger.warn("[TicketController] No se encontraron tickets para el creador con id: {}", userId);
+                                        }
+                                        return resp;
+                                } catch (Exception e) {
+                                        logger.error("[TicketController] Error al obtener tickets por creador: {}", e.getMessage(), e);
+                                        throw e;
+                                }
         }
 
         // GET /api/tickets/buscar-titulo?palabra=... - Buscar tickets por título
