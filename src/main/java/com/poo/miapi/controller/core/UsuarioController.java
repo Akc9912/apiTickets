@@ -2,9 +2,9 @@ package com.poo.miapi.controller.core;
 
 import com.poo.miapi.dto.auth.ChangePasswordDto;
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.service.core.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.usuario;
+package com.poo.miapi.dto.usuarios;
 
 import com.poo.miapi.model.enums.Rol;
 import jakarta.validation.constraints.Email;
@@ -47,19 +47,5 @@ public class UsuarioRequestDto {
 
     public void setRol(Rol rol) {
         this.rol = rol;
-    }
-
-    /**
-     * Método helper para retrocompatibilidad con String
-     */
-    public void setRol(String rolString) {
-        this.rol = rolString != null ? Rol.fromString(rolString) : null;
-    }
-
-    /**
-     * Método helper para obtener el rol como String
-     */
-    public String getRolAsString() {
-        return rol != null ? rol.name() : null;
     }
 }

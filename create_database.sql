@@ -213,29 +213,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- =========================================
 
 SELECT 
-    '✅ Base de datos inicializada correctamente' as status,
+    'Base de datos inicializada correctamente' as status,
     (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'apiticket') as tablas_creadas,
     DATABASE() as base_datos_actual,
     CURRENT_TIMESTAMP as fecha_creacion;
 
--- =========================================
--- INSTRUCCIONES FINALES
--- =========================================
-/*
-🎯 SIGUIENTE PASO:
-   Iniciar la aplicación Spring Boot:
-   ./mvnw spring-boot:run
- 
-🔐 CREDENCIALES SuperAdmin (creadas automáticamente):
-   Email: superadmin@sistema.com
-   Password: secret
-   
-⚠️  CAMBIAR LA CONTRASEÑA INMEDIATAMENTE
 
-✅ COMPLETADO:
-   - Base de datos 'apiticket' creada
-   - Estructura completa con enum Rol
-   - Índices optimizados
-   - Datos básicos insertados
-   - Listo para Spring Boot
-*/

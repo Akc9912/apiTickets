@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
+
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.service.core.SuperAdminService;
 
 import io.swagger.v3.oas.annotations.Operation;

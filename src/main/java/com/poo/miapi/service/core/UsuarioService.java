@@ -4,9 +4,9 @@ import com.poo.miapi.dto.auth.ChangePasswordDto;
 import com.poo.miapi.dto.auth.LoginRequestDto;
 import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
@@ -242,7 +242,7 @@ public class UsuarioService {
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.getRol(),
                 usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());

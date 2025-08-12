@@ -1,8 +1,11 @@
 package com.poo.miapi.service.core;
 
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.dto.usuarios.AdminResponseDto;
+import com.poo.miapi.dto.usuarios.TecnicoResponseDto;
+import com.poo.miapi.dto.usuarios.TrabajadorResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.enums.Rol;
@@ -119,7 +122,7 @@ public class AdminService {
         return mapToUsuarioDto(nuevoUsuario);
     }
 
-    // Activar usuario
+    // Activar usuario (baja logica)
     public UsuarioResponseDto activarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -128,7 +131,7 @@ public class AdminService {
         return mapToUsuarioDto(usuario);
     }
 
-    // Desactivar usuario
+    // Desactivar usuario (alta logica)
     public UsuarioResponseDto desactivarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -263,17 +266,16 @@ public class AdminService {
         }
     }
 
-    private Usuario crearUsuarioPorRol(UsuarioRequestDto cambiarRolDto) {
-        switch (cambiarRolDto.getRol()) {
+    private Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
+        switch (dto.getRol()) {
             case ADMIN:
-                return crearAdmin(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
+                return new Admin(dto.getNombre(), dto.getApellido(), dto.getEmail());
             case TECNICO:
-                return crearTecnico(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(), cambiarRolDto.getEmail());
+                return new Tecnico(dto.getNombre(), dto.getApellido(), dto.getEmail());
             case TRABAJADOR:
-                return crearTrabajador(cambiarRolDto.getNombre(), cambiarRolDto.getApellido(),
-                        cambiarRolDto.getEmail());
+                return new Trabajador(dto.getNombre(), dto.getApellido(), dto.getEmail());
             default:
-                throw new IllegalArgumentException("Rol no válido: " + cambiarRolDto.getRol());
+                throw new IllegalArgumentException("Rol no válido: " + dto.getRol());
         }
     }
 
@@ -291,15 +293,23 @@ public class AdminService {
 
     // Mapeo de entidad Usuario a DTO
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
-        return new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getRol() != null ? usuario.getRol().name() : null,
-                usuario.isCambiarPass(),
-                usuario.isActivo(),
-                usuario.isBloqueado());
+       if (usuario instanceof Admin) {
+            return new AdminResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
+                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
+                    usuario.isBloqueado());
+        } else if (usuario instanceof Tecnico) {
+            return new TecnicoResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
+                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
+                    usuario.isBloqueado(), ((Tecnico)usuario).getFallas(), ((Tecnico)usuario).getMarcas());
+        } else if (usuario instanceof Trabajador) {
+            return new TrabajadorResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
+                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
+                    usuario.isBloqueado());
+        } else {
+            return new UsuarioResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
+                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
+                    usuario.isBloqueado());
+        }
     }
 
     // Mapeo de entidad Ticket a DTO

@@ -17,6 +17,9 @@ import com.poo.miapi.service.security.JwtService;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
