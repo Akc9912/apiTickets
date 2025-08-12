@@ -22,18 +22,12 @@ import java.util.Collections;
 
 @Service
 public class TicketService {
-    
-
     private final TicketRepository ticketRepository;
     private final TrabajadorRepository trabajadorRepository;
     private final UsuarioRepository usuarioRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
 
-    public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository) {
-        this(ticketRepository, trabajadorRepository, usuarioRepository, null);
-    }
-
-    public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository, com.poo.miapi.repository.historial.TecnicoPorTicketRepository tecnicoPorTicketRepository) {
+    public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository, TecnicoPorTicketRepository tecnicoPorTicketRepository) {
     this.ticketRepository = ticketRepository;
     this.trabajadorRepository = trabajadorRepository;
     this.usuarioRepository = usuarioRepository;
@@ -188,5 +182,39 @@ public class TicketService {
                 throw new IllegalStateException("Rol no autorizado para crear tickets");
         }
         return crearTicketConCreador(dto, creadorTicket);
+    }
+
+    // Verifica si el ticket pertenece al usuario
+    public boolean esTicketDeUsuario(int ticketId, int usuarioId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
+        return ticket.getCreador() != null && ticket.getCreador().getId() == usuarioId;
+    }
+
+    // Reabrir ticket (solo lógica, sin reglas de acceso)
+    public TicketResponseDto reabrirTicket(int idTicket, String comentario, int usuarioId) {
+        Ticket ticket = ticketRepository.findById(idTicket)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Usuario no encontrado"));
+        if (!ticket.getEstado().equals(EstadoTicket.FINALIZADO)) {
+            throw new IllegalArgumentException("El ticket no está cerrado, no se puede reabrir");
+        }
+        com.poo.miapi.model.enums.Rol rol = usuario.getRol();
+        boolean esTrabajador = rol == com.poo.miapi.model.enums.Rol.TRABAJADOR;
+        boolean esAdmin = rol == com.poo.miapi.model.enums.Rol.ADMIN;
+        boolean esSuperAdmin = rol == com.poo.miapi.model.enums.Rol.SUPER_ADMIN;
+        if (esTrabajador) {
+            if (ticket.getCreador() == null || ticket.getCreador().getId() != usuario.getId()) {
+                throw new SecurityException("No puedes reabrir tickets que no creaste");
+            }
+        } else if (!(esAdmin || esSuperAdmin)) {
+            throw new SecurityException("No tienes permisos para reabrir tickets");
+        }
+        ticket.setEstado(EstadoTicket.REABIERTO);
+        ticket.setFechaUltimaActualizacion(java.time.LocalDateTime.now());
+        // Aquí podrías guardar el comentario en historial si lo necesitas
+        ticketRepository.save(ticket);
+        return mapToDto(ticket);
     }
 }

@@ -99,4 +99,34 @@ public class EstadisticaController {
     logger.info("[EstadisticaController] Respuesta: {}", resp);
     return resp;
     }
+
+        // GET /api/estadisticas/usuarios/global
+        @GetMapping("/usuarios/global")
+        @Operation(summary = "Estadísticas globales de usuarios", description = "Obtiene estadísticas completas de usuarios del sistema")
+        public Object obtenerEstadisticasUsuarios() {
+                logger.info("[EstadisticaController] GET /usuarios/global");
+                Object resp = estadisticaService.obtenerEstadisticasUsuarios();
+                logger.info("[EstadisticaController] Respuesta: {}", resp);
+                return resp;
+        }
+
+        // GET /api/estadisticas/tickets/global
+        @GetMapping("/tickets/global")
+        @Operation(summary = "Estadísticas globales de tickets", description = "Obtiene estadísticas completas de tickets del sistema")
+        public Object obtenerEstadisticasTickets() {
+                logger.info("[EstadisticaController] GET /tickets/global");
+                Object resp = estadisticaService.obtenerEstadisticasTickets();
+                logger.info("[EstadisticaController] Respuesta: {}", resp);
+                return resp;
+        }
+
+        // GET /api/estadisticas/sistema
+        @GetMapping("/sistema")
+        @Operation(summary = "Estadísticas globales del sistema", description = "Obtiene estadísticas globales del sistema completo")
+        public Object obtenerEstadisticasSistema() {
+                logger.info("[EstadisticaController] GET /sistema");
+                Object resp = estadisticaService.obtenerEstadisticasSistema();
+                logger.info("[EstadisticaController] Respuesta: {}", resp);
+                return resp;
+        }
 }
