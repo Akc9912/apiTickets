@@ -35,6 +35,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
                     "/api/auth/**",
                     "/v3/api-docs/**",
@@ -51,18 +52,21 @@ public class SecurityConfig {
             )
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
+                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
                     response.setContentType("application/json");
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.getWriter().write("{\"error\": \"No autorizado\"}");
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
                     response.setContentType("application/json");
                     response.setStatus(HttpStatus.FORBIDDEN.value());
                     response.getWriter().write("{\"error\": \"Acceso denegado\"}");
                 })
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -73,8 +77,7 @@ public class SecurityConfig {
             "http://localhost:5173",
             "http://localhost:8080",
             "http://localhost:3000",
-            "http://localhost:4200",
-            "*"
+            "http://localhost:4200"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

@@ -57,8 +57,13 @@ public class GlobalExceptionHandler {
                 .getAttribute("org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping", 0);
         } catch (Exception ignored) {}
 
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        logger.error("[GlobalExceptionHandler] Excepción capturada en ruta: {}", path);
+        logger.error("[GlobalExceptionHandler] Tipo: {} - Mensaje: {}", ex.getClass().getName(), ex.getMessage(), ex);
+
         // Si la ruta es de Swagger/OpenAPI, deja que Spring maneje la excepción
         if (path != null && (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui"))) {
+            logger.warn("[GlobalExceptionHandler] Lanzando excepción original para ruta Swagger/OpenAPI: {}", path);
             throw ex;
         }
 
@@ -67,6 +72,8 @@ public class GlobalExceptionHandler {
         body.put("type", ex.getClass().getSimpleName());
         body.put("status", 500);
         body.put("message", "Ha ocurrido un error inesperado. Intente más tarde.");
+        body.put("exception", ex.getMessage());
+        body.put("path", path);
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

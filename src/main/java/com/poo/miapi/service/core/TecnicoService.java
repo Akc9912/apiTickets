@@ -12,6 +12,7 @@ import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -118,12 +119,27 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto finalizarTicket(int idTecnico, int idTicket) {
+    @Transactional
+    public TicketResponseDto resolverTicket(int idTecnico, int idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("El ticket no está en estado ATENDIDO");
+        }
+
+        // Marcar fecha de desasignación solo si el técnico coincide
+        TecnicoPorTicket historialActual = null;
+        for (int i = ticket.getHistorialTecnicos().size() - 1; i >= 0; i--) {
+            TecnicoPorTicket entrada = ticket.getHistorialTecnicos().get(i);
+            if (entrada.getFechaDesasignacion() == null && entrada.getTecnico().getId() == idTecnico) {
+                historialActual = entrada;
+                break;
+            }
+        }
+        if (historialActual != null) {
+            historialActual.setFechaDesasignacion(java.time.LocalDateTime.now());
+            tecnicoPorTicketRepository.save(historialActual);
         }
 
         ticket.setEstado(EstadoTicket.RESUELTO);
@@ -132,6 +148,7 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
+    @Transactional
     public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
@@ -145,6 +162,20 @@ public class TecnicoService {
 
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("Solo se pueden devolver tickets en estado ATENDIDO");
+        }
+
+        // Marcar fecha de desasignación solo si el técnico coincide
+        TecnicoPorTicket historialActual = null;
+        for (int i = ticket.getHistorialTecnicos().size() - 1; i >= 0; i--) {
+            TecnicoPorTicket entrada = ticket.getHistorialTecnicos().get(i);
+            if (entrada.getFechaDesasignacion() == null && entrada.getTecnico().getId() == idTecnico) {
+                historialActual = entrada;
+                break;
+            }
+        }
+        if (historialActual != null) {
+            historialActual.setFechaDesasignacion(java.time.LocalDateTime.now());
+            tecnicoPorTicketRepository.save(historialActual);
         }
 
         ticket.setEstado(EstadoTicket.REABIERTO);
@@ -170,10 +201,11 @@ public class TecnicoService {
 
     // Devuelve tickets asignados como DTOs
     public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
-        Tecnico tecnico = buscarPorId(idTecnico);
-        return tecnico.getTicketsActuales().stream()
-                .map(this::mapToTicketDto)
-                .toList();
+    Tecnico tecnico = buscarPorId(idTecnico);
+    return tecnico.getTicketsActuales().stream()
+        .filter(ticket -> ticket.getEstado() == EstadoTicket.ATENDIDO)
+        .map(this::mapToTicketDto)
+        .toList();
     }
 
     // Métodos auxiliares para mapear entidades a DTOs

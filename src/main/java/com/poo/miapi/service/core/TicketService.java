@@ -1,4 +1,3 @@
-
 package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
@@ -139,13 +138,12 @@ public class TicketService {
                 .toList();
     }
 
-    // Tickets asignados al técnico en estado atendido o resuelto
+    // Tickets asignados al técnico en estado atendido
     public List<TicketResponseDto> listarTicketsAsignadosAlTecnico(int tecnicoId) {
     Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
     if (!(usuario instanceof Tecnico tecnico)) return Collections.emptyList();
     List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
-    List<Ticket> resueltos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.RESUELTO, tecnico);
-    return Stream.concat(atendidos.stream(), resueltos.stream())
+    return atendidos.stream()
             .map(this::mapToDto)
             .toList();
     }
