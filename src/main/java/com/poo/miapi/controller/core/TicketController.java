@@ -16,11 +16,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 @RestController
 @RequestMapping("/api/tickets")
 @Tag(name = "Tickets", description = "Endpoints para gestión de tickets del sistema")
 public class TicketController {
+        private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+
 
         private final TicketService ticketService;
 
@@ -112,7 +118,14 @@ public class TicketController {
         })
         @PostMapping("/crear-ticket")
         public TicketResponseDto crearTicket(@RequestBody @Valid TicketRequestDto dto, Authentication authentication) {
-                Object principal = authentication.getPrincipal();
+                
+                logger.info("Authentication recibido: {}", authentication);
+                if (authentication != null) {
+                        logger.info("Principal: {}", authentication.getPrincipal());
+                }
+
+                Object principal = authentication != null ? authentication.getPrincipal() : null;
+
                 String email = null;
                 if (principal instanceof UserDetails userDetails) {
                         email = userDetails.getUsername();

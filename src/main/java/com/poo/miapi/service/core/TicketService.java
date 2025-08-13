@@ -29,9 +29,10 @@ public class TicketService {
     private final UsuarioRepository usuarioRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
 
+    /* 
     public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository) {
         this(ticketRepository, trabajadorRepository, usuarioRepository, null);
-    }
+    }*/
 
     public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository, com.poo.miapi.repository.historial.TecnicoPorTicketRepository tecnicoPorTicketRepository) {
     this.ticketRepository = ticketRepository;
