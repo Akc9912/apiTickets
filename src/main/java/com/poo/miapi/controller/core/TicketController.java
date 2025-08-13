@@ -141,4 +141,23 @@ public class TicketController {
                 }
                 return ticketService.crearTicketConRol(dto, usuario);
         }
+
+        // POST /api/tickets/{id}/reabrir
+        @Operation(summary = "Reabrir ticket", description = "Permite reabrir un ticket según el rol del usuario autenticado.")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Ticket reabierto exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                @ApiResponse(responseCode = "404", description = "Ticket no encontrado", content = @Content),
+                @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content),
+                @ApiResponse(responseCode = "400", description = "El ticket no puede ser reabierto", content = @Content)
+        })
+        @PostMapping("/{id}/reabrir")
+        public TicketResponseDto reabrirTicket(@PathVariable int id, @RequestParam String comentario, Authentication authentication) {
+                        Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                        if (usuario == null || !usuario.puedeRealizarAcciones()) {
+                                throw new AccessDeniedException("Usuario bloqueado o no encontrado");
+                        }
+                        return ticketService.reabrirTicket(id, comentario, usuario.getId());
+        }
+
 }
+        

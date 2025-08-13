@@ -21,11 +21,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     // Debes tener un JwtService para validar y extraer el usuario del token
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private static final String[] PUBLIC_PATHS = {
+        "/v3/api-docs",
+        "/v3/api-docs/",
+        "/v3/api-docs/*",
+        "/swagger-ui.html",
+        "/swagger-ui/*",
+        "/swagger-ui/index.html",
+        "/swagger-resources/*",
+        "/webjars/*"
+    };
 
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
@@ -82,5 +93,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.warn("No se pudo extraer el usuario del token o ya existe autenticación en el contexto.");
         }
         filterChain.doFilter(request, response);
+    }
+    
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        // Excluye cualquier ruta que empiece por /swagger-ui, /v3/api-docs, /swagger-resources, /webjars, o sea /swagger-ui.html
+        return path.startsWith("/swagger-ui")
+            || path.startsWith("/v3/api-docs")
+            || path.startsWith("/swagger-resources")
+            || path.startsWith("/webjars")
+            || path.equals("/swagger-ui.html");
     }
 }

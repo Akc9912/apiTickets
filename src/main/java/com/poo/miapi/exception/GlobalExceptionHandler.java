@@ -50,13 +50,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex) throws Exception {
+        String path = null;
+        try {
+            path = (String) org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes()
+                .getAttribute("org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping", 0);
+        } catch (Exception ignored) {}
+
+        // Si la ruta es de Swagger/OpenAPI, deja que Spring maneje la excepción
+        if (path != null && (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui"))) {
+            throw ex;
+        }
+
         Map<String, Object> body = new HashMap<>();
         body.put("error", "Error interno del servidor");
-        body.put("message", ex.getMessage());
         body.put("type", ex.getClass().getSimpleName());
-    body.put("status", 500);
-    body.put("message", "Ha ocurrido un error inesperado. Intente más tarde.");
-    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        body.put("status", 500);
+        body.put("message", "Ha ocurrido un error inesperado. Intente más tarde.");
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -4,8 +4,11 @@ import com.poo.miapi.dto.auth.ChangePasswordDto;
 import com.poo.miapi.dto.auth.LoginRequestDto;
 import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
+import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.service.auth.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,8 +77,16 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<String> reiniciarPassword(
-            @Parameter(description = "Datos para reiniciar la contraseña") @RequestBody @Valid ResetPasswordDto dto) {
+            @Parameter(description = "Datos para reiniciar la contraseña") @RequestBody @Valid ResetPasswordDto dto,
+            @Parameter(hidden = true) @AuthenticationPrincipal Usuario usuarioAutenticado) {
         logger.info("[AuthController] POST /reiniciar-password datos: {}", dto);
+        if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
+            return ResponseEntity.status(403).body("No autorizado");
+        }
+        Rol rol = usuarioAutenticado.getRol();
+        if (!rol.canManageUsers()) {
+            return ResponseEntity.status(403).body("Solo admin o superadmin pueden reiniciar contraseñas");
+        }
         authService.reiniciarPassword(dto);
         logger.info("[AuthController] Contraseña reiniciada correctamente");
         return ResponseEntity.ok("Contraseña reiniciada correctamente");

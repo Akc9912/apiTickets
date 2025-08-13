@@ -14,6 +14,8 @@ import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class TrabajadorService {
     private final TecnicoRepository tecnicoRepository;
     private final TecnicoService tecnicoService;
     private final HistorialValidacionRepository historialValidacionRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TrabajadorService.class);
 
     public TrabajadorService(
             TrabajadorRepository trabajadorRepository,
@@ -99,10 +102,30 @@ public class TrabajadorService {
 
     // Ver todos mis tickets (devuelve DTOs)
     public List<TicketResponseDto> verTodosMisTickets(int idTrabajador) {
-        Trabajador trabajador = buscarPorId(idTrabajador);
-        return trabajador.getMisTickets().stream()
-                .map(this::mapToTicketDto)
-                .toList();
+        try {
+            logger.info("[TrabajadorService] Buscando trabajador con ID: {}", idTrabajador);
+            Trabajador trabajador = buscarPorId(idTrabajador);
+            logger.info("[TrabajadorService] Trabajador encontrado: {}", trabajador);
+            List<Ticket> tickets = trabajador.getMisTickets();
+            logger.info("[TrabajadorService] Tickets encontrados: {}", tickets.size());
+            List<TicketResponseDto> dtos = tickets.stream()
+                    .map(ticket -> {
+                        try {
+                            TicketResponseDto dto = mapToTicketDto(ticket);
+                            logger.info("[TrabajadorService] Ticket mapeado: {}", dto);
+                            return dto;
+                        } catch (Exception e) {
+                            logger.error("[TrabajadorService] Error al mapear ticket: {}", ticket, e);
+                            throw e;
+                        }
+                    })
+                    .toList();
+            logger.info("[TrabajadorService] Tickets mapeados: {}", dtos.size());
+            return dtos;
+        } catch (Exception ex) {
+            logger.error("[TrabajadorService] Error al obtener tickets para trabajador {}: {}", idTrabajador, ex.getMessage(), ex);
+            throw ex;
+        }
     }
 
     // Listar todos los trabajadores (devuelve DTOs)
@@ -134,3 +157,4 @@ public class TrabajadorService {
                 trabajador.isActivo());
     }
 }
+    

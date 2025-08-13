@@ -6,261 +6,617 @@ Este documento lista todos los endpoints implementados en la API que interactúa
 
 ## Autenticación
 
-- `POST /api/auth/login` — Iniciar sesión (JWT)
-- `POST /api/auth/cambiar-password` — Cambiar contraseña
-- `POST /api/auth/reiniciar-password` — Reiniciar contraseña (admin)
-
-## Usuarios
-
-- `GET /api/usuarios/obtener-datos?userId={id}` — Obtener datos de usuario
-- `PUT /api/usuarios/editar-datos?userId={id}` — Editar datos de usuario
-- `PUT /api/usuarios/cambiar-password` — Cambiar contraseña de usuario
-- `GET /api/usuarios/notificaciones?userId={id}` — Ver notificaciones del usuario
-- `GET /api/usuarios/mis-tickets?userId={id}` — Ver tickets del usuario
-- `GET /api/usuarios/estadisticas/totales` — Total de usuarios
-- `GET /api/usuarios/estadisticas/activos` — Total de usuarios activos
-- `GET /api/usuarios/estadisticas/tecnicos-bloqueados` — Total de técnicos bloqueados
-
-## Tickets
-
-- `GET /api/tickets` — Listar todos los tickets
-- `GET /api/tickets/{id}` — Ver detalle de ticket
-- `POST /api/tickets` — Crear nuevo ticket
-- `PUT /api/tickets/{id}/estado?estado={estado}` — Actualizar estado de ticket
-- `GET /api/tickets/estado?estado={estado}` — Listar tickets por estado
-- `GET /api/tickets/creador?userId={id}` — Listar tickets por creador
-- `GET /api/tickets/buscar-titulo?palabra={palabra}` — Buscar tickets por título
-
-## Administración
-
-- `POST /api/admin/usuarios` — Crear usuario (admin, técnico, trabajador)
-- `GET /api/admin/usuarios` — Listar todos los usuarios
-- `GET /api/admin/usuarios/{id}` — Ver detalles de usuario
-
-## Otros módulos
-
-- Endpoints adicionales disponibles en:
-  - `/api/notificaciones`
-  - `/api/auditoria`
-  - `/api/estadisticas`
-  - `/api/superadmin`
-  - `/api/tecnico`
-  - `/api/trabajador`
-
----
-
-## Autenticación
-
 ### POST /api/auth/login
 
-- **Body:**
+**Request:**
 
 ```json
 {
-  "email": "string",
-  "password": "string"
+  "email": "usuario@email.com",
+  "password": "tuPassword"
 }
 ```
 
-- **Devuelve:**
+**Response:**
 
 ```json
 {
-  "token": "string",
-  "refreshToken": "string",
-  "user": { ... }
+  "token": "jwt-token",
+  "refreshToken": "refresh-token",
+  "user": {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "usuario@email.com",
+    "rol": "ADMIN"
+  }
 }
 ```
 
 ### POST /api/auth/cambiar-password
 
-- **Body:**
+**Request:**
 
 ```json
 {
   "userId": 1,
-  "oldPassword": "string",
-  "newPassword": "string"
+  "oldPassword": "anterior",
+  "newPassword": "nueva"
 }
 ```
 
-- **Devuelve:**
-  `"Contraseña actualizada correctamente"`
-
-### POST /api/auth/reiniciar-password
-
-- **Body:**
+**Response:**
 
 ```json
 {
-  "email": "string"
+  "mensaje": "Contraseña actualizada correctamente"
 }
 ```
 
-- **Devuelve:**
-  `"Contraseña reiniciada y enviada por email"`
+### POST /api/auth/reiniciar-password
 
----
+**Request:**
 
-## Usuarios
+```json
+{
+  "email": "usuario@email.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Contraseña reiniciada y enviada por email"
+}
+```
+
+## Usuarios (autogestión)
 
 ### GET /api/usuarios/obtener-datos?userId={id}
 
-- **Devuelve:**
+**Response:**
 
 ```json
 {
   "id": 1,
-  "nombre": "string",
-  "apellido": "string",
-  "email": "string",
-  "rol": "string",
-  ...
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "usuario@email.com",
+  "rol": "TRABAJADOR",
+  "activo": true
 }
 ```
 
 ### PUT /api/usuarios/editar-datos?userId={id}
 
-- **Body:**
+**Request:**
 
 ```json
 {
-  "nombre": "string",
-  "apellido": "string",
-  "email": "string",
-  ...
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "usuario@email.com"
 }
 ```
 
-- **Devuelve:**
-  `UsuarioResponseDto` (igual al GET)
+**Response:**
+
+```json
+{
+  "mensaje": "Datos actualizados correctamente"
+}
+```
 
 ### PUT /api/usuarios/cambiar-password
 
-- **Body:**
+**Request:**
 
 ```json
 {
   "userId": 1,
-  "oldPassword": "string",
-  "newPassword": "string"
+  "oldPassword": "anterior",
+  "newPassword": "nueva"
 }
 ```
 
-- **Devuelve:**
-  `"Contraseña cambiada exitosamente"`
+**Response:**
+
+```json
+{
+  "mensaje": "Contraseña actualizada correctamente"
+}
+```
 
 ### GET /api/usuarios/notificaciones?userId={id}
 
-- **Devuelve:**
+**Response:**
 
 ```json
 [
   {
-    "id": 1,
-    "mensaje": "string",
-    "fecha": "yyyy-MM-dd HH:mm:ss",
-    ...
+    "id": 101,
+    "mensaje": "Ticket #123 actualizado",
+    "fecha": "2025-08-12T10:00:00Z",
+    "leido": false
+  },
+  {
+    "id": 102,
+    "mensaje": "Nueva respuesta en ticket #124",
+    "fecha": "2025-08-11T15:30:00Z",
+    "leido": true
   }
 ]
 ```
 
 ### GET /api/usuarios/mis-tickets?userId={id}
 
-- **Devuelve:**
+**Response:**
+
+```json
+[
+  {
+    "id": 123,
+    "titulo": "Problema con impresora",
+    "estado": "ABIERTO",
+    "fechaCreacion": "2025-08-10T09:00:00Z"
+  },
+  {
+    "id": 124,
+    "titulo": "No funciona el correo",
+    "estado": "EN_PROGRESO",
+    "fechaCreacion": "2025-08-11T11:20:00Z"
+  }
+]
+```
+
+## Administración de usuarios (solo admin/superadmin)
+
+### POST /api/admin/usuarios/crear
+
+**Request:**
+
+```json
+{
+  "nombre": "Ana",
+  "apellido": "García",
+  "email": "ana@empresa.com",
+  "rol": "TECNICO",
+  "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 2,
+  "mensaje": "Usuario creado correctamente"
+}
+```
+
+### PUT /api/admin/usuarios/{id}/editar
+
+**Request:**
+
+```json
+{
+  "nombre": "Ana",
+  "apellido": "García",
+  "email": "ana@empresa.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Usuario actualizado correctamente"
+}
+```
+
+### PUT /api/admin/usuarios/{id}/activar
+
+**Request:**
+
+```json
+{
+  "activo": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Usuario activado"
+}
+```
+
+### PUT /api/admin/usuarios/{id}/bloquear
+
+**Request:**
+
+```json
+{
+  "bloqueado": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Usuario bloqueado"
+}
+```
+
+### POST /api/admin/usuarios/{id}/reset-password
+
+**Request:**
+
+```json
+{
+  "id": 2
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Contraseña reseteada y enviada por email"
+}
+```
+
+### PUT /api/admin/usuarios/{id}/rol
+
+**Request:**
+
+```json
+{
+  "rol": "ADMIN"
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Rol actualizado correctamente"
+}
+```
+
+### GET /api/admin/usuarios/rol?rol={rol}
+
+**Response:**
 
 ```json
 [
   {
     "id": 1,
-    "titulo": "string",
-    "estado": "string",
-    ...
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com",
+    "rol": "ADMIN"
+  },
+  {
+    "id": 2,
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana@empresa.com",
+    "rol": "ADMIN"
   }
 ]
 ```
 
----
+### GET /api/admin/usuarios/listar-todos
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com",
+    "rol": "ADMIN"
+  },
+  {
+    "id": 2,
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana@empresa.com",
+    "rol": "TECNICO"
+  }
+]
+```
 
 ## Tickets
 
-### GET /api/tickets
+### GET /api/tickets/todos
 
-- **Devuelve:**
-  `Array<TicketResponseDto>`
+**Response:**
+
+```json
+[
+  {
+    "id": 201,
+    "titulo": "Problema con impresora",
+    "estado": "ABIERTO",
+    "creador": "Juan Pérez",
+    "fechaCreacion": "2025-08-10T09:00:00Z"
+  },
+  {
+    "id": 202,
+    "titulo": "No funciona el correo",
+    "estado": "EN_PROGRESO",
+    "creador": "Ana García",
+    "fechaCreacion": "2025-08-11T11:20:00Z"
+  }
+]
+```
+
+### GET /api/tickets/trabajador/mis-tickets
+
+**Response:**
+
+```json
+[
+  {
+    "id": 203,
+    "titulo": "Error en PC",
+    "estado": "CERRADO",
+    "fechaCreacion": "2025-08-09T08:00:00Z"
+  }
+]
+```
+
+### GET /api/tickets/tecnico/tickets-disponibles
+
+**Response:**
+
+```json
+[
+  {
+    "id": 204,
+    "titulo": "Problema de red",
+    "estado": "ABIERTO"
+  }
+]
+```
+
+### GET /api/tickets/tecnico/mis-tickets
+
+**Response:**
+
+```json
+[
+  {
+    "id": 205,
+    "titulo": "Actualizar software",
+    "estado": "EN_PROGRESO"
+  }
+]
+```
+
+### GET /api/tickets/tecnico/historial
+
+**Response:**
+
+```json
+[
+  {
+    "id": 206,
+    "titulo": "Instalación de impresora",
+    "estado": "CERRADO"
+  }
+]
+```
+
+### POST /api/tickets/crear-ticket
+
+**Request:**
+
+```json
+{
+  "titulo": "Nuevo problema",
+  "descripcion": "La PC no enciende",
+  "creadorId": 1
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 207,
+  "mensaje": "Ticket creado correctamente"
+}
+```
+
+### POST /api/tickets/{id}/reabrir?comentario={comentario}
+
+**Request:**
+
+```json
+{
+  "comentario": "El problema persiste"
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Ticket reabierto"
+}
+```
 
 ### GET /api/tickets/{id}
 
-- **Devuelve:**
-  `TicketResponseDto`
-
-### POST /api/tickets
-
-- **Body:**
+**Response:**
 
 ```json
 {
-  "titulo": "string",
-  "descripcion": "string",
-  "creadorId": 1,
-  ...
+  "id": 208,
+  "titulo": "Problema de red",
+  "descripcion": "No hay conexión",
+  "estado": "ABIERTO",
+  "creador": "Juan Pérez",
+  "fechaCreacion": "2025-08-12T10:00:00Z"
 }
 ```
-
-- **Devuelve:**
-  `TicketResponseDto`
 
 ### PUT /api/tickets/{id}/estado?estado={estado}
 
-- **Devuelve:**
-  `TicketResponseDto` actualizado
-
-### GET /api/tickets/estado?estado={estado}
-
-- **Devuelve:**
-  `Array<TicketResponseDto>`
-
-### GET /api/tickets/creador?userId={id}
-
-- **Devuelve:**
-  `Array<TicketResponseDto>`
-
-### GET /api/tickets/buscar-titulo?palabra={palabra}
-
-- **Devuelve:**
-  `Array<TicketResponseDto>`
-
----
-
-## Administración
-
-### POST /api/admin/usuarios
-
-- **Body:**
+**Request:**
 
 ```json
 {
-  "nombre": "string",
-  "apellido": "string",
-  "email": "string",
-  "rol": "string",
-  ...
+  "estado": "EN_PROGRESO"
 }
 ```
 
-- **Devuelve:**
-  `UsuarioResponseDto`
+**Response:**
 
-### GET /api/admin/usuarios
+```json
+{
+  "mensaje": "Estado actualizado"
+}
+```
 
-- **Devuelve:**
-  `Array<UsuarioResponseDto>`
+### GET /api/tickets/estado?estado={estado}
 
-### GET /api/admin/usuarios/{id}
+**Response:**
 
-- **Devuelve:**
-  `UsuarioResponseDto`
+```json
+[
+  {
+    "id": 209,
+    "titulo": "Problema de red",
+    "estado": "EN_PROGRESO"
+  }
+]
+```
 
----
+### GET /api/tickets/creador?userId={id}
 
-> Para detalles completos de cada campo, consultar la documentación Swagger/OpenAPI.
+**Response:**
+
+```json
+[
+  {
+    "id": 210,
+    "titulo": "Problema con impresora",
+    "estado": "ABIERTO"
+  }
+]
+```
+
+### GET /api/tickets/buscar-titulo?palabra={palabra}
+
+**Response:**
+
+```json
+[
+  {
+    "id": 211,
+    "titulo": "Problema de red",
+    "estado": "ABIERTO"
+  }
+]
+```
+
+## Trabajadores
+
+### POST /api/trabajador/tickets
+
+**Request:**
+
+```json
+{
+  "titulo": "Problema con monitor",
+  "descripcion": "No enciende el monitor",
+  "trabajadorId": 3
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 301,
+  "mensaje": "Ticket creado correctamente"
+}
+```
+
+### GET /api/trabajador/tickets
+
+**Response:**
+
+```json
+[
+  {
+    "id": 302,
+    "titulo": "Problema con monitor",
+    "estado": "ABIERTO"
+  }
+]
+```
+
+### GET /api/trabajador/tickets/activos
+
+**Response:**
+
+```json
+[
+  {
+    "id": 303,
+    "titulo": "Problema con teclado",
+    "estado": "EN_PROGRESO"
+  }
+]
+```
+
+### POST /api/trabajador/tickets/{ticketId}/evaluar
+
+**Request:**
+
+```json
+{
+  "ticketId": 302,
+  "calificacion": 5,
+  "comentario": "Solución rápida y efectiva"
+}
+```
+
+**Response:**
+
+```json
+{
+  "mensaje": "Evaluación registrada"
+}
+```
+
+### GET /api/trabajador/listar-todos
+
+**Response:**
+
+```json
+[
+  {
+    "id": 3,
+    "nombre": "Carlos",
+    "apellido": "López",
+    "email": "carlos@empresa.com"
+  },
+  {
+    "id": 4,
+    "nombre": "María",
+    "apellido": "Fernández",
+    "email": "maria@empresa.com"
+  }
+]
+```
