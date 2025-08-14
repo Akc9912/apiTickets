@@ -26,21 +26,6 @@ public class TecnicoController {
                 this.tecnicoService = tecnicoService;
         }
 
-        // GET /api/tecnico/tickets/asignados?userId=...
-        @GetMapping("/tickets/asignados")
-        @Operation(summary = "Ver tickets asignados", description = "Obtiene todos los tickets asignados a un técnico")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Lista de tickets asignados obtenida exitosamente"),
-                        @ApiResponse(responseCode = "404", description = "Técnico no encontrado")
-        })
-        public ResponseEntity<List<TicketResponseDto>> verMisTickets(
-                        @Parameter(description = "ID del técnico") @RequestParam int userId) {
-                logger.info("[TecnicoController] GET /tickets/asignados userId: {}", userId);
-                List<TicketResponseDto> tickets = tecnicoService.verTicketsAsignados(userId);
-                logger.info("[TecnicoController] Respuesta: {}", tickets);
-                return ResponseEntity.ok(tickets);
-        }
-
         // POST /api/tecnico/tickets/{ticketId}/tomar
         @PostMapping("/tickets/{ticketId}/tomar")
         @Operation(summary = "Tomar ticket", description = "Permite a un técnico tomar tickets NO_ATENDIDO o REABIERTO")
@@ -124,33 +109,5 @@ public class TecnicoController {
                                         logger.error("Error inesperado al devolver ticket", e);
                                         return ResponseEntity.status(500).body("Error interno del servidor");
                                 }
-        }
-
-        // GET /api/tecnico/listar-todos - Listar todos los técnicos
-        @GetMapping("/listar-todos")
-        @Operation(summary = "Listar todos los técnicos", description = "Obtiene una lista de todos los técnicos del sistema")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Lista de técnicos obtenida exitosamente")
-        })
-        public ResponseEntity<List<TecnicoResponseDto>> listarTodos() {
-                logger.info("[TecnicoController] GET /listar-todos");
-                List<TecnicoResponseDto> resp = tecnicoService.listarTodos();
-                logger.info("[TecnicoController] Respuesta: {}", resp);
-                return ResponseEntity.ok(resp);
-        }
-
-        // GET /api/tecnico/incidentes?tecnicoId=...
-        @GetMapping("/incidentes")
-        @Operation(summary = "Obtener historial de incidentes", description = "Obtiene el historial de incidentes de un técnico")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Historial de incidentes obtenido exitosamente"),
-                        @ApiResponse(responseCode = "404", description = "Técnico no encontrado")
-        })
-        public ResponseEntity<List<IncidenteTecnicoResponseDto>> obtenerHistorialIncidentes(
-                        @Parameter(description = "ID del técnico") @RequestParam int tecnicoId) {
-                logger.info("[TecnicoController] GET /incidentes tecnicoId: {}", tecnicoId);
-                List<IncidenteTecnicoResponseDto> incidentes = tecnicoService.obtenerHistorialIncidentes(tecnicoId);
-                logger.info("[TecnicoController] Respuesta: {}", incidentes);
-                return ResponseEntity.ok(incidentes);
         }
 }

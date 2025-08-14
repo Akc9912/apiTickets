@@ -568,47 +568,22 @@ erDiagram
         string nombre
         string apellido
         string email
-        string password
         string rol
         boolean activo
         boolean bloqueado
     }
-
-    TICKET {
-        int id
         string titulo
         text descripcion
-        enum estado
-        datetime fecha_creacion
-    }
 ````
 
-### 🔄 Flujo de Estados de Ticket
-
-```mermaid
-stateDiagram-v2
-    [*] --> NO_ATENDIDO : Crear Ticket
-    NO_ATENDIDO --> ATENDIDO : Técnico Toma
-    REABIERTO --> ATENDIDO : Técnico Retoma
-    ATENDIDO --> RESUELTO : Técnico Resuelve
-    RESUELTO --> FINALIZADO : Trabajador Acepta
-    RESUELTO --> REABIERTO : Trabajador Rechaza
-```
+````mermaid
 
 ---
-
-## 🧪 Testing
-
 ### 🔧 Pruebas con Postman
 
-1. **Importar colección** (próximamente)
 2. **Configurar ambiente:**
    ```json
-   {
-     "baseUrl": "http://localhost:8080",
-     "token": "{{jwt_token}}"
-   }
-   ```
+````
 
 ### 📝 Ejemplo de Requests
 

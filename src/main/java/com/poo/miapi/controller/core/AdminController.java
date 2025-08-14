@@ -23,32 +23,6 @@ public class AdminController {
         this.usuarioService = usuarioService;
     }
 
-    // POST /api/admin/usuarios/crear
-    @PostMapping("/usuarios/crear")
-    @Operation(summary = "Crear usuario", description = "Solo Admin y SuperAdmin pueden crear usuarios. Admin no puede crear SuperAdmin.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            required = true,
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioRequestDto.class)
-            )
-        ),
-        responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuario creado correctamente",
-                content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "No autorizado")
-        }
-    )
-    public ResponseEntity<?> crearUsuario(@RequestBody UsuarioRequestDto usuarioDto, @AuthenticationPrincipal Usuario usuarioAutenticado) {
-        if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
-            return ResponseEntity.status(403).body(java.util.Map.of("error", "No autorizado"));
-        }
-        try {
-            UsuarioResponseDto creado = usuarioService.crearUsuarioConValidacion(usuarioDto, usuarioAutenticado);
-            return ResponseEntity.status(201).body(creado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(403).body(java.util.Map.of("error", e.getMessage()));
-        }
-    }
 
     // PUT /api/admin/usuarios/{id}/editar
     @PutMapping("/usuarios/{id}/editar")
@@ -104,22 +78,6 @@ public class AdminController {
         return ResponseEntity.ok(resp);
     }
 
-    // POST /api/admin/usuarios/{id}/reset-password
-    @PostMapping("/usuarios/{id}/reset-password")
-    @Operation(summary = "Resetear contraseña", description = "Resetea la contraseña de un usuario a la por defecto",
-        parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a resetear contraseña", required = true)
-        },
-        responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Contraseña reseteada",
-                content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
-        }
-    )
-    public ResponseEntity<UsuarioResponseDto> resetearPassword(@PathVariable int id) {
-        UsuarioResponseDto resp = usuarioService.resetearPassword(id);
-        return ResponseEntity.ok(resp);
-    }
-
     // PUT /api/admin/usuarios/{id}/rol
     @PutMapping("/usuarios/{id}/rol")
     @Operation(summary = "Cambiar rol de usuario", description = "Cambia el rol de un usuario existente",
@@ -142,32 +100,4 @@ public class AdminController {
         return ResponseEntity.ok(resp);
     }
 
-    // GET /api/admin/usuarios/rol?rol=TECNICO
-    @GetMapping("/usuarios/rol")
-    @Operation(summary = "Listar usuarios por rol", description = "Obtiene una lista de usuarios filtrados por rol",
-        parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "rol", description = "Rol por el que filtrar (ADMIN, SUPER_ADMIN, TECNICO, TRABAJADOR)", required = true)
-        },
-        responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de usuarios filtrados",
-                content = @io.swagger.v3.oas.annotations.media.Content(array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class))))
-        }
-    )
-    public ResponseEntity<?> listarUsuariosPorRol(@RequestParam String rol) {
-        var resp = usuarioService.listarUsuariosPorRol(rol);
-        return ResponseEntity.ok(resp);
-    }
-
-    // GET /api/admin/usuarios/listar-todos
-    @GetMapping("/usuarios/listar-todos")
-    @Operation(summary = "Listar todos los usuarios", description = "Obtiene una lista de todos los usuarios del sistema",
-        responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de todos los usuarios",
-                content = @io.swagger.v3.oas.annotations.media.Content(array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class))))
-        }
-    )
-    public ResponseEntity<?> listarTodos() {
-        var resp = usuarioService.listarTodos();
-        return ResponseEntity.ok(resp);
-    }
 }

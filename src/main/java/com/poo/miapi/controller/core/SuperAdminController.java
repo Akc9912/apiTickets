@@ -44,34 +44,4 @@ public class SuperAdminController {
         logger.info("[SuperAdminController] Respuesta: {}", resp);
         return ResponseEntity.ok(resp);
     }
-
-    @Operation(summary = "Promover a administrador", description = "Promover un usuario a rol de administrador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario promovido exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "400", description = "El usuario ya es administrador")
-    })
-    @PostMapping("/admins/{id}/promover")
-    public ResponseEntity<UsuarioResponseDto> promoverAAdmin(
-            @Parameter(description = "ID del usuario") @PathVariable int id) {
-        logger.info("[SuperAdminController] POST /admins/{}/promover", id);
-        UsuarioResponseDto resp = superAdminService.promoverAAdmin(id);
-        logger.info("[SuperAdminController] Respuesta: {}", resp);
-        return ResponseEntity.ok(resp);
-    }
-
-    @Operation(summary = "Degradar administrador", description = "Degradar un administrador a rol de trabajador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Administrador degradado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "400", description = "El usuario no es administrador")
-    })
-    @PostMapping("/admins/{id}/degradar")
-    public ResponseEntity<UsuarioResponseDto> degradarAdmin(
-            @Parameter(description = "ID del administrador") @PathVariable int id) {
-        logger.info("[SuperAdminController] POST /admins/{}/degradar", id);
-        UsuarioResponseDto resp = superAdminService.degradarAdmin(id);
-        logger.info("[SuperAdminController] Respuesta: {}", resp);
-        return ResponseEntity.ok(resp);
-    }
 }
