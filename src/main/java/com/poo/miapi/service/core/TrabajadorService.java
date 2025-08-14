@@ -6,7 +6,7 @@ import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
+import com.poo.miapi.model.historial.HistorialValidacion;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
@@ -58,12 +58,12 @@ public class TrabajadorService {
 
     // Evaluar resolución usando DTO
     public TicketResponseDto evaluarTicket(int idTicket, EvaluarTicketDto dto) {
-        Trabajador trabajador = buscarPorId(dto.getIdTrabajador());
+    Trabajador trabajador = buscarPorId(dto.getIdUsuarioValidador());
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        if (ticket.getTecnicoActual() == null) {
-            throw new IllegalStateException("El ticket no tiene técnico asignado");
+        if (ticket.getUltimoTecnicoAtendio() == null) {
+            throw new IllegalStateException("El ticket no tiene técnico en historial");
         }
 
         if (ticket.getCreador().getId() != trabajador.getId()) {
@@ -78,15 +78,19 @@ public class TrabajadorService {
             ticket.setEstado(EstadoTicket.FINALIZADO);
         } else {
             ticket.setEstado(EstadoTicket.REABIERTO); // Primero va a REABIERTO
-            tecnicoService.marcarFalla(ticket.getTecnicoActual().getId(), dto.getMotivoFalla(), ticket);
+            tecnicoService.marcarFalla(ticket.getUltimoTecnicoAtendio().getId(), dto.getMotivoFalla(), ticket);
         }
 
         ticketRepository.save(ticket);
 
-        HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
-                trabajador, ticket, dto.isFueResuelto(),
-                dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla());
-        historialValidacionRepository.save(validacion);
+    Usuario usuarioValidador = trabajador; // El trabajador creador valida su propio ticket
+    HistorialValidacion validacion = new HistorialValidacion(
+        usuarioValidador,
+        ticket,
+        dto.isFueResuelto(),
+        dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla()
+    );
+    historialValidacionRepository.save(validacion);
 
         return mapToTicketDto(ticket);
     }

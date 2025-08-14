@@ -133,16 +133,75 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(usuario);
-        UsuarioResponseDto usuarioDto = new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isCambiarPass(),
-                usuario.isActivo(),
-                usuario.isBloqueado());
-
+        UsuarioResponseDto usuarioDto;
+        switch (usuario.getRol().name()) {
+            case "TECNICO" -> {
+                com.poo.miapi.model.core.Tecnico tecnico = (com.poo.miapi.model.core.Tecnico) usuario;
+                usuarioDto = new com.poo.miapi.dto.usuarios.TecnicoResponseDto(
+                    tecnico.getId(),
+                    tecnico.getNombre(),
+                    tecnico.getApellido(),
+                    tecnico.getEmail(),
+                    tecnico.getRol(),
+                    tecnico.isCambiarPass(),
+                    tecnico.isActivo(),
+                    tecnico.isBloqueado(),
+                    tecnico.getFallas(),
+                    tecnico.getMarcas()
+                );
+            }
+            case "TRABAJADOR" -> {
+                com.poo.miapi.model.core.Trabajador trabajador = (com.poo.miapi.model.core.Trabajador) usuario;
+                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                    trabajador.getId(),
+                    trabajador.getNombre(),
+                    trabajador.getApellido(),
+                    trabajador.getEmail(),
+                    trabajador.getRol(),
+                    trabajador.isCambiarPass(),
+                    trabajador.isActivo(),
+                    trabajador.isBloqueado()
+                );
+            }
+            case "ADMIN" -> {
+                com.poo.miapi.model.core.Admin admin = (com.poo.miapi.model.core.Admin) usuario;
+                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                    admin.getId(),
+                    admin.getNombre(),
+                    admin.getApellido(),
+                    admin.getEmail(),
+                    admin.getRol(),
+                    admin.isCambiarPass(),
+                    admin.isActivo(),
+                    admin.isBloqueado()
+                );
+            }
+            case "SUPERADMIN" -> {
+                com.poo.miapi.model.core.SuperAdmin superAdmin = (com.poo.miapi.model.core.SuperAdmin) usuario;
+                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                    superAdmin.getId(),
+                    superAdmin.getNombre(),
+                    superAdmin.getApellido(),
+                    superAdmin.getEmail(),
+                    superAdmin.getRol(),
+                    superAdmin.isCambiarPass(),
+                    superAdmin.isActivo(),
+                    superAdmin.isBloqueado()
+                );
+            }
+            default -> {
+                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                    usuario.getId(),
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getEmail(),
+                    usuario.getRol(),
+                    usuario.isCambiarPass(),
+                    usuario.isActivo(),
+                    usuario.isBloqueado()
+                );
+            }
+        }
         return new LoginResponseDto(token, usuarioDto);
     }
 

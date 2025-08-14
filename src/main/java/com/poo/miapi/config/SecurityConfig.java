@@ -35,36 +35,14 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs/swagger-config",
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/swagger-resources/**",
-                    "/webjars/**",
-                    "/webjars/*",
-                    "/favicon.ico"
-                ).permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/").permitAll()
+                .requestMatchers("/api-docs/**", "/api-docs", "/v3/api-docs/**", "/v3/api-docs").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/index.html").permitAll()
                 .anyRequest().authenticated()
-            )
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-                    response.setHeader("Access-Control-Allow-Credentials", "true");
-                    response.setContentType("application/json");
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.getWriter().write("{\"error\": \"No autorizado\"}");
-                })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-                    response.setHeader("Access-Control-Allow-Credentials", "true");
-                    response.setContentType("application/json");
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    response.getWriter().write("{\"error\": \"Acceso denegado\"}");
-                })
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

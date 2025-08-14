@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class EvaluarTicketDto {
 
-    @NotNull(message = "El ID del trabajador es obligatorio")
-    private int idTrabajador;
+    @NotNull(message = "El ID del usuario validador es obligatorio")
+    private int idUsuarioValidador;
 
     @NotNull(message = "Debe indicar si fue resuelto")
     private boolean fueResuelto;
@@ -15,18 +15,18 @@ public class EvaluarTicketDto {
     public EvaluarTicketDto() {
     }
 
-    public EvaluarTicketDto(int idTrabajador, boolean fueResuelto, String motivoFalla) {
-        this.idTrabajador = idTrabajador;
+    public EvaluarTicketDto(int idUsuarioValidador, boolean fueResuelto, String motivoFalla) {
+        this.idUsuarioValidador = idUsuarioValidador;
         this.fueResuelto = fueResuelto;
         this.motivoFalla = motivoFalla;
     }
 
-    public int getIdTrabajador() {
-        return idTrabajador;
+    public int getIdUsuarioValidador() {
+        return idUsuarioValidador;
     }
 
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
+    public void setIdUsuarioValidador(int idUsuarioValidador) {
+        this.idUsuarioValidador = idUsuarioValidador;
     }
 
     public boolean isFueResuelto() {

@@ -32,7 +32,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS auditoria;
 DROP TABLE IF EXISTS incidente_tecnico;
-DROP TABLE IF EXISTS historial_validacion_trabajador;
+DROP TABLE IF EXISTS historial_validacion;
 DROP TABLE IF EXISTS tecnico_por_ticket;
 DROP TABLE IF EXISTS notificacion;
 DROP TABLE IF EXISTS ticket;
@@ -141,17 +141,15 @@ CREATE TABLE incidente_tecnico (
     FOREIGN KEY (id_ticket) REFERENCES ticket(id) ON DELETE CASCADE
 );
 
-CREATE TABLE historial_validacion_trabajador (
+CREATE TABLE historial_validacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    id_trabajador INT NOT NULL,
+    id_usuario_validador INT NOT NULL,
     id_ticket INT NOT NULL,
-    id_admin INT NOT NULL,
     fue_aprobado BOOLEAN NOT NULL,
-    comentario_admin TEXT,
+    comentario TEXT,
     fecha_validacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_trabajador) REFERENCES trabajador(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_ticket) REFERENCES ticket(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_admin) REFERENCES admin(id) ON DELETE CASCADE
+    FOREIGN KEY (id_usuario_validador) REFERENCES usuario(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_ticket) REFERENCES ticket(id) ON DELETE CASCADE
 );
 
 -- =========================================

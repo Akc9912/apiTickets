@@ -3,15 +3,46 @@ package com.poo.miapi.service.historial;
 import com.poo.miapi.dto.historial.TecnicoPorTicketResponseDto;
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TecnicoPorTicketService {
+    // Registrar toma de ticket
+    public TecnicoPorTicket registrarToma(Ticket ticket, Tecnico tecnico) {
+    // El estado inicial será ATENDIDO, el estado final queda null
+    TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, EstadoTicket.ATENDIDO, null, null);
+    return tecnicoPorTicketRepository.save(historial);
+    }
+
+    // Registrar resolución de ticket
+    public void registrarResolucion(int idTecnico, int idTicket) {
+        Optional<TecnicoPorTicket> optHistorial = tecnicoPorTicketRepository.findByTecnicoIdAndTicketIdAndFechaDesasignacionIsNull(idTecnico, idTicket);
+        if (optHistorial.isPresent()) {
+            TecnicoPorTicket historial = optHistorial.get();
+            historial.setFechaDesasignacion(LocalDateTime.now());
+            historial.setEstadoFinal(EstadoTicket.RESUELTO);
+            tecnicoPorTicketRepository.save(historial);
+        }
+    }
+
+    // Registrar devolución de ticket
+    public void registrarDevolucion(Tecnico tecnico, Ticket ticket) {
+        Optional<TecnicoPorTicket> optHistorial = tecnicoPorTicketRepository.findByTecnicoAndTicketAndFechaDesasignacionIsNull(tecnico, ticket);
+        if (optHistorial.isPresent()) {
+            TecnicoPorTicket historial = optHistorial.get();
+            historial.setFechaDesasignacion(LocalDateTime.now());
+            historial.setEstadoFinal(EstadoTicket.REABIERTO);
+            tecnicoPorTicketRepository.save(historial);
+        }
+    }
 
     @Autowired
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;

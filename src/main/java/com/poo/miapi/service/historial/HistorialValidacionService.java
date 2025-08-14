@@ -2,7 +2,7 @@ package com.poo.miapi.service.historial;
 
 import com.poo.miapi.dto.historial.HistorialValidacionResponseDto;
 import com.poo.miapi.dto.historial.HistorialValidacionRequestDto;
-import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
+import com.poo.miapi.model.historial.HistorialValidacion;
 import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.core.TicketRepository;
@@ -34,23 +34,26 @@ public class HistorialValidacionService {
 
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
-                Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
-                                .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado con ID: " + dto.getIdTrabajador()));
+                // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin, SuperAdmin)
+                // Ejemplo: Usuario usuarioValidador = usuarioRepository.findById(dto.getIdUsuarioValidador()).orElseThrow(...);
+                // Por ahora, se usa Trabajador como ejemplo:
+                Trabajador usuarioValidador = trabajadorRepository.findById(dto.getIdUsuarioValidador())
+                                .orElseThrow(() -> new EntityNotFoundException("Usuario validador no encontrado con ID: " + dto.getIdUsuarioValidador()));
                 Ticket ticket = ticketRepository.findById(dto.getIdTicket())
                                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + dto.getIdTicket()));
 
-                HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
-                                trabajador,
+                HistorialValidacion validacion = new HistorialValidacion(
+                                usuarioValidador,
                                 ticket,
-                                dto.isFueResuelto(),
+                                dto.isFueAprobado(),
                                 dto.getComentario());
-                HistorialValidacionTrabajador saved = historialValidacionRepository.save(validacion);
+                HistorialValidacion saved = historialValidacionRepository.save(validacion);
                 return mapToDto(saved);
         }
 
         // Listar por trabajador como DTOs
-        public List<HistorialValidacionResponseDto> listarPorTrabajador(int trabajadorId) {
-                return historialValidacionRepository.findByTrabajadorId(trabajadorId).stream()
+        public List<HistorialValidacionResponseDto> listarPorUsuarioValidador(int usuarioValidadorId) {
+                return historialValidacionRepository.findByUsuarioValidadorId(usuarioValidadorId).stream()
                                 .map(this::mapToDto)
                                 .toList();
         }
@@ -70,13 +73,13 @@ public class HistorialValidacionService {
         }
 
         // Método auxiliar para mapear entidad a DTO
-        private HistorialValidacionResponseDto mapToDto(HistorialValidacionTrabajador validacion) {
+        private HistorialValidacionResponseDto mapToDto(HistorialValidacion validacion) {
                 return new HistorialValidacionResponseDto(
                                 validacion.getId(),
-                                validacion.getTrabajador().getId(),
+                                validacion.getUsuarioValidador().getId(),
                                 validacion.getTicket().getId(),
-                                validacion.isFueResuelto(),
+                                validacion.isFueAprobado(),
                                 validacion.getComentario(),
-                                validacion.getFechaRegistro());
+                                validacion.getFechaValidacion());
         }
 }
