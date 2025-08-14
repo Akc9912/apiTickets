@@ -1,5 +1,4 @@
 package com.poo.miapi.repository.historial;
-
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
@@ -19,7 +18,11 @@ public interface TecnicoPorTicketRepository extends JpaRepository<TecnicoPorTick
 
     Optional<TecnicoPorTicket> findByTecnicoAndTicket(Tecnico tecnico, Ticket ticket);
 
+    Optional<TecnicoPorTicket> findByTecnicoAndTicketAndFechaDesasignacionIsNull(Tecnico tecnico, Ticket ticket);
+
     List<TecnicoPorTicket> findByTecnicoId(int idTecnico);
 
     List<TecnicoPorTicket> findByTicketId(int idTicket);
+
+    Optional<TecnicoPorTicket> findByTecnicoIdAndTicketIdAndFechaDesasignacionIsNull(int tecnicoId, int ticketId);
 }

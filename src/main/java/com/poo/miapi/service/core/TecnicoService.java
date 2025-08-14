@@ -10,8 +10,10 @@ import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
+import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -21,17 +23,20 @@ public class TecnicoService {
     private final TecnicoRepository tecnicoRepository;
     private final TicketRepository ticketRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
+    private final TecnicoPorTicketService tecnicoPorTicketService;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
     public TecnicoService(
             TecnicoRepository tecnicoRepository,
             TicketRepository ticketRepository,
             TecnicoPorTicketRepository tecnicoPorTicketRepository,
-            IncidenteTecnicoRepository incidenteTecnicoRepository) {
+            IncidenteTecnicoRepository incidenteTecnicoRepository,
+            TecnicoPorTicketService tecnicoPorTicketService) {
         this.tecnicoRepository = tecnicoRepository;
         this.ticketRepository = ticketRepository;
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
+        this.tecnicoPorTicketService = tecnicoPorTicketService;
     }
 
     public Tecnico buscarPorId(int idTecnico) {
@@ -41,7 +46,7 @@ public class TecnicoService {
 
     public void sumarFalla(Tecnico tecnico) {
         tecnico.setFallas(tecnico.getFallas() + 1);
-        if (tecnico.getFallas() >= 3) {
+        if (tecnico.getFallas() >= 2) {
             tecnico.setBloqueado(true);
         }
         tecnicoRepository.save(tecnico);
@@ -49,7 +54,8 @@ public class TecnicoService {
 
     public void sumarMarca(Tecnico tecnico) {
         tecnico.setMarcas(tecnico.getMarcas() + 1);
-        if (tecnico.getMarcas() >= 3) {
+        if (tecnico.getMarcas() >= 2) {
+            tecnico.setMarcas(0);
             sumarFalla(tecnico);
         }
         tecnicoRepository.save(tecnico);
@@ -105,33 +111,54 @@ public class TecnicoService {
             throw new IllegalStateException("El ticket ya está siendo atendido o no está disponible");
         }
 
-        EstadoTicket estadoAnterior = ticket.getEstado();
-        ticket.setEstado(EstadoTicket.ATENDIDO);
-
-        TecnicoPorTicket historial = new TecnicoPorTicket(ticket, tecnico, estadoAnterior,
-                EstadoTicket.ATENDIDO, null);
-        tecnicoPorTicketRepository.save(historial);
-
-        ticket.agregarEntradaHistorial(historial);
-        ticketRepository.save(ticket);
-
-        return mapToTicketDto(ticket);
+    ticket.setEstado(EstadoTicket.ATENDIDO);
+    TecnicoPorTicket historial = tecnicoPorTicketService.registrarToma(ticket, tecnico);
+    ticket.agregarEntradaHistorial(historial);
+    ticketRepository.save(ticket);
+    return mapToTicketDto(ticket);
     }
 
-    public TicketResponseDto finalizarTicket(int idTecnico, int idTicket) {
+    @Transactional
+    public TicketResponseDto resolverTicket(int idTecnico, int idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
+        Tecnico tecnico = buscarPorId(idTecnico);
+        
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("El ticket no está en estado ATENDIDO");
         }
 
+        // LOG: Estado antes de buscar historial
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TecnicoService.class);
+        logger.info("[devolverTicket] Ticket id: {} estado: {}", ticket.getId(), ticket.getEstado());
+        logger.info("[devolverTicket] Tecnico id: {} nombre: {}", tecnico.getId(), tecnico.getNombre());
+
+        logger.info("[devolverTicket] Buscando historial por idTecnico={} y idTicket={}", idTecnico, idTicket);
+    tecnicoPorTicketService.registrarResolucion(idTecnico, idTicket);
+
+        // Si el ticket venía de estado REABIERTO, restar una falla al técnico si tiene
+        if (ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
+            List<TecnicoPorTicket> historial = ticket.getHistorialTecnicos();
+            if (!historial.isEmpty()) {
+                TecnicoPorTicket ultimaEntrada = historial.get(historial.size() - 1);
+                if (ultimaEntrada.getEstadoInicial() == EstadoTicket.REABIERTO && tecnico.getFallas() > 0) {
+                    tecnico.setFallas(tecnico.getFallas() - 1);
+                    tecnicoRepository.save(tecnico);
+                    // Registrar incidente técnico
+                    IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
+                        "Falla restada por resolver ticket reabierto");
+                    incidenteTecnicoRepository.save(incidente);
+                }
+            }
+        }
         ticket.setEstado(EstadoTicket.RESUELTO);
         ticketRepository.save(ticket);
 
         return mapToTicketDto(ticket);
     }
 
+    @Transactional
     public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
         Ticket ticket = ticketRepository.findById(idTicket)
@@ -146,6 +173,9 @@ public class TecnicoService {
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("Solo se pueden devolver tickets en estado ATENDIDO");
         }
+
+        // Buscar la entrada de historial activa directamente en el repositorio
+    tecnicoPorTicketService.registrarDevolucion(tecnico, ticket);
 
         ticket.setEstado(EstadoTicket.REABIERTO);
         marcarMarca(tecnico.getId(), motivo, ticket);
@@ -170,10 +200,11 @@ public class TecnicoService {
 
     // Devuelve tickets asignados como DTOs
     public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
-        Tecnico tecnico = buscarPorId(idTecnico);
-        return tecnico.getTicketsActuales().stream()
-                .map(this::mapToTicketDto)
-                .toList();
+    Tecnico tecnico = buscarPorId(idTecnico);
+    return tecnico.getTicketsActuales().stream()
+        .filter(ticket -> ticket.getEstado() == EstadoTicket.ATENDIDO)
+        .map(this::mapToTicketDto)
+        .toList();
     }
 
     // Métodos auxiliares para mapear entidades a DTOs

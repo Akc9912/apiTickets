@@ -3,25 +3,26 @@ package com.poo.miapi.model.historial;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Trabajador;
+import com.poo.miapi.model.core.Usuario;
 
 @Entity
-public class HistorialValidacionTrabajador {
+@Table(name = "historial_validacion")
+public class HistorialValidacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_trabajador")
-    private Trabajador trabajador;
+    @JoinColumn(name = "id_usuario_validador")
+    private Usuario usuarioValidador;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_ticket")
     private Ticket ticket;
 
     @Column(nullable = false)
-    private boolean fueResuelto;
+    private boolean fueAprobado;
 
     @Column(columnDefinition = "TEXT")
     private String comentario;
@@ -29,14 +30,14 @@ public class HistorialValidacionTrabajador {
     @Column(nullable = false)
     private LocalDateTime fechaValidacion;
 
-    public HistorialValidacionTrabajador() {
+    public HistorialValidacion() {
         this.fechaValidacion = LocalDateTime.now();
     }
 
-    public HistorialValidacionTrabajador(Trabajador trabajador, Ticket ticket, boolean fueResuelto, String comentario) {
-        this.trabajador = trabajador;
+    public HistorialValidacion(Usuario usuarioValidador, Ticket ticket, boolean fueAprobado, String comentario) {
+        this.usuarioValidador = usuarioValidador;
         this.ticket = ticket;
-        this.fueResuelto = fueResuelto;
+        this.fueAprobado = fueAprobado;
         this.comentario = comentario;
         this.fechaValidacion = LocalDateTime.now();
     }
@@ -46,12 +47,12 @@ public class HistorialValidacionTrabajador {
         return id;
     }
 
-    public Trabajador getTrabajador() {
-        return trabajador;
+    public Usuario getUsuarioValidador() {
+        return usuarioValidador;
     }
 
-    public void setTrabajador(Trabajador trabajador) {
-        this.trabajador = trabajador;
+    public void setUsuarioValidador(Usuario usuarioValidador) {
+        this.usuarioValidador = usuarioValidador;
     }
 
     public Ticket getTicket() {
@@ -62,12 +63,12 @@ public class HistorialValidacionTrabajador {
         this.ticket = ticket;
     }
 
-    public boolean isFueResuelto() {
-        return fueResuelto;
+    public boolean isFueAprobado() {
+        return fueAprobado;
     }
 
-    public void setFueResuelto(boolean fueResuelto) {
-        this.fueResuelto = fueResuelto;
+    public void setFueAprobado(boolean fueAprobado) {
+        this.fueAprobado = fueAprobado;
     }
 
     public String getComentario() {

@@ -1,17 +1,19 @@
-
 package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.historial.IncidenteTecnico;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
+import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,23 @@ public class TicketService {
     private final TrabajadorRepository trabajadorRepository;
     private final UsuarioRepository usuarioRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
+    private final TecnicoRepository tecnicoRepository;
+    private final IncidenteTecnicoRepository incidenteTecnicoRepository;
 
-    public TicketService(TicketRepository ticketRepository, TrabajadorRepository trabajadorRepository, UsuarioRepository usuarioRepository, TecnicoPorTicketRepository tecnicoPorTicketRepository) {
-    this.ticketRepository = ticketRepository;
-    this.trabajadorRepository = trabajadorRepository;
-    this.usuarioRepository = usuarioRepository;
-    this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
+    public TicketService(
+        TicketRepository ticketRepository,
+        TrabajadorRepository trabajadorRepository,
+        UsuarioRepository usuarioRepository,
+        TecnicoPorTicketRepository tecnicoPorTicketRepository,
+        TecnicoRepository tecnicoRepository,
+        IncidenteTecnicoRepository incidenteTecnicoRepository
+    ) {
+        this.ticketRepository = ticketRepository;
+        this.trabajadorRepository = trabajadorRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.incidenteTecnicoRepository = incidenteTecnicoRepository;
     }
 
     public Usuario obtenerUsuarioPorEmail(String email) {
@@ -92,6 +105,13 @@ public class TicketService {
                 .toList();
     }
 
+    // Tickets por creador y estado (para evaluación)
+    public List<TicketResponseDto> listarPorCreadorYEstado(int idTrabajador, EstadoTicket estado) {
+        return ticketRepository.findByEstadoAndCreadorId(estado, idTrabajador).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
     public List<TicketResponseDto> buscarPorTitulo(String palabra) {
         return ticketRepository.findByTituloContainingIgnoreCase(palabra).stream()
                 .map(this::mapToDto)
@@ -139,13 +159,12 @@ public class TicketService {
                 .toList();
     }
 
-    // Tickets asignados al técnico en estado atendido o resuelto
+    // Tickets asignados al técnico en estado atendido
     public List<TicketResponseDto> listarTicketsAsignadosAlTecnico(int tecnicoId) {
     Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
     if (!(usuario instanceof Tecnico tecnico)) return Collections.emptyList();
     List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
-    List<Ticket> resueltos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.RESUELTO, tecnico);
-    return Stream.concat(atendidos.stream(), resueltos.stream())
+    return atendidos.stream()
             .map(this::mapToDto)
             .toList();
     }
@@ -213,7 +232,29 @@ public class TicketService {
         }
         ticket.setEstado(EstadoTicket.REABIERTO);
         ticket.setFechaUltimaActualizacion(java.time.LocalDateTime.now());
-        // Aquí podrías guardar el comentario en historial si lo necesitas
+        // Sumar falla al último técnico que atendió el ticket
+        List<TecnicoPorTicket> historial = ticket.getHistorialTecnicos();
+        if (!historial.isEmpty()) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                TecnicoPorTicket entrada = historial.get(i);
+                if (entrada.getTecnico() != null) {
+                    Tecnico ultimoTecnico = entrada.getTecnico();
+                    if (ultimoTecnico != null) {
+                        ultimoTecnico.setFallas(ultimoTecnico.getFallas() + 1);
+                        if (ultimoTecnico.getFallas() >= 3) {
+                            ultimoTecnico.setBloqueado(true);
+                        }
+                        // Guardar el técnico actualizado
+                        tecnicoRepository.save(ultimoTecnico);
+                        // Registrar incidente técnico
+                        IncidenteTecnico incidente = new IncidenteTecnico(ultimoTecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
+                            "Falla por ticket reabierto por trabajador");
+                        incidenteTecnicoRepository.save(incidente);
+                        break;
+                    }
+                }
+            }
+        }
         ticketRepository.save(ticket);
         return mapToDto(ticket);
     }

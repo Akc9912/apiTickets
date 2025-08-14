@@ -1,6 +1,7 @@
 package com.poo.miapi.controller.core;
 
 import java.util.List;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,27 +52,49 @@ public class TecnicoController {
         public ResponseEntity<String> tomarTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
-                logger.info("[TecnicoController] POST /tickets/{}/tomar idTecnico: {}", ticketId, idTecnico);
-                tecnicoService.tomarTicket(idTecnico, ticketId);
-                logger.info("[TecnicoController] Ticket tomado correctamente");
-                return ResponseEntity.ok("Ticket tomado correctamente");
+                                logger.info("[TecnicoController] POST /tickets/{}/tomar idTecnico: {}", ticketId, idTecnico);
+                                try {
+                                        tecnicoService.tomarTicket(idTecnico, ticketId);
+                                        logger.info("[TecnicoController] Ticket tomado correctamente");
+                                        return ResponseEntity.ok("Ticket tomado correctamente");
+                                } catch (EntityNotFoundException e) {
+                                        logger.error("Técnico o ticket no encontrado", e);
+                                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
+                                } catch (IllegalStateException | IllegalArgumentException e) {
+                                        logger.error("Error de negocio al tomar ticket", e);
+                                        return ResponseEntity.status(400).body(e.getMessage());
+                                } catch (Exception e) {
+                                        logger.error("Error inesperado al tomar ticket", e);
+                                        return ResponseEntity.status(500).body("Error interno del servidor");
+                                }
         }
 
-        // POST /api/tecnico/tickets/{ticketId}/finalizar
-        @PostMapping("/tickets/{ticketId}/finalizar")
-        @Operation(summary = "Finalizar ticket", description = "Marca un ticket como finalizado por el técnico")
+        // POST /api/tecnico/tickets/{ticketId}/resolver
+        @PostMapping("/tickets/{ticketId}/resolver")
+        @Operation(summary = "Resolver ticket", description = "Marca un ticket como resuelto por el técnico")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Ticket finalizado correctamente"),
+                        @ApiResponse(responseCode = "200", description = "Ticket resuelto correctamente"),
                         @ApiResponse(responseCode = "404", description = "Técnico o ticket no encontrado"),
                         @ApiResponse(responseCode = "400", description = "El ticket no está asignado a este técnico")
         })
-        public ResponseEntity<String> finalizarTicket(
+        public ResponseEntity<String> resolverTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
-                logger.info("[TecnicoController] POST /tickets/{}/finalizar idTecnico: {}", ticketId, idTecnico);
-                tecnicoService.finalizarTicket(idTecnico, ticketId);
-                logger.info("[TecnicoController] Estado de ticket actualizado a: Finalizado");
-                return ResponseEntity.ok("Estado de ticket actualizado a: Finalizado");
+                                logger.info("[TecnicoController] INICIO resolverTicket - ticketId: {} idTecnico: {}", ticketId, idTecnico);
+                                try {
+                                        tecnicoService.resolverTicket(idTecnico, ticketId);
+                                        logger.info("[TecnicoController] Estado de ticket actualizado a: Resuelto");
+                                        return ResponseEntity.ok("Estado de ticket actualizado a: Resuelto");
+                                } catch (EntityNotFoundException e) {
+                                        logger.error("Ticket no encontrado", e);
+                                        return ResponseEntity.status(404).body("Ticket no encontrado");
+                                } catch (IllegalStateException | IllegalArgumentException e) {
+                                        logger.error("Error de negocio al resolver ticket", e);
+                                        return ResponseEntity.status(400).body(e.getMessage());
+                                } catch (Exception e) {
+                                        logger.error("Error inesperado al resolver ticket", e);
+                                        return ResponseEntity.status(500).body("Error interno del servidor");
+                                }
         }
 
         // POST /api/tecnico/tickets/{ticketId}/devolver
@@ -86,10 +109,21 @@ public class TecnicoController {
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId,
                         @Parameter(description = "Motivo de la devolución del ticket") @RequestParam String motivo) {
-                logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId, idTecnico, motivo);
-                tecnicoService.devolverTicket(idTecnico, ticketId, motivo);
-                logger.info("[TecnicoController] Ticket devuelto");
-                return ResponseEntity.ok("Ticket devuelto");
+                                logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId, idTecnico, motivo);
+                                try {
+                                        tecnicoService.devolverTicket(idTecnico, ticketId, motivo);
+                                        logger.info("[TecnicoController] Ticket devuelto");
+                                        return ResponseEntity.ok("Ticket devuelto");
+                                } catch (EntityNotFoundException e) {
+                                        logger.error("Técnico o ticket no encontrado", e);
+                                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
+                                } catch (IllegalStateException | IllegalArgumentException e) {
+                                        logger.error("Error de negocio al devolver ticket", e);
+                                        return ResponseEntity.status(400).body(e.getMessage());
+                                } catch (Exception e) {
+                                        logger.error("Error inesperado al devolver ticket", e);
+                                        return ResponseEntity.status(500).body("Error interno del servidor");
+                                }
         }
 
         // GET /api/tecnico/listar-todos - Listar todos los técnicos

@@ -1,19 +1,19 @@
 package com.poo.miapi.repository.historial;
 
-import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
+import com.poo.miapi.model.historial.HistorialValidacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface HistorialValidacionRepository extends JpaRepository<HistorialValidacionTrabajador, Integer> {
+public interface HistorialValidacionRepository extends JpaRepository<HistorialValidacion, Integer> {
 
-    List<HistorialValidacionTrabajador> findByTrabajadorId(int trabajadorId);
+    List<HistorialValidacion> findByUsuarioValidadorId(int usuarioValidadorId);
 
-    List<HistorialValidacionTrabajador> findByTicketId(int ticketId);
+    List<HistorialValidacion> findByTicketId(int ticketId);
 
-    int countByTrabajadorId(int trabajadorId);
+    int countByUsuarioValidadorId(int usuarioValidadorId);
 
     int countByTicketId(int ticketId);
 }

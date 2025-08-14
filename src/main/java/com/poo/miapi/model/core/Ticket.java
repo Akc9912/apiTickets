@@ -105,15 +105,28 @@ public class Ticket {
     }
 
     // Utilidades
-    public Tecnico getTecnicoActual() {
-        for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
-            TecnicoPorTicket entrada = historialTecnicos.get(i);
-            if (entrada.getFechaDesasignacion() == null) {
-                return entrada.getTecnico();
+
+        // Devuelve el técnico actualmente asignado (sin fecha de desasignación)
+        public Tecnico getTecnicoActual() {
+            for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
+                TecnicoPorTicket entrada = historialTecnicos.get(i);
+                if (entrada.getFechaDesasignacion() == null) {
+                    return entrada.getTecnico();
+                }
             }
+            return null;
         }
-        return null;
-    }
+
+        // Devuelve el último técnico que atendió el ticket, aunque esté desasignado
+        public Tecnico getUltimoTecnicoAtendio() {
+            for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
+                TecnicoPorTicket entrada = historialTecnicos.get(i);
+                if (entrada.getTecnico() != null) {
+                    return entrada.getTecnico();
+                }
+            }
+            return null;
+        }
 
     @Override
     public String toString() {

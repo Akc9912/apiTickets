@@ -4,9 +4,13 @@ import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.TicketService;
 import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.model.enums.EstadoTicket;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -62,6 +66,31 @@ public class TicketController {
                         throw new AccessDeniedException("No autorizado");
                 }
                 return ticketService.listarPorCreador(usuario.getId());
+        }
+
+        // Endpoint: tickets en estado RESUELTO para evaluación del trabajador
+        @Operation(summary = "Listar tickets para evaluar (Trabajador)", description = "Devuelve los tickets creados por el trabajador autenticado en estado RESUELTO.")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+        })
+        @GetMapping("/trabajador/tickets-para-evaluar")
+        public List<TicketResponseDto> listarTicketsParaEvaluarTrabajador(Authentication authentication) {
+                                        Logger logger = LoggerFactory.getLogger(TicketController.class);
+                                        logger.info("[TicketController] GET /trabajador/tickets-para-evaluar usuario: {}", authentication.getName());
+                                        Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                                        if (usuario == null) {
+                                                logger.error("[TicketController] Usuario no encontrado para email: {}", authentication.getName());
+                                                throw new AccessDeniedException("No autorizado");
+                                        }
+                                        if (!usuario.getRol().name().equals("TRABAJADOR")) {
+                                                logger.error("[TicketController] Usuario con rol incorrecto: {}", usuario.getRol());
+                                                throw new AccessDeniedException("No autorizado");
+                                        }
+                                        logger.info("[TicketController] Buscando tickets RESUELTO para trabajador id: {}", usuario.getId());
+                                        List<TicketResponseDto> result = ticketService.listarPorCreadorYEstado(usuario.getId(), EstadoTicket.RESUELTO);
+                                        logger.info("[TicketController] Tickets encontrados: {}", result.size());
+                                        return result;
         }
 
         // 3. /api/tickets/tecnico/tickets-disponibles - Técnico: tickets no asignados y reabiertos
