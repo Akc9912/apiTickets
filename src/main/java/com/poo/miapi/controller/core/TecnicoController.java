@@ -2,6 +2,9 @@ package com.poo.miapi.controller.core;
 
 import java.util.List;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,9 +12,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
 import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
+import com.poo.miapi.dto.tecnico.IncidenciasDto;
 import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.service.core.TecnicoService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
@@ -21,7 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class TecnicoController {
 
         private final TecnicoService tecnicoService;
-        private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TecnicoController.class);
+        private static final Logger logger = LoggerFactory.getLogger(TecnicoController.class);
 
         public TecnicoController(TecnicoService tecnicoService) {
                 this.tecnicoService = tecnicoService;
@@ -116,14 +122,14 @@ public class TecnicoController {
         @GetMapping("/incidentes")
         @Operation(summary = "Ver incidencias actuales", description = "Devuelve la cantidad de marcas y fallas del técnico autenticado")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Incidencias actuales", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.poo.miapi.dto.tecnico.IncidenciasDto.class)))
+                @ApiResponse(responseCode = "200", description = "Incidencias actuales", content = @Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IncidenciasDto.class)))
         })
-        public ResponseEntity<com.poo.miapi.dto.tecnico.IncidenciasDto> verIncidentes(@AuthenticationPrincipal com.poo.miapi.model.core.Usuario usuarioAutenticado) {
+        public ResponseEntity<IncidenciasDto> verIncidentes(@AuthenticationPrincipal Usuario usuarioAutenticado) {
                 logger.info("[TecnicoController] GET /incidentes usuario: {}", usuarioAutenticado != null ? usuarioAutenticado.getId() : null);
                 if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null || !"TECNICO".equals(usuarioAutenticado.getRol().name())) {
                         return ResponseEntity.status(403).build();
                 }
                 var tecnico = tecnicoService.buscarPorId(usuarioAutenticado.getId());
-                return ResponseEntity.ok(new com.poo.miapi.dto.tecnico.IncidenciasDto(tecnico.getFallas(), tecnico.getMarcas()));
+                return ResponseEntity.ok(new IncidenciasDto(tecnico.getFallas(), tecnico.getMarcas()));
         }
 }

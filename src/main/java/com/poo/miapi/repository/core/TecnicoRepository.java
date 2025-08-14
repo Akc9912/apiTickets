@@ -25,7 +25,5 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 
     List<Tecnico> findByRol(Rol rol);
 
-    // List<Tecnico> findByTipoUsuario(String tipoUsuario);
-
     Optional<Tecnico> findById(Long id);
 }

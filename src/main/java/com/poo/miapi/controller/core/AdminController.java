@@ -1,6 +1,8 @@
 package com.poo.miapi.controller.core;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -103,10 +105,10 @@ public class AdminController {
     // GET /api/admin/listar-usuarios
     @GetMapping("/listar-usuarios")
     @Operation(summary = "Listar todos los usuarios", description = "Devuelve la lista de todos los usuarios del sistema. Solo Admin y SuperAdmin pueden acceder. Admin no puede ver SuperAdmins.")
-    public ResponseEntity<java.util.List<UsuarioResponseDto>> listarUsuarios(@AuthenticationPrincipal Usuario usuarioAutenticado) {
+    public ResponseEntity<List<UsuarioResponseDto>> listarUsuarios(@AuthenticationPrincipal Usuario usuarioAutenticado) {
         try {
-            java.util.List<UsuarioResponseDto> usuariosRaw = usuarioService.listarTodosFiltrado(usuarioAutenticado);
-            java.util.List<UsuarioResponseDto> usuarios = usuariosRaw.stream()
+            List<UsuarioResponseDto> usuariosRaw = usuarioService.listarTodosFiltrado(usuarioAutenticado);
+            List<UsuarioResponseDto> usuarios = usuariosRaw.stream()
                 .map(u -> (UsuarioResponseDto) u)
                 .toList();
             return ResponseEntity.ok(usuarios);

@@ -21,7 +21,7 @@ public class IncidenteTecnico {
     @JoinColumn(name = "id_tecnico")
     private Tecnico tecnico;
 
-    @ManyToOne(optional = true) // Cambia a false si el ticket siempre es obligatorio
+    @ManyToOne(optional = false) 
     @JoinColumn(name = "id_ticket")
     private Ticket ticket;
 

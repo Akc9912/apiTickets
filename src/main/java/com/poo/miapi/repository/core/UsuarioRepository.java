@@ -37,8 +37,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByRol(Rol rol);
 
-    // List<Usuario> findByTipoUsuario(String tipoUsuario);
-
     List<Usuario> findByApellidoContainingIgnoreCase(String apellido);
 
     // Métodos para SuperAdminService

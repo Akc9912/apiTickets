@@ -73,7 +73,7 @@ public class Tecnico extends Usuario {
         this.historialTecnicos = hist;
     }
 
-    //  Utilidades de dominio
+
     public void addIncidente(IncidenteTecnico incidente) {
         if (incidente != null) {
             incidentes.add(incidente);
@@ -88,10 +88,6 @@ public class Tecnico extends Usuario {
         }
     }
 
-    /**
-     * Devuelve los tickets actualmente asignados al técnico (sin fecha de
-     * desasignación).
-     */
     public List<Ticket> getTicketsActuales() {
         return historialTecnicos.stream()
                 .filter(h -> h.getFechaDesasignacion() == null)

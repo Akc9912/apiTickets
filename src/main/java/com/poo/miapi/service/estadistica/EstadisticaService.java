@@ -6,6 +6,11 @@ import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.enums.Rol;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,30 +37,30 @@ public class EstadisticaService {
 
         public Object obtenerEstadisticasUsuarios() {
             // Lógica movida desde SuperAdminService
-            java.util.Map<String, Object> stats = new java.util.HashMap<>();
+            Map<String, Object> stats = new HashMap<>();
             stats.put("totalUsuarios", usuarioRepository.count());
             stats.put("usuariosActivos", usuarioRepository.countByActivoTrue());
             stats.put("usuariosBloqueados", usuarioRepository.countByBloqueadoTrue());
-            stats.put("superAdmins", usuarioRepository.countByRol(com.poo.miapi.model.enums.Rol.SUPER_ADMIN));
-            stats.put("admins", usuarioRepository.countByRol(com.poo.miapi.model.enums.Rol.ADMIN));
-            stats.put("tecnicos", usuarioRepository.countByRol(com.poo.miapi.model.enums.Rol.TECNICO));
-            stats.put("trabajadores", usuarioRepository.countByRol(com.poo.miapi.model.enums.Rol.TRABAJADOR));
+            stats.put("superAdmins", usuarioRepository.countByRol(Rol.SUPER_ADMIN));
+            stats.put("admins", usuarioRepository.countByRol(Rol.ADMIN));
+            stats.put("tecnicos", usuarioRepository.countByRol(Rol.TECNICO));
+            stats.put("trabajadores", usuarioRepository.countByRol(Rol.TRABAJADOR));
             return stats;
         }
 
         public Object obtenerEstadisticasTickets() {
-            java.util.Map<String, Object> stats = new java.util.HashMap<>();
+            Map<String, Object> stats = new HashMap<>();
             stats.put("totalTickets", ticketRepository.count());
-            stats.put("ticketsNoAtendidos", ticketRepository.countByEstado(com.poo.miapi.model.enums.EstadoTicket.NO_ATENDIDO));
-            stats.put("ticketsAtendidos", ticketRepository.countByEstado(com.poo.miapi.model.enums.EstadoTicket.ATENDIDO));
-            stats.put("ticketsResueltos", ticketRepository.countByEstado(com.poo.miapi.model.enums.EstadoTicket.RESUELTO));
-            stats.put("ticketsFinalizados", ticketRepository.countByEstado(com.poo.miapi.model.enums.EstadoTicket.FINALIZADO));
-            stats.put("ticketsReabiertos", ticketRepository.countByEstado(com.poo.miapi.model.enums.EstadoTicket.REABIERTO));
+            stats.put("ticketsNoAtendidos", ticketRepository.countByEstado(EstadoTicket.NO_ATENDIDO));
+            stats.put("ticketsAtendidos", ticketRepository.countByEstado(EstadoTicket.ATENDIDO));
+            stats.put("ticketsResueltos", ticketRepository.countByEstado(EstadoTicket.RESUELTO));
+            stats.put("ticketsFinalizados", ticketRepository.countByEstado(EstadoTicket.FINALIZADO));
+            stats.put("ticketsReabiertos", ticketRepository.countByEstado(EstadoTicket.REABIERTO));
             return stats;
         }
 
         public Object obtenerEstadisticasSistema() {
-            java.util.Map<String, Object> stats = new java.util.HashMap<>();
+            Map<String, Object> stats = new HashMap<>();
             stats.put("usuarios", obtenerEstadisticasUsuarios());
             stats.put("tickets", obtenerEstadisticasTickets());
             stats.put("tecnicosBloqueados", tecnicoRepository.countByBloqueadoTrue());

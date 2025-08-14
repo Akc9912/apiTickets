@@ -249,7 +249,7 @@ public class TecnicoService {
         return new IncidenteTecnicoResponseDto(
                 incidente.getId(),
                 incidente.getTecnico().getId(),
-                incidente.getTicket() != null ? incidente.getTicket().getId() : null,
+                incidente.getTicket().getId(),
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());
@@ -262,7 +262,7 @@ public class TecnicoService {
             tecnico.getNombre(),
             tecnico.getApellido(),
             tecnico.getEmail(),
-            tecnico.getRol() != null ? tecnico.getRol().name() : null,
+            tecnico.getRol().name(),
             tecnico.isCambiarPass(),
             tecnico.isActivo(),
             tecnico.isBloqueado(),

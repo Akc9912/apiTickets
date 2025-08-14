@@ -12,16 +12,12 @@ import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class AdminService {
@@ -80,7 +76,6 @@ public class AdminService {
         return mapToTicketDto(ticket);
     }
 
-    // MÉTODOS AUXILIARES PRIVADOS
 
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||

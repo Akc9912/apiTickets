@@ -4,7 +4,12 @@ import com.poo.miapi.dto.auth.ChangePasswordDto;
 import com.poo.miapi.dto.auth.LoginRequestDto;
 import com.poo.miapi.dto.auth.LoginResponseDto;
 import com.poo.miapi.dto.auth.ResetPasswordDto;
+import com.poo.miapi.dto.usuarios.TecnicoResponseDto;
 import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
+import com.poo.miapi.model.core.Admin;
+import com.poo.miapi.model.core.SuperAdmin;
+import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
@@ -45,20 +50,12 @@ public class AuthService {
     }
 
     /**
-     * Autenticación de usuario con medidas de seguridad mejoradas
-     * 
-     * Medidas de seguridad implementadas:
-     * 1. Los usuarios INACTIVOS se tratan como si no existieran (baja lógica)
-     * 2. Los usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones (ponerse de acuerdo si logea o no)
-     * 3. Se ejecuta verificación de contraseña incluso para usuarios inexistentes 
-     *    para prevenir timing attacks
-     * 4. Mismo mensaje de error para usuarios inexistentes e inactivos
-     * 
      * @param loginRequest Datos de login (email y contraseña)
      * @return Token JWT y datos del usuario si la autenticación es exitosa
      * @throws EntityNotFoundException Si el usuario no existe o está inactivo
      * @throws IllegalArgumentException Si la contraseña es incorrecta
      */
+
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElse(null);
@@ -113,7 +110,7 @@ public class AuthService {
             }
         }
 
-        // Siempre verificar la contraseña para evitar timing attacks
+        // Siempre verificar la contraseña
         boolean passwordMatches = false;
         if (usuario != null) {
             passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword());
@@ -136,8 +133,8 @@ public class AuthService {
         UsuarioResponseDto usuarioDto;
         switch (usuario.getRol().name()) {
             case "TECNICO" -> {
-                com.poo.miapi.model.core.Tecnico tecnico = (com.poo.miapi.model.core.Tecnico) usuario;
-                usuarioDto = new com.poo.miapi.dto.usuarios.TecnicoResponseDto(
+                Tecnico tecnico = (Tecnico) usuario;
+                usuarioDto = new TecnicoResponseDto(
                     tecnico.getId(),
                     tecnico.getNombre(),
                     tecnico.getApellido(),
@@ -151,8 +148,8 @@ public class AuthService {
                 );
             }
             case "TRABAJADOR" -> {
-                com.poo.miapi.model.core.Trabajador trabajador = (com.poo.miapi.model.core.Trabajador) usuario;
-                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                Trabajador trabajador = (Trabajador) usuario;
+                usuarioDto = new UsuarioResponseDto(
                     trabajador.getId(),
                     trabajador.getNombre(),
                     trabajador.getApellido(),
@@ -164,8 +161,8 @@ public class AuthService {
                 );
             }
             case "ADMIN" -> {
-                com.poo.miapi.model.core.Admin admin = (com.poo.miapi.model.core.Admin) usuario;
-                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                Admin admin = (Admin) usuario;
+                usuarioDto = new UsuarioResponseDto(
                     admin.getId(),
                     admin.getNombre(),
                     admin.getApellido(),
@@ -177,8 +174,8 @@ public class AuthService {
                 );
             }
             case "SUPERADMIN" -> {
-                com.poo.miapi.model.core.SuperAdmin superAdmin = (com.poo.miapi.model.core.SuperAdmin) usuario;
-                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                SuperAdmin superAdmin = (SuperAdmin) usuario;
+                usuarioDto = new UsuarioResponseDto(
                     superAdmin.getId(),
                     superAdmin.getNombre(),
                     superAdmin.getApellido(),
@@ -190,7 +187,7 @@ public class AuthService {
                 );
             }
             default -> {
-                usuarioDto = new com.poo.miapi.dto.usuarios.UsuarioResponseDto(
+                usuarioDto = new UsuarioResponseDto(
                     usuario.getId(),
                     usuario.getNombre(),
                     usuario.getApellido(),

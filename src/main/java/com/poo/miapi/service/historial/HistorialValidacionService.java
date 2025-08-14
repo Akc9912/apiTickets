@@ -35,7 +35,6 @@ public class HistorialValidacionService {
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
                 // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin, SuperAdmin)
-                // Ejemplo: Usuario usuarioValidador = usuarioRepository.findById(dto.getIdUsuarioValidador()).orElseThrow(...);
                 // Por ahora, se usa Trabajador como ejemplo:
                 Trabajador usuarioValidador = trabajadorRepository.findById(dto.getIdUsuarioValidador())
                                 .orElseThrow(() -> new EntityNotFoundException("Usuario validador no encontrado con ID: " + dto.getIdUsuarioValidador()));

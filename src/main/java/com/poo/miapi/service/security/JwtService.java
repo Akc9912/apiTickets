@@ -38,7 +38,7 @@ public class JwtService {
                 .compact();
     }
 
-    // Nuevo: para el filtro, extrae el "username" (email)
+    // Nuevo: para el filtro, extrae el "username" (email ahora)
     public String extractUsername(String token) {
         return extractEmail(token);
     }

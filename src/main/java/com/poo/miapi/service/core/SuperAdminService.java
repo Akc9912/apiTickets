@@ -53,8 +53,6 @@ public class SuperAdminService {
         this.tecnicoPorTicketService = tecnicoPorTicketService;
     }
 
-    // === GESTIÓN DE USUARIOS ===
-
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
         validarDatosUsuario(usuarioDto);
 
@@ -223,7 +221,6 @@ public class SuperAdminService {
                 .toList();
     }
 
-    // === GESTIÓN DE ADMINISTRADORES ===
 
     public List<UsuarioResponseDto> listarAdministradores() {
         return usuarioRepository.findByRolIn(List.of(Rol.SUPER_ADMIN, Rol.ADMIN)).stream()
@@ -243,7 +240,6 @@ public class SuperAdminService {
         adminDto.setNombre(usuario.getNombre());
         adminDto.setApellido(usuario.getApellido());
         adminDto.setEmail(usuario.getEmail());
-        // adminDto.setPassword(defaultPassword); // No existe campo password en el DTO
         adminDto.setRol(Rol.ADMIN);
 
         return cambiarRolUsuario(id, adminDto);
@@ -261,14 +257,10 @@ public class SuperAdminService {
         trabajadorDto.setNombre(usuario.getNombre());
         trabajadorDto.setApellido(usuario.getApellido());
         trabajadorDto.setEmail(usuario.getEmail());
-        // trabajadorDto.setPassword(defaultPassword); // No existe campo password en el
-        // DTO
         trabajadorDto.setRol(Rol.TRABAJADOR);
 
         return cambiarRolUsuario(id, trabajadorDto);
     }
-
-    // === GESTIÓN DEL SISTEMA ===
 
     public List<TicketResponseDto> listarTodosLosTickets() {
         return ticketRepository.findAll().stream()
@@ -314,8 +306,6 @@ public class SuperAdminService {
         ticketRepository.delete(ticket);
     }
 
-    // === ESTADÍSTICAS ===
-
     public Map<String, Object> obtenerEstadisticasUsuarios() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsuarios", usuarioRepository.count());
@@ -346,8 +336,6 @@ public class SuperAdminService {
         stats.put("tecnicosBloqueados", tecnicoRepository.countByBloqueadoTrue());
         return stats;
     }
-
-    // === MÉTODOS AUXILIARES ===
 
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||

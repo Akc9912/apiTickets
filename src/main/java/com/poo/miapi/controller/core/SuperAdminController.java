@@ -4,19 +4,14 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
 import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.service.core.SuperAdminService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/superadmin")
@@ -30,8 +25,6 @@ public class SuperAdminController {
                 this.superAdminService = superAdminService;
         }
 
-
-    // === GESTIÓN DE ADMINISTRADORES ===
 
     @Operation(summary = "Listar administradores", description = "Obtener lista de todos los administradores del sistema")
     @ApiResponses(value = {
