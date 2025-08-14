@@ -233,4 +233,23 @@ public class UsuarioService {
                     .map(this::mapToUsuarioDto)
                     .toList();
         }
+
+    public java.util.List<UsuarioResponseDto> listarTodosFiltrado(Usuario usuarioAutenticado) {
+        if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
+            throw new SecurityException("No autorizado");
+        }
+        Rol rol = usuarioAutenticado.getRol();
+        if (rol != Rol.ADMIN && rol != Rol.SUPER_ADMIN) {
+            throw new SecurityException("No autorizado");
+        }
+        return usuarioRepository.findAll().stream()
+            .map(usuario -> {
+                if (rol == Rol.ADMIN && usuario.getRol() == Rol.SUPER_ADMIN) {
+                    return null;
+                }
+                return mapToUsuarioDto(usuario);
+            })
+            .filter(java.util.Objects::nonNull)
+            .toList();
+        }
 }

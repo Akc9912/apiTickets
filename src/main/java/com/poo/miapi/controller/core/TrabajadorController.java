@@ -43,9 +43,15 @@ public class TrabajadorController {
             @Parameter(description = "ID del ticket") @PathVariable int ticketId,
             @Parameter(description = "Datos de la evaluación") @RequestBody EvaluarTicketDto dto) {
     logger.info("[TrabajadorController] POST /tickets/{}/evaluar datos: {}", ticketId, dto);
-    TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
+    logger.info("[TrabajadorController] ticketId recibido: {} (tipo: int)", ticketId);
+    try {
+        TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
+        logger.info("[TrabajadorController] Respuesta: {}", resp);
+        return resp;
+    } catch (Exception e) {
+        logger.error("[TrabajadorController] Error al evaluar ticketId {}: {}", ticketId, e.getMessage(), e);
+        throw e;
+    }
     }
 
     

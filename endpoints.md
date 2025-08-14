@@ -327,8 +327,20 @@
 
 - `POST /api/tecnico/tickets/{ticketId}/devolver?idTecnico={id}&motivo={motivo}` — Devolver ticket con motivo
   **Response:**
+
   ```json
   "Ticket devuelto"
+  ```
+
+- `GET /api/tecnico/incidentes?idTecnico={id}` — Ver marcas y fallas actuales del técnico autenticado
+  **Headers:**
+  - Authorization: Bearer {token}
+    **Response:**
+  ```json
+  {
+    "fallas": 2,
+    "marcas": 1
+  }
   ```
 
 ## SuperAdminController (`/api/superadmin`)

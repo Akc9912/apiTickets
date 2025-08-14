@@ -13,6 +13,7 @@ import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
 import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.service.core.TecnicoService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/tecnico")
@@ -109,5 +110,20 @@ public class TecnicoController {
                                         logger.error("Error inesperado al devolver ticket", e);
                                         return ResponseEntity.status(500).body("Error interno del servidor");
                                 }
+        }
+
+        // GET /api/tecnico/incidentes
+        @GetMapping("/incidentes")
+        @Operation(summary = "Ver incidencias actuales", description = "Devuelve la cantidad de marcas y fallas del técnico autenticado")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Incidencias actuales", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.poo.miapi.dto.tecnico.IncidenciasDto.class)))
+        })
+        public ResponseEntity<com.poo.miapi.dto.tecnico.IncidenciasDto> verIncidentes(@AuthenticationPrincipal com.poo.miapi.model.core.Usuario usuarioAutenticado) {
+                logger.info("[TecnicoController] GET /incidentes usuario: {}", usuarioAutenticado != null ? usuarioAutenticado.getId() : null);
+                if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null || !"TECNICO".equals(usuarioAutenticado.getRol().name())) {
+                        return ResponseEntity.status(403).build();
+                }
+                var tecnico = tecnicoService.buscarPorId(usuarioAutenticado.getId());
+                return ResponseEntity.ok(new com.poo.miapi.dto.tecnico.IncidenciasDto(tecnico.getFallas(), tecnico.getMarcas()));
         }
 }

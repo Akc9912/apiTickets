@@ -1,3 +1,34 @@
+### GET /api/admin/listar-usuarios
+
+**Descripción:** Devuelve la lista de todos los usuarios del sistema. Solo Admin y SuperAdmin pueden acceder. Admin no puede ver SuperAdmins.
+
+**Requiere autenticación JWT.**
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@empresa.com",
+    "rol": "ADMIN",
+    "activo": true,
+    "bloqueado": false
+  },
+  {
+    "id": 2,
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana@empresa.com",
+    "rol": "TECNICO",
+    "activo": true,
+    "bloqueado": false
+  }
+]
+```
+
 # Documentación de Endpoints API
 
 Este documento lista todos los endpoints implementados en la API que interactúan con la base de datos.

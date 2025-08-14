@@ -103,6 +103,9 @@ public class TecnicoService {
 
     public TicketResponseDto tomarTicket(int idTecnico, int idTicket) {
         Tecnico tecnico = buscarPorId(idTecnico);
+        if (tecnico.isBloqueado()) {
+            throw new IllegalStateException("El técnico está bloqueado y no puede tomar tickets");
+        }
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -111,11 +114,11 @@ public class TecnicoService {
             throw new IllegalStateException("El ticket ya está siendo atendido o no está disponible");
         }
 
-    ticket.setEstado(EstadoTicket.ATENDIDO);
-    TecnicoPorTicket historial = tecnicoPorTicketService.registrarToma(ticket, tecnico);
-    ticket.agregarEntradaHistorial(historial);
-    ticketRepository.save(ticket);
-    return mapToTicketDto(ticket);
+        ticket.setEstado(EstadoTicket.ATENDIDO);
+        TecnicoPorTicket historial = tecnicoPorTicketService.registrarToma(ticket, tecnico);
+        ticket.agregarEntradaHistorial(historial);
+        ticketRepository.save(ticket);
+        return mapToTicketDto(ticket);
     }
 
     @Transactional
@@ -124,7 +127,9 @@ public class TecnicoService {
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
         Tecnico tecnico = buscarPorId(idTecnico);
-        
+        if (tecnico.isBloqueado()) {
+            throw new IllegalStateException("El técnico está bloqueado y no puede resolver tickets");
+        }
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("El ticket no está en estado ATENDIDO");
         }
@@ -135,7 +140,7 @@ public class TecnicoService {
         logger.info("[devolverTicket] Tecnico id: {} nombre: {}", tecnico.getId(), tecnico.getNombre());
 
         logger.info("[devolverTicket] Buscando historial por idTecnico={} y idTicket={}", idTecnico, idTicket);
-    tecnicoPorTicketService.registrarResolucion(idTecnico, idTicket);
+        tecnicoPorTicketService.registrarResolucion(idTecnico, idTicket);
 
         // Si el ticket venía de estado REABIERTO, restar una falla al técnico si tiene
         if (ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
@@ -161,6 +166,9 @@ public class TecnicoService {
     @Transactional
     public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
+        if (tecnico.isBloqueado()) {
+            throw new IllegalStateException("El técnico está bloqueado y no puede devolver tickets");
+        }
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -175,7 +183,7 @@ public class TecnicoService {
         }
 
         // Buscar la entrada de historial activa directamente en el repositorio
-    tecnicoPorTicketService.registrarDevolucion(tecnico, ticket);
+        tecnicoPorTicketService.registrarDevolucion(tecnico, ticket);
 
         ticket.setEstado(EstadoTicket.REABIERTO);
         marcarMarca(tecnico.getId(), motivo, ticket);
@@ -245,5 +253,22 @@ public class TecnicoService {
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());
+    }
+
+    public TecnicoResponseDto getDatosTecnico(int idTecnico) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        return new TecnicoResponseDto(
+            tecnico.getId(),
+            tecnico.getNombre(),
+            tecnico.getApellido(),
+            tecnico.getEmail(),
+            tecnico.getRol() != null ? tecnico.getRol().name() : null,
+            tecnico.isCambiarPass(),
+            tecnico.isActivo(),
+            tecnico.isBloqueado(),
+            tecnico.getFallas(),
+            tecnico.getMarcas(),
+            null // No lista de incidentes
+        );
     }
 }
