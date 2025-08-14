@@ -133,10 +133,9 @@
   **Request:**
   ```json
   {
-    "idTicket": 10,
-    "idTrabajador": 4,
-    "aceptado": true,
-    "comentario": "Solución correcta"
+    "idUsuarioValidador": 4,
+    "fueResuelto": true,
+    "motivoFalla": "Solución correcta"
   }
   ```
   **Response:**

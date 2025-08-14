@@ -2870,3 +2870,21 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2025-08-14 01:07:10 - Token válido para usuario: trabajador@sistema.com
 2025-08-14 01:07:10 - Secured POST /api/trabajador/tickets/1/evaluar
 2025-08-14 01:07:10 - [TrabajadorController] POST /tickets/1/evaluar datos: com.poo.miapi.dto.ticket.EvaluarTicketDto@4895617
+2025-08-14 01:07:55 - Securing OPTIONS /api/tickets/todos
+2025-08-14 01:07:55 - Securing OPTIONS /api/tickets/todos
+2025-08-14 01:07:55 - Securing GET /api/tickets/todos
+2025-08-14 01:07:55 - [JWT Filter] Método: GET Endpoint: /api/tickets/todos
+2025-08-14 01:07:55 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjoyLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NTEzOTg1NSwiZXhwIjoxNzU1MTc1ODU1fQ.KxJ5epXUNun5mQMAbABwkiZCVtU0Qg6um5MEJYXAMWM
+2025-08-14 01:07:55 - Email extraído del token: admin@sistema.com
+2025-08-14 01:07:55 - Authentication actual en SecurityContext: null
+2025-08-14 01:07:56 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-14 01:07:56 - Token válido para usuario: admin@sistema.com
+2025-08-14 01:07:56 - Secured GET /api/tickets/todos
+2025-08-14 01:07:58 - Securing GET /api/tickets/todos
+2025-08-14 01:07:58 - [JWT Filter] Método: GET Endpoint: /api/tickets/todos
+2025-08-14 01:07:58 - JWT extraído: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBzaXN0ZW1hLmNvbSIsImlkIjoyLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc1NTEzOTg1NSwiZXhwIjoxNzU1MTc1ODU1fQ.KxJ5epXUNun5mQMAbABwkiZCVtU0Qg6um5MEJYXAMWM
+2025-08-14 01:07:58 - Email extraído del token: admin@sistema.com
+2025-08-14 01:07:58 - Authentication actual en SecurityContext: null
+2025-08-14 01:07:58 - [JWT Filter] Usuario autenticado: admin@sistema.com Rol: ADMIN
+2025-08-14 01:07:58 - Token válido para usuario: admin@sistema.com
+2025-08-14 01:07:58 - Secured GET /api/tickets/todos
