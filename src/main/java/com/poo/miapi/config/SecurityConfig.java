@@ -30,7 +30,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        
+        
         http
+            
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -73,8 +76,8 @@ public class SecurityConfig {
             "http://localhost:5173",
             "http://localhost:8080",
             "http://localhost:3000",
-            "http://localhost:4200",
-            "*"
+            "http://localhost:4200"/*,
+            "*"*/
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
