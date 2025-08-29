@@ -9,11 +9,14 @@ import com.poo.miapi.model.historial.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
+import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class TecnicoService {
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final TecnicoPorTicketService tecnicoPorTicketService;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
+    private final SolicitudDevolucionRepository solicitudDevolucionRepository;
 
     public TecnicoService(
             TecnicoRepository tecnicoRepository,
@@ -37,6 +41,7 @@ public class TecnicoService {
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
         this.tecnicoPorTicketService = tecnicoPorTicketService;
+        this.solicitudDevolucionRepository = null;
     }
 
     public Tecnico buscarPorId(int idTecnico) {
@@ -122,6 +127,7 @@ public class TecnicoService {
     }
 
     @Transactional
+    // revisar que la desasignacion final va en si el trabajador acepta o rechaza
     public TicketResponseDto resolverTicket(int idTecnico, int idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
@@ -135,7 +141,7 @@ public class TecnicoService {
         }
 
         // LOG: Estado antes de buscar historial
-        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TecnicoService.class);
+        Logger logger = LoggerFactory.getLogger(TecnicoService.class);
         logger.info("[devolverTicket] Ticket id: {} estado: {}", ticket.getId(), ticket.getEstado());
         logger.info("[devolverTicket] Tecnico id: {} nombre: {}", tecnico.getId(), tecnico.getNombre());
 
@@ -164,7 +170,7 @@ public class TecnicoService {
     }
 
     @Transactional
-    public TicketResponseDto devolverTicket(int idTecnico, int idTicket, String motivo) {
+    public TicketResponseDto solicitarDevolucion(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
         if (tecnico.isBloqueado()) {
             throw new IllegalStateException("El técnico está bloqueado y no puede devolver tickets");
@@ -172,22 +178,20 @@ public class TecnicoService {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        // Usa el método utilitario del modelo para obtener el técnico actual
+        // Usa el método utilitario del modelo para obtener el técnico actual (revisar )
         Tecnico tecnicoActual = ticket.getTecnicoActual();
         if (tecnicoActual == null || tecnicoActual.getId() != tecnico.getId()) {
             throw new IllegalArgumentException("Este ticket no pertenece a este técnico");
         }
 
+        // Revisar para reabierto
         if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
             throw new IllegalStateException("Solo se pueden devolver tickets en estado ATENDIDO");
         }
 
-        // Buscar la entrada de historial activa directamente en el repositorio
-        tecnicoPorTicketService.registrarDevolucion(tecnico, ticket);
-
-        ticket.setEstado(EstadoTicket.REABIERTO);
-        marcarMarca(tecnico.getId(), motivo, ticket);
-        ticketRepository.save(ticket);
+        // crear la solicitud de devolución
+        SolicitudDevolucion solicitud = new SolicitudDevolucion(tecnico, ticket, motivo);
+        solicitudDevolucionRepository.save(solicitud);
 
         return mapToTicketDto(ticket);
     }

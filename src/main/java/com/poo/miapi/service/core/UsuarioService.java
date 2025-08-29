@@ -39,8 +39,7 @@ public class UsuarioService {
     }
 
 
-    // Estado del usuario
-
+    // Estado del usuario - cambia de true a false
     public UsuarioResponseDto setUsuarioActivo(int userId) {
     Usuario usuario = buscarPorId(userId);
     usuario.setActivo(!usuario.isActivo());
@@ -52,7 +51,9 @@ public class UsuarioService {
         Usuario usuario = buscarPorId(userId);
         boolean nuevoEstado = !usuario.isBloqueado();
         usuario.setBloqueado(nuevoEstado);
+        // Si se está desbloqueando y es técnico, aseguramos que quede activo
         if (nuevoEstado == false && usuario instanceof Tecnico tecnico) {
+            usuario.setActivo(true);
             tecnicoService.reiniciarFallasYMarcas(tecnico);
         }
         usuarioRepository.save(usuario);

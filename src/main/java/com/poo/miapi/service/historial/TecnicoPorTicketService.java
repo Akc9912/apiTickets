@@ -15,6 +15,9 @@ import java.util.Optional;
 
 @Service
 public class TecnicoPorTicketService {
+    @Autowired
+    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
+
     // Registrar toma de ticket
     public TecnicoPorTicket registrarToma(Ticket ticket, Tecnico tecnico) {
     // El estado inicial será ATENDIDO, el estado final queda null
@@ -43,9 +46,6 @@ public class TecnicoPorTicketService {
             tecnicoPorTicketRepository.save(historial);
         }
     }
-
-    @Autowired
-    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
 
     public TecnicoPorTicketService(TecnicoPorTicketRepository tecnicoPorTicketRepository) {
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
