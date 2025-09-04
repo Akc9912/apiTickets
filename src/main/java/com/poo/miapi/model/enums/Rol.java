@@ -17,13 +17,24 @@ public enum Rol {
         this.displayName = displayName;
     }
 
+    // Nombre estándar para el front (mayúsculas, igual al nombre del enum)
+    public String getName() {
+        return name();
+    }
+
+    // Nombre legible para mostrar en UI
     public String getDisplayName() {
         return displayName;
     }
 
+    // Valor original del enum (para compatibilidad)
+    public String getValue() {
+        return name();
+    }
+
     @Override
     public String toString() {
-        return displayName;
+        return name();
     }
 
     // Verifica si el rol tiene permisos de administración
@@ -49,45 +60,5 @@ public enum Rol {
     // Verifica si puede gestionar tickets
     public boolean canManageTickets() {
         return this != TRABAJADOR;
-    }
-
-
-    // Obtiene el rol por su nombre (case-insensitive)
-    public static Rol fromString(String roleName) {
-        if (roleName == null || roleName.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del rol no puede estar vacío");
-        }
-        
-        try {
-            return Rol.valueOf(roleName.toUpperCase().trim());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Rol inválido: " + roleName + ". Roles válidos: " + Arrays.toString(values()));
-        }
-    }
-
-    // Método auxiliar para convertir desde texto legible
-    public static Rol fromDisplayName(String displayName) {
-        if (displayName == null || displayName.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del rol no puede estar vacío");
-        }
-        
-        for (Rol rol : values()) {
-            if (rol.displayName.equalsIgnoreCase(displayName.trim())) {
-                return rol;
-            }
-        }
-        throw new IllegalArgumentException("Rol desconocido: " + displayName + ". Roles disponibles: " + Arrays.toString(getAllDisplayNames()));
-    }
-
-    // Obtiene todos los nombres para mostrar (útil para frontend)
-    public static String[] getAllDisplayNames() {
-        return Arrays.stream(values())
-                .map(Rol::getDisplayName)
-                .toArray(String[]::new);
-    }
-
-    // Método auxiliar para obtener el nombre del enum
-    public String getName() {
-        return name();
     }
 }

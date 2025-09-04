@@ -212,7 +212,7 @@ public class SuperAdminService {
         if (rol == null || rol.isBlank()) {
             throw new IllegalArgumentException("El rol no puede ser nulo o vacío");
         }
-        return usuarioRepository.findByRol(Rol.fromString(rol)).stream()
+        return usuarioRepository.findByRol(Rol.valueOf(rol)).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
