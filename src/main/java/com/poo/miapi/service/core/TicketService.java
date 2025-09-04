@@ -2,8 +2,11 @@ package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.model.enums.EstadoSolicitud;
 import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.model.historial.IncidenteTecnico;
+import com.poo.miapi.model.historial.SolicitudDevolucion;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
@@ -14,12 +17,16 @@ import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
+import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -30,6 +37,7 @@ public class TicketService {
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final TecnicoRepository tecnicoRepository;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
+    private final SolicitudDevolucionRepository solicitudDevolucionRepository;
 
     public TicketService(
         TicketRepository ticketRepository,
@@ -37,7 +45,8 @@ public class TicketService {
         UsuarioRepository usuarioRepository,
         TecnicoPorTicketRepository tecnicoPorTicketRepository,
         TecnicoRepository tecnicoRepository,
-        IncidenteTecnicoRepository incidenteTecnicoRepository
+        IncidenteTecnicoRepository incidenteTecnicoRepository,
+        SolicitudDevolucionRepository solicitudDevolucionRepository
     ) {
         this.ticketRepository = ticketRepository;
         this.trabajadorRepository = trabajadorRepository;
@@ -45,6 +54,7 @@ public class TicketService {
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
+        this.solicitudDevolucionRepository = solicitudDevolucionRepository;
     }
 
     public Usuario obtenerUsuarioPorEmail(String email) {
@@ -67,7 +77,7 @@ public class TicketService {
     }
 
     public TicketResponseDto crearTicketConCreador(TicketRequestDto dto, Usuario creador) {
-        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketService.class);
+        Logger logger = LoggerFactory.getLogger(TicketService.class);
         logger.debug("[TicketService] Creando ticket: titulo={}, descripcion={}, creadorEmail={}, creadorRol={}", dto.getTitulo(), dto.getDescripcion(), creador != null ? creador.getEmail() : null, creador != null ? creador.getRol() : null);
         Ticket ticket = new Ticket(dto.getTitulo(), dto.getDescripcion(), creador);
         if (creador instanceof Trabajador trabajador) {
@@ -164,9 +174,14 @@ public class TicketService {
     Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
     if (!(usuario instanceof Tecnico tecnico)) return Collections.emptyList();
     List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
+    // Filtrar tickets que NO tengan una solicitud de devolución pendiente
     return atendidos.stream()
-            .map(this::mapToDto)
-            .toList();
+        .filter(ticket -> {
+            List<SolicitudDevolucion> solicitudes = solicitudDevolucionRepository.findByTicketId(ticket.getId());
+            return solicitudes.stream().noneMatch(s -> s.getEstado() == EstadoSolicitud.PENDIENTE);
+        })
+        .map(this::mapToDto)
+        .toList();
     }
 
     // Historial de todos los tickets donde participó el técnico
@@ -219,10 +234,10 @@ public class TicketService {
         if (!ticket.getEstado().equals(EstadoTicket.FINALIZADO)) {
             throw new IllegalArgumentException("El ticket no está cerrado, no se puede reabrir");
         }
-        com.poo.miapi.model.enums.Rol rol = usuario.getRol();
-        boolean esTrabajador = rol == com.poo.miapi.model.enums.Rol.TRABAJADOR;
-        boolean esAdmin = rol == com.poo.miapi.model.enums.Rol.ADMIN;
-        boolean esSuperAdmin = rol == com.poo.miapi.model.enums.Rol.SUPER_ADMIN;
+        Rol rol = usuario.getRol();
+        boolean esTrabajador = rol == Rol.TRABAJADOR;
+        boolean esAdmin = rol == Rol.ADMIN;
+        boolean esSuperAdmin = rol == Rol.SUPER_ADMIN;
         if (esTrabajador) {
             if (ticket.getCreador() == null || ticket.getCreador().getId() != usuario.getId()) {
                 throw new SecurityException("No puedes reabrir tickets que no creaste");
@@ -231,7 +246,7 @@ public class TicketService {
             throw new SecurityException("No tienes permisos para reabrir tickets");
         }
         ticket.setEstado(EstadoTicket.REABIERTO);
-        ticket.setFechaUltimaActualizacion(java.time.LocalDateTime.now());
+        ticket.setFechaUltimaActualizacion(LocalDateTime.now());
         // Sumar falla al último técnico que atendió el ticket
         List<TecnicoPorTicket> historial = ticket.getHistorialTecnicos();
         if (!historial.isEmpty()) {

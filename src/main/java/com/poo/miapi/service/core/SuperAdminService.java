@@ -11,7 +11,6 @@ import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
-import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
 import com.poo.miapi.util.PasswordHelper;
@@ -34,7 +33,6 @@ public class SuperAdminService {
     private final TecnicoService tecnicoService;
     @Value("${app.default-password}")
     private String defaultPassword;
-    private TecnicoPorTicketService tecnicoPorTicketService;
 
     public SuperAdminService(
             UsuarioRepository usuarioRepository,
@@ -42,15 +40,13 @@ public class SuperAdminService {
             TecnicoRepository tecnicoRepository,
             TecnicoPorTicketRepository tecnicoPorTicketRepository,
             PasswordEncoder passwordEncoder,
-            TecnicoService tecnicoService,
-            TecnicoPorTicketService tecnicoPorTicketService) {
+            TecnicoService tecnicoService) {
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
-        this.tecnicoPorTicketService = tecnicoPorTicketService;
     }
 
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {

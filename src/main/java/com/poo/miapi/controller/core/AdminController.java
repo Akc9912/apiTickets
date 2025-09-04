@@ -7,12 +7,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import com.poo.miapi.dto.historial.ProcesarSolicitudDevolucionRequestDto;
+import com.poo.miapi.dto.historial.SolicitudDevolucionResponseDto;
 import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
 import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.service.core.UsuarioService;
+import com.poo.miapi.service.historial.SolicitudDevolucionService;
 import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.model.historial.SolicitudDevolucion;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/admin")
@@ -20,15 +30,31 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AdminController {
 
     private final UsuarioService usuarioService;
+    private final SolicitudDevolucionService solicitudDevolucionService;
 
-    public AdminController(UsuarioService usuarioService) {
+    public AdminController(UsuarioService usuarioService, SolicitudDevolucionService solicitudDevolucionService) {
         this.usuarioService = usuarioService;
+        this.solicitudDevolucionService = solicitudDevolucionService;
     }
 
+    // procesar solicitud de devolución - POST /api/admin/solicitudes-devolucion/{solicitudId}/procesar
+    @PostMapping("/solicitudes-devolucion/{solicitudId}/procesar")
+    public ResponseEntity<SolicitudDevolucionResponseDto> procesarSolicitudDevolucion(
+            @PathVariable int solicitudId,
+            @RequestBody ProcesarSolicitudDevolucionRequestDto requestDto) {
+        try {
+            SolicitudDevolucionResponseDto dto = solicitudDevolucionService.procesarSolicitudDevolucion(solicitudId, requestDto.getIdAdmin(), requestDto.isAprobar(), requestDto.getComentario());
+            return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
 
-    // PUT /api/admin/usuarios/{id}/editar
-    @PutMapping("/usuarios/{id}/editar")
-    @Operation(summary = "Editar usuario", description = "Actualiza los datos de un usuario",
+    // PUT /api/admin/usuarios/{id}
+    @PutMapping("/usuarios/{id}")
+    @Operation(summary = "Editar usuario", description = "Edita los datos de un usuario existente",
         parameters = {
             @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a editar", required = true)
         },
@@ -39,7 +65,7 @@ public class AdminController {
             )
         ),
         responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuario editado correctamente",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuario actualizado",
                 content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
         }
     )
@@ -117,4 +143,33 @@ public class AdminController {
         }
     }
 
+    // ver solicitudes de devolución - GET /api/admin/solicitudes-devolucion
+    @GetMapping("/solicitudes-devolucion")
+    public ResponseEntity<List<SolicitudDevolucionResponseDto>> verSolicitudesDevolucion() {
+        List<SolicitudDevolucion> solicitudes = solicitudDevolucionService.verSolicitudesDevolucion();
+        List<SolicitudDevolucionResponseDto> dtos = solicitudes.stream()
+            .map(solicitudDevolucionService::toDto)
+            .toList();
+        return ResponseEntity.ok(dtos);
+    }
+    
+
+    // procesar solicitud de devolución - PUT /api/admin/solicitudes-devolucion
+    @PutMapping("/solicitudes-devolucion")
+    public ResponseEntity<SolicitudDevolucionResponseDto> procesarSolicitudDevolucion(
+            @RequestParam int solicitudId,
+            @RequestParam int idTecnico,
+            @RequestParam boolean aprobar,
+            @RequestParam String comentario) {
+        try {
+            SolicitudDevolucionResponseDto dto = solicitudDevolucionService.procesarSolicitudDevolucion(solicitudId, idTecnico, aprobar, comentario);
+            return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(null);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
 }

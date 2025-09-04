@@ -87,7 +87,7 @@ public class IncidenteTecnicoService {
         return new IncidenteTecnicoResponseDto(
                 incidente.getId(),
                 incidente.getTecnico().getId(),
-                incidente.getTicket() != null ? incidente.getTicket().getId() : null,
+                incidente.getTicket().getId(),
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());

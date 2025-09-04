@@ -324,11 +324,12 @@
   "Estado de ticket actualizado a: Resuelto"
   ```
 
-- `POST /api/tecnico/tickets/{ticketId}/devolver?idTecnico={id}&motivo={motivo}` — Devolver ticket con motivo
+- `POST /api/tecnico/tickets/{ticketId}/devolver?idTecnico={id}&motivo={motivo}` — Solicita la devolución de un ticket asignado, registrando el motivo
+
   **Response:**
 
   ```json
-  "Ticket devuelto"
+  "Solicitud de devolución registrada"
   ```
 
 - `GET /api/tecnico/incidentes?idTecnico={id}` — Ver marcas y fallas actuales del técnico autenticado
@@ -424,12 +425,15 @@
 
 - `PUT /api/admin/usuarios/{id}/rol` — Cambiar rol de usuario
   **Request:**
+
   ```json
   {
     "rol": "TECNICO"
   }
   ```
+
   **Response:**
+
   ```json
   {
     "id": 1,
@@ -440,5 +444,50 @@
     "cambiarPass": false,
     "activo": true,
     "bloqueado": false
+  }
+  ```
+
+- `GET /api/admin/solicitudes-devolucion` — Listar todas las solicitudes de devolución
+  **Response:**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "idTecnico": 2,
+      "idTicket": 5,
+      "motivo": "No tengo tiempo",
+      "estado": "PENDIENTE",
+      "fechaSolicitud": "2025-09-04T10:00:00",
+      "fechaResolucion": null,
+      "idAdminResolutor": null,
+      "comentarioResolucion": null
+    }
+  ]
+  ```
+
+- `POST /api/admin/solicitudes-devolucion/{solicitudId}/procesar` — Procesar solicitud de devolución (aprobar/rechazar)
+  **Path Param:**
+  - `solicitudId` (int, requerido)
+    **Request Body:**
+  ```json
+  {
+    "idAdmin": 1,
+    "aprobar": true,
+    "comentario": "Aprobado por admin"
+  }
+  ```
+  **Response:**
+  ```json
+  {
+    "id": 1,
+    "idTecnico": 2,
+    "idTicket": 5,
+    "motivo": "No tengo tiempo",
+    "estado": "APROBADO",
+    "fechaSolicitud": "2025-09-04T10:00:00",
+    "fechaResolucion": "2025-09-04T12:00:00",
+    "idAdminResolutor": 1,
+    "comentarioResolucion": "Aprobado por admin"
   }
   ```

@@ -1,6 +1,5 @@
 package com.poo.miapi.controller.core;
 
-import java.util.List;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
@@ -13,10 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
-import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
 import com.poo.miapi.dto.tecnico.IncidenciasDto;
-import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.service.core.TecnicoService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -103,17 +99,17 @@ public class TecnicoController {
                         @Parameter(description = "Motivo de la devolución del ticket") @RequestParam String motivo) {
                                 logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId, idTecnico, motivo);
                                 try {
-                                        tecnicoService.devolverTicket(idTecnico, ticketId, motivo);
-                                        logger.info("[TecnicoController] Ticket devuelto");
-                                        return ResponseEntity.ok("Ticket devuelto");
+                                        tecnicoService.solicitarDevolucion(idTecnico, ticketId, motivo);
+                                        logger.info("[TecnicoController] Solicitud de devolución registrada");
+                                        return ResponseEntity.ok("Solicitud de devolución registrada");
                                 } catch (EntityNotFoundException e) {
                                         logger.error("Técnico o ticket no encontrado", e);
                                         return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
                                 } catch (IllegalStateException | IllegalArgumentException e) {
-                                        logger.error("Error de negocio al devolver ticket", e);
+                                        logger.error("Error de negocio al solicitar devolución", e);
                                         return ResponseEntity.status(400).body(e.getMessage());
                                 } catch (Exception e) {
-                                        logger.error("Error inesperado al devolver ticket", e);
+                                        logger.error("Error inesperado al solicitar devolución", e);
                                         return ResponseEntity.status(500).body("Error interno del servidor");
                                 }
         }

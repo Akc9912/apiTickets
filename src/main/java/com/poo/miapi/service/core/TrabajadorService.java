@@ -7,7 +7,6 @@ import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.historial.HistorialValidacion;
-import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.HistorialValidacionRepository;
@@ -24,7 +23,6 @@ public class TrabajadorService {
 
     private final TrabajadorRepository trabajadorRepository;
     private final TicketRepository ticketRepository;
-    private final TecnicoRepository tecnicoRepository;
     private final TecnicoService tecnicoService;
     private final HistorialValidacionRepository historialValidacionRepository;
     private static final Logger logger = LoggerFactory.getLogger(TrabajadorService.class);
@@ -32,12 +30,10 @@ public class TrabajadorService {
     public TrabajadorService(
             TrabajadorRepository trabajadorRepository,
             TicketRepository ticketRepository,
-            TecnicoRepository tecnicoRepository,
             TecnicoService tecnicoService,
             HistorialValidacionRepository historialValidacionRepository) {
         this.trabajadorRepository = trabajadorRepository;
         this.ticketRepository = ticketRepository;
-        this.tecnicoRepository = tecnicoRepository;
         this.tecnicoService = tecnicoService;
         this.historialValidacionRepository = historialValidacionRepository;
     }

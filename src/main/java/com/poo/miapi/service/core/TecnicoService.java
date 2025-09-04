@@ -4,13 +4,13 @@ import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.EstadoSolicitud;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.historial.*;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
-import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 import com.poo.miapi.service.historial.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +25,6 @@ public class TecnicoService {
 
     private final TecnicoRepository tecnicoRepository;
     private final TicketRepository ticketRepository;
-    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final TecnicoPorTicketService tecnicoPorTicketService;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
     private final SolicitudDevolucionRepository solicitudDevolucionRepository;
@@ -33,15 +32,14 @@ public class TecnicoService {
     public TecnicoService(
             TecnicoRepository tecnicoRepository,
             TicketRepository ticketRepository,
-            TecnicoPorTicketRepository tecnicoPorTicketRepository,
             IncidenteTecnicoRepository incidenteTecnicoRepository,
-            TecnicoPorTicketService tecnicoPorTicketService) {
+            TecnicoPorTicketService tecnicoPorTicketService,
+            SolicitudDevolucionRepository solicitudDevolucionRepository) {
         this.tecnicoRepository = tecnicoRepository;
         this.ticketRepository = ticketRepository;
-        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
         this.tecnicoPorTicketService = tecnicoPorTicketService;
-        this.solicitudDevolucionRepository = null;
+        this.solicitudDevolucionRepository = solicitudDevolucionRepository;
     }
 
     public Tecnico buscarPorId(int idTecnico) {
@@ -184,9 +182,8 @@ public class TecnicoService {
             throw new IllegalArgumentException("Este ticket no pertenece a este técnico");
         }
 
-        // Revisar para reabierto
-        if (!ticket.getEstado().equals(EstadoTicket.ATENDIDO)) {
-            throw new IllegalStateException("Solo se pueden devolver tickets en estado ATENDIDO");
+        if (!(ticket.getEstado().equals(EstadoTicket.ATENDIDO) || ticket.getEstado().equals(EstadoTicket.REABIERTO))) {
+            throw new IllegalStateException("Solo se pueden devolver tickets en estado ATENDIDO o REABIERTO");
         }
 
         // crear la solicitud de devolución
@@ -194,6 +191,13 @@ public class TecnicoService {
         solicitudDevolucionRepository.save(solicitud);
 
         return mapToTicketDto(ticket);
+    }
+
+    // ver tickets pendientes de devolucion para un técnico
+    public List<SolicitudDevolucion> verSolicitudesDevolucionPendientes(int idTecnico) {
+        return solicitudDevolucionRepository.findByTecnicoId(idTecnico).stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
+            .toList();
     }
 
     // Devuelve historial de incidentes como DTOs

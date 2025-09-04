@@ -10,10 +10,9 @@ import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
-import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
-import com.poo.miapi.service.historial.TecnicoPorTicketService;
+
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,22 +22,17 @@ import java.time.LocalDateTime;
 public class AdminService {
 
     private final TicketRepository ticketRepository;
-    private final TecnicoRepository tecnicoRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final TecnicoService tecnicoService;
-    private final TecnicoPorTicketService tecnicoPorTicketService;
+
 
     public AdminService(
             TicketRepository ticketRepository,
-            TecnicoRepository tecnicoRepository,
             TecnicoPorTicketRepository tecnicoPorTicketRepository,
-            TecnicoService tecnicoService,
-            TecnicoPorTicketService tecnicoPorTicketService) {
+            TecnicoService tecnicoService) {
         this.ticketRepository = ticketRepository;
-        this.tecnicoRepository = tecnicoRepository;
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.tecnicoService = tecnicoService;
-        this.tecnicoPorTicketService = tecnicoPorTicketService;
     }
 
 
@@ -152,4 +146,6 @@ public class AdminService {
                 ticket.getFechaCreacion(),
                 ticket.getFechaUltimaActualizacion());
     }
+
+    
 }

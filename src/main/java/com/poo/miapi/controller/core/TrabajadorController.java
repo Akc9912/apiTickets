@@ -1,9 +1,7 @@
 package com.poo.miapi.controller.core;
 
 import com.poo.miapi.dto.ticket.EvaluarTicketDto;
-import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.service.core.TrabajadorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,9 +12,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/trabajador")
