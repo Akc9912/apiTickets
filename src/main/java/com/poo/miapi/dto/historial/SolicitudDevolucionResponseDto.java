@@ -2,7 +2,8 @@ package com.poo.miapi.dto.historial;
 
 import java.time.LocalDateTime;
 
-public class SolicitudDevolucionResponseDto {
+import java.io.Serializable;
+public class SolicitudDevolucionResponseDto implements Serializable {
     private int id;
     private int idTecnico;
     private int idTicket;

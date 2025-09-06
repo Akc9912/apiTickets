@@ -1,10 +1,5 @@
 package com.poo.miapi.model.enums;
 
-import java.util.Arrays;
-
-/**
- * Enum que define los roles de usuario del sistema
- */
 public enum Rol {
     SUPER_ADMIN("Super Administrador"),
     ADMIN("Administrador"),

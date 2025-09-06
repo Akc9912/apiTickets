@@ -1,6 +1,8 @@
 package com.poo.miapi.dto.historial;
 
-public class ProcesarSolicitudDevolucionRequestDto {
+import java.io.Serializable;
+
+public class ProcesarSolicitudDevolucionRequestDto implements Serializable {
     private int idAdmin;
     private boolean aprobar;
     private String comentario;

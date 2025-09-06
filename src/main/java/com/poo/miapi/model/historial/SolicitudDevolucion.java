@@ -1,20 +1,38 @@
 package com.poo.miapi.model.historial;
 
+import jakarta.persistence.*;
+import java.io.Serializable;
+
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.enums.EstadoSolicitud;
 import com.poo.miapi.model.core.Admin;
 import java.time.LocalDateTime;
 
-public class SolicitudDevolucion {
+@Entity
+@Table(name = "solicitud_devolucion")
+public class SolicitudDevolucion implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_tecnico")
     private Tecnico tecnico;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_ticket")
     private Ticket ticket;
     private String motivo;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EstadoSolicitud estado;
+    @Column(name = "fecha_solicitud", nullable = false)
     private LocalDateTime fechaSolicitud;
+    @Column(name = "fecha_resolucion")
     private LocalDateTime fechaResolucion;
+    @ManyToOne
+    @JoinColumn(name = "id_admin_resolutor")
     private Admin adminResolutor;
+    @Column(name = "comentario_resolucion", columnDefinition = "TEXT")
     private String comentarioResolucion;
 
     
