@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class DataInitializer implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
-    
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -35,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
             String tecnicoEmail = "tecnico@sistema.com";
             String trabajadorEmail = "trabajador@sistema.com";
 
-            logger.info("[DataInitializer] Verificando si existe SuperAdmin");           
+            logger.info("[DataInitializer] Verificando si existe SuperAdmin");
             if (usuarioRepository.countByEmail(superAdminEmail) == 0) {
                 logger.info("[DataInitializer] Creando SuperAdmin...");
                 crearSuperAdmin(superAdminEmail);
@@ -75,7 +75,7 @@ public class DataInitializer implements CommandLineRunner {
             throw new RuntimeException("Error al inicializar datos del sistema", e);
         }
     }
-    
+
     private void crearSuperAdmin(String email) {
         try {
             SuperAdmin superAdmin = new SuperAdmin("Super", "Admin", email);
@@ -88,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
             throw e;
         }
     }
-    
+
     private void crearAdmin(String email) {
         try {
             Admin admin = new Admin("Admin", "Sistema", email);

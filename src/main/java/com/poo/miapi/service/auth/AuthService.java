@@ -63,9 +63,9 @@ public class AuthService {
         if (usuario != null && usuario.getRol() != null) {
             switch (usuario.getRol().name()) {
                 case "TRABAJADOR":
-                    com.poo.miapi.model.core.Trabajador trabajador = null;
+                    Trabajador trabajador = null;
                     try {
-                        trabajador = (com.poo.miapi.model.core.Trabajador) usuario;
+                        trabajador = (Trabajador) usuario;
                     } catch (ClassCastException e) {
                         // Si no es instancia, buscar por email
                         if (trabajadorRepository != null) {
@@ -75,9 +75,9 @@ public class AuthService {
                     if (trabajador != null) usuario = trabajador;
                     break;
                 case "TECNICO":
-                    com.poo.miapi.model.core.Tecnico tecnico = null;
+                    Tecnico tecnico = null;
                     try {
-                        tecnico = (com.poo.miapi.model.core.Tecnico) usuario;
+                        tecnico = (Tecnico) usuario;
                     } catch (ClassCastException e) {
                         if (tecnicoRepository != null) {
                             tecnico = tecnicoRepository.findByEmail(loginRequest.getEmail()).orElse(null);
@@ -86,9 +86,9 @@ public class AuthService {
                     if (tecnico != null) usuario = tecnico;
                     break;
                 case "ADMIN":
-                    com.poo.miapi.model.core.Admin admin = null;
+                    Admin admin = null;
                     try {
-                        admin = (com.poo.miapi.model.core.Admin) usuario;
+                        admin = (Admin) usuario;
                     } catch (ClassCastException e) {
                         if (adminRepository != null) {
                             admin = adminRepository.findByEmail(loginRequest.getEmail()).orElse(null);
@@ -97,9 +97,9 @@ public class AuthService {
                     if (admin != null) usuario = admin;
                     break;
                 case "SUPERADMIN":
-                    com.poo.miapi.model.core.SuperAdmin superAdmin = null;
+                    SuperAdmin superAdmin = null;
                     try {
-                        superAdmin = (com.poo.miapi.model.core.SuperAdmin) usuario;
+                        superAdmin = (SuperAdmin) usuario;
                     } catch (ClassCastException e) {
                         if (superAdminRepository != null) {
                             superAdmin = superAdminRepository.findByEmail(loginRequest.getEmail()).orElse(null);

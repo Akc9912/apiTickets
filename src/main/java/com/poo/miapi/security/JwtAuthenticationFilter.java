@@ -25,7 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    // Debes tener un JwtService para validar y extraer el usuario del token
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 

@@ -114,6 +114,7 @@ public class AdminService {
     }
 
     // Mapeo de entidad Usuario a DTO
+    /* 
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
        if (usuario instanceof Admin) {
             return new AdminResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
@@ -133,6 +134,7 @@ public class AdminService {
                     usuario.isBloqueado());
         }
     }
+    */
 
     // Mapeo de entidad Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
