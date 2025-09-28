@@ -1,7 +1,6 @@
 package com.poo.miapi.service.notificacion.motor;
 
 import com.poo.miapi.model.events.*;
-import com.poo.miapi.model.notificacion.events.*;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.model.enums.EstadoTicket;

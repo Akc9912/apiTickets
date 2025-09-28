@@ -1,6 +1,7 @@
 package com.poo.miapi.service.estadistica;
 
-import com.poo.miapi.model.notificacion.events.*;
+import com.poo.miapi.model.events.*;
+import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Tecnico;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -125,6 +126,103 @@ public class EstadisticaEventListener {
 
         } catch (Exception e) {
             logger.error("Error actualizando estadísticas por ticket reabierto: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Cuando se crea un ticket → actualizar métricas de creación
+     */
+    @EventListener
+    @Async
+    public void onTicketCreado(TicketCreadoEvent event) {
+        try {
+            logger.debug("Actualizando estadísticas por ticket creado: {}", event.getTicket().getId());
+
+            estadisticaActualizadorService.incrementarTicketsCreados(
+                    event.getTicket(),
+                    event.getCreador());
+
+        } catch (Exception e) {
+            logger.error("Error actualizando estadísticas por creación de ticket: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Cuando se asigna un ticket → actualizar métricas de asignación
+     */
+    @EventListener
+    @Async
+    public void onTicketAsignado(TicketAsignadoEvent event) {
+        try {
+            logger.debug("Actualizando estadísticas por ticket asignado: {} → técnico: {}",
+                    event.getTicket().getId(), event.getTecnico().getId());
+
+            // Verificar que el técnico sea realmente un Técnico
+            if (event.getTecnico() instanceof Tecnico) {
+                estadisticaActualizadorService.incrementarTicketsAsignados(
+                        event.getTicket(),
+                        (Tecnico) event.getTecnico(),
+                        event.getAsignadoPor());
+            }
+
+        } catch (Exception e) {
+            logger.error("Error actualizando estadísticas por asignación de ticket: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Cuando un usuario inicia sesión → actualizar métricas de actividad
+     */
+    @EventListener
+    @Async
+    public void onUsuarioLogin(UsuarioLoginEvent event) {
+        try {
+            logger.debug("Actualizando estadísticas por login: usuario={}, primeraVez={}",
+                    event.getUsuario().getEmail(), event.isEsPrimerLoginDelDia());
+
+            estadisticaActualizadorService.registrarInicioSesion(event.getUsuario());
+
+        } catch (Exception e) {
+            logger.error("Error actualizando estadísticas por login: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Cuando un usuario cierra sesión → actualizar métricas de actividad
+     */
+    @EventListener
+    @Async
+    public void onUsuarioLogout(UsuarioLogoutEvent event) {
+        try {
+            logger.debug("Actualizando estadísticas por logout: usuario={}, duracion={}m",
+                    event.getUsuario().getEmail(), event.getTiempoSesionMinutos());
+
+            estadisticaActualizadorService.registrarCierreSesion(
+                    event.getUsuario(),
+                    event.getTiempoSesionMinutos());
+
+        } catch (Exception e) {
+            logger.error("Error actualizando estadísticas por logout: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Cuando se crea un usuario → actualizar métricas de gestión
+     */
+    @EventListener
+    @Async
+    public void onUsuarioCreado(UsuarioCreadoEvent event) {
+        try {
+            logger.debug("Actualizando estadísticas por usuario creado: {} por {}",
+                    event.getUsuario().getEmail(),
+                    event.getCreadoPor().getEmail());
+
+            estadisticaActualizadorService.incrementarUsuariosGestionados(
+                    event.getCreadoPor(),
+                    event.getUsuario());
+
+        } catch (Exception e) {
+            logger.error("Error actualizando estadísticas por creación de usuario: {}", e.getMessage(), e);
         }
     }
 }

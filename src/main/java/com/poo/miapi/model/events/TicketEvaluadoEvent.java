@@ -1,4 +1,4 @@
-package com.poo.miapi.model.notificacion.events;
+package com.poo.miapi.model.events;
 
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Usuario;

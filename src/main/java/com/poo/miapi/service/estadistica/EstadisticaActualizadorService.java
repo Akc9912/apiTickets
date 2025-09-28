@@ -2,11 +2,14 @@ package com.poo.miapi.service.estadistica;
 
 import com.poo.miapi.model.estadistica.EstadisticaPeriodo;
 import com.poo.miapi.model.estadistica.EstadisticaTecnico;
+import com.poo.miapi.model.estadistica.EstadisticaUsuario;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.model.core.Tecnico;
+import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.model.enums.PeriodoTipo;
 import com.poo.miapi.repository.estadistica.EstadisticaPeriodoRepository;
 import com.poo.miapi.repository.estadistica.EstadisticaTecnicoRepository;
+import com.poo.miapi.repository.estadistica.EstadisticaUsuarioRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +31,15 @@ public class EstadisticaActualizadorService {
 
     private final EstadisticaPeriodoRepository estadisticaPeriodoRepository;
     private final EstadisticaTecnicoRepository estadisticaTecnicoRepository;
+    private final EstadisticaUsuarioRepository estadisticaUsuarioRepository;
 
     public EstadisticaActualizadorService(
             EstadisticaPeriodoRepository estadisticaPeriodoRepository,
-            EstadisticaTecnicoRepository estadisticaTecnicoRepository) {
+            EstadisticaTecnicoRepository estadisticaTecnicoRepository,
+            EstadisticaUsuarioRepository estadisticaUsuarioRepository) {
         this.estadisticaPeriodoRepository = estadisticaPeriodoRepository;
         this.estadisticaTecnicoRepository = estadisticaTecnicoRepository;
+        this.estadisticaUsuarioRepository = estadisticaUsuarioRepository;
     }
 
     /**
@@ -270,6 +276,196 @@ public class EstadisticaActualizadorService {
             EstadisticaTecnico nueva = new EstadisticaTecnico(tecnico, PeriodoTipo.MENSUAL, anio);
             nueva.setMes(mes);
             return estadisticaTecnicoRepository.save(nueva);
+        }
+    }
+
+    // ========================================
+    // NUEVOS MÉTODOS EXPANDIDOS - FASE 2
+    // ========================================
+
+    /**
+     * Incrementar tickets creados (cuando un usuario crea un ticket)
+     */
+    public void incrementarTicketsCreados(Ticket ticket, Usuario creador) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Actualizar estadística general
+            EstadisticaPeriodo estadistica = obtenerOCrearEstadisticaDiaria(ahora);
+            estadistica.incrementarTicketsCreados();
+            estadisticaPeriodoRepository.save(estadistica);
+
+            // Actualizar estadística del usuario creador
+            actualizarEstadisticasUsuarioCreacion(creador, ahora);
+
+            logger.debug("Tickets creados incrementados para ticket: {} por usuario: {}",
+                    ticket.getId(), creador.getId());
+
+        } catch (Exception e) {
+            logger.error("Error incrementando tickets creados: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Incrementar tickets asignados (cuando un admin asigna un ticket)
+     */
+    public void incrementarTicketsAsignados(Ticket ticket, Tecnico tecnico, Usuario asignador) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Actualizar estadística general
+            EstadisticaPeriodo estadistica = obtenerOCrearEstadisticaDiaria(ahora);
+            // No hay método específico, pero podemos usar los existentes
+            estadisticaPeriodoRepository.save(estadistica);
+
+            // Actualizar estadística del técnico
+            EstadisticaTecnico estadisticaTecnico = obtenerOCrearEstadisticaTecnico(tecnico, ahora);
+            estadisticaTecnico.setTicketsAsignados(estadisticaTecnico.getTicketsAsignados() + 1);
+            estadisticaTecnicoRepository.save(estadisticaTecnico);
+
+            // Actualizar estadística del asignador (Admin/SuperAdmin)
+            actualizarEstadisticasUsuarioAsignacion(asignador, ahora);
+
+            logger.debug("Ticket asignado: {} → Técnico: {} por: {}",
+                    ticket.getId(), tecnico.getId(), asignador.getId());
+
+        } catch (Exception e) {
+            logger.error("Error procesando asignación de ticket: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Registrar inicio de sesión de usuario
+     */
+    public void registrarInicioSesion(Usuario usuario) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Actualizar estadística del usuario
+            actualizarEstadisticasUsuarioLogin(usuario, ahora);
+
+            logger.debug("Inicio de sesión registrado para usuario: {}", usuario.getId());
+
+        } catch (Exception e) {
+            logger.error("Error registrando inicio de sesión: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Registrar cierre de sesión con tiempo conectado
+     */
+    public void registrarCierreSesion(Usuario usuario, int minutosSesion) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Actualizar estadística del usuario
+            actualizarEstadisticasUsuarioLogout(usuario, ahora, minutosSesion);
+
+            logger.debug("Cierre de sesión registrado para usuario: {} ({}m conectado)",
+                    usuario.getId(), minutosSesion);
+
+        } catch (Exception e) {
+            logger.error("Error registrando cierre de sesión: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Incrementar usuarios gestionados (cuando un admin crea un usuario)
+     */
+    public void incrementarUsuariosGestionados(Usuario adminCreador, Usuario usuarioCreado) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Solo para admins y superadmins
+            if (adminCreador.getRol().isAdminRole()) {
+                actualizarEstadisticasUsuarioGestion(adminCreador, ahora);
+
+                logger.debug("Usuario gestionado incrementado - Admin: {} creó usuario: {}",
+                        adminCreador.getId(), usuarioCreado.getId());
+            }
+
+        } catch (Exception e) {
+            logger.error("Error incrementando usuarios gestionados: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Registrar generación de reporte
+     */
+    public void registrarReporteGenerado(Usuario generador, String tipoReporte) {
+        try {
+            LocalDateTime ahora = LocalDateTime.now();
+
+            actualizarEstadisticasUsuarioReporte(generador, ahora, tipoReporte);
+
+            logger.debug("Reporte generado - Usuario: {}, Tipo: {}",
+                    generador.getId(), tipoReporte);
+
+        } catch (Exception e) {
+            logger.error("Error registrando generación de reporte: {}", e.getMessage(), e);
+        }
+    }
+
+    // ========================================
+    // MÉTODOS AUXILIARES PARA ESTADÍSTICAS DE USUARIO
+    // ========================================
+
+    private void actualizarEstadisticasUsuarioCreacion(Usuario usuario, LocalDateTime fecha) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(usuario, fecha);
+        estadistica.incrementarTicketsCreados();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private void actualizarEstadisticasUsuarioAsignacion(Usuario asignador, LocalDateTime fecha) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(asignador, fecha);
+        estadistica.setTicketsAsignados(estadistica.getTicketsAsignados() + 1);
+        estadistica.actualizarFechaModificacion();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private void actualizarEstadisticasUsuarioLogin(Usuario usuario, LocalDateTime fecha) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(usuario, fecha);
+        estadistica.setSesionesActivas(estadistica.getSesionesActivas() + 1);
+        estadistica.actualizarFechaModificacion();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private void actualizarEstadisticasUsuarioLogout(Usuario usuario, LocalDateTime fecha, int minutosSesion) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(usuario, fecha);
+        estadistica.setSesionesActivas(Math.max(0, estadistica.getSesionesActivas() - 1));
+        estadistica.setTiempoConectadoMinutos(estadistica.getTiempoConectadoMinutos() + minutosSesion);
+        estadistica.actualizarFechaModificacion();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private void actualizarEstadisticasUsuarioGestion(Usuario admin, LocalDateTime fecha) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(admin, fecha);
+        estadistica.setUsuariosGestionados(estadistica.getUsuariosGestionados() + 1);
+        estadistica.actualizarFechaModificacion();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private void actualizarEstadisticasUsuarioReporte(Usuario generador, LocalDateTime fecha, String tipoReporte) {
+        EstadisticaUsuario estadistica = obtenerOCrearEstadisticaUsuario(generador, fecha);
+        estadistica.setReportesGenerados(estadistica.getReportesGenerados() + 1);
+        estadistica.actualizarFechaModificacion();
+        estadisticaUsuarioRepository.save(estadistica);
+    }
+
+    private EstadisticaUsuario obtenerOCrearEstadisticaUsuario(Usuario usuario, LocalDateTime fecha) {
+        int anio = fecha.getYear();
+        int mes = fecha.getMonthValue();
+
+        Optional<EstadisticaUsuario> existente = estadisticaUsuarioRepository
+                .findByUsuarioAndPeriodoTipoAndAnioAndMesAndSemanaAndDiaAndTrimestre(
+                        usuario, PeriodoTipo.MENSUAL, anio, mes, null, null, null);
+
+        if (existente.isPresent()) {
+            return existente.get();
+        } else {
+            EstadisticaUsuario nueva = new EstadisticaUsuario(usuario, PeriodoTipo.MENSUAL, anio);
+            nueva.setMes(mes);
+            return estadisticaUsuarioRepository.save(nueva);
         }
     }
 }
