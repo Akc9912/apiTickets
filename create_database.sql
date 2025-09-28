@@ -2,7 +2,7 @@
 -- SCRIPT COMPLETO DE BASE DE DATOS
 -- SISTEMA DE TICKETS v1.0.0
 -- =========================================
--- 
+--
 -- Este script único crea TODO lo necesario:
 -- ✅ Base de datos
 -- ✅ Estructura completa
@@ -17,8 +17,8 @@
 -- =========================================
 
 -- Crear y usar la base de datos
-CREATE DATABASE IF NOT EXISTS apiticket 
-    CHARACTER SET utf8mb4 
+CREATE DATABASE IF NOT EXISTS apiticket
+    CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
 USE apiticket;
@@ -210,7 +210,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- VERIFICACIÓN FINAL
 -- =========================================
 
-SELECT 
+SELECT
     'Base de datos inicializada correctamente' as status,
     (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'apiticket') as tablas_creadas,
     DATABASE() as base_datos_actual,

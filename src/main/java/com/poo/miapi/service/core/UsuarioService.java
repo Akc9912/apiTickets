@@ -13,16 +13,20 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
 public class UsuarioService {
-    
 
     private final UsuarioRepository usuarioRepository;
     private final TecnicoRepository tecnicoRepository;
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
+    private final AuditoriaService auditoriaService;
 
     @Value("${app.default-password}")
     private String defaultPassword;
@@ -31,24 +35,42 @@ public class UsuarioService {
             UsuarioRepository usuarioRepository,
             TecnicoRepository tecnicoRepository,
             PasswordEncoder passwordEncoder,
-            TecnicoService tecnicoService) {
+            TecnicoService tecnicoService,
+            AuditoriaService auditoriaService) {
         this.usuarioRepository = usuarioRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
+        this.auditoriaService = auditoriaService;
     }
-
 
     // Estado del usuario - cambia de true a false
     public UsuarioResponseDto setUsuarioActivo(int userId) {
-    Usuario usuario = buscarPorId(userId);
-    usuario.setActivo(!usuario.isActivo());
-    usuarioRepository.save(usuario);
-    return mapToUsuarioDto(usuario);
+        Usuario usuario = buscarPorId(userId);
+        boolean estadoAnterior = usuario.isActivo();
+        boolean nuevoEstado = !usuario.isActivo();
+        usuario.setActivo(nuevoEstado);
+        usuarioRepository.save(usuario);
+
+        // Auditar cambio de estado
+        AccionAuditoria accion = nuevoEstado ? AccionAuditoria.ACTIVATE_USER : AccionAuditoria.DEACTIVATE_USER;
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario ejecutor aquí
+                accion,
+                "USUARIO",
+                userId,
+                "Estado de usuario cambiado a " + (nuevoEstado ? "activo" : "inactivo"),
+                estadoAnterior,
+                nuevoEstado,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.MEDIUM);
+
+        return mapToUsuarioDto(usuario);
     }
 
     public UsuarioResponseDto setUsuarioBloqueado(int userId) {
         Usuario usuario = buscarPorId(userId);
+        boolean estadoAnterior = usuario.isBloqueado();
         boolean nuevoEstado = !usuario.isBloqueado();
         usuario.setBloqueado(nuevoEstado);
         // Si se está desbloqueando y es técnico, aseguramos que quede activo
@@ -57,6 +79,20 @@ public class UsuarioService {
             tecnicoService.reiniciarFallasYMarcas(tecnico);
         }
         usuarioRepository.save(usuario);
+
+        // Auditar cambio de bloqueo
+        AccionAuditoria accion = nuevoEstado ? AccionAuditoria.BLOCK_USER : AccionAuditoria.UNBLOCK_USER;
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario ejecutor aquí
+                accion,
+                "USUARIO",
+                userId,
+                "Usuario " + (nuevoEstado ? "bloqueado" : "desbloqueado"),
+                estadoAnterior,
+                nuevoEstado,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.HIGH);
+
         return mapToUsuarioDto(usuario);
     }
 
@@ -89,7 +125,6 @@ public class UsuarioService {
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
-
 
     public String getTipoUsuario(int id) {
         return buscarPorId(id).getTipoUsuario();
@@ -134,7 +169,6 @@ public class UsuarioService {
                         ticket.getFechaUltimaActualizacion()))
                 .toList();
     }
-
 
     // Metodo auxiliar para mapear Usuario a UsuarioResponseDto
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
@@ -184,6 +218,7 @@ public class UsuarioService {
                 throw new IllegalArgumentException("Rol no válido: " + dto.getRol());
         }
     }
+
     // Creación de usuario con validación de rol del creador
     public UsuarioResponseDto crearUsuarioConValidacion(UsuarioRequestDto usuarioDto, Usuario usuarioCreador) {
         if (usuarioCreador == null || usuarioCreador.getRol() == null) {
@@ -197,43 +232,58 @@ public class UsuarioService {
         if (rolCreador == Rol.ADMIN && rolNuevo == Rol.SUPER_ADMIN) {
             throw new IllegalArgumentException("Admin no puede crear SuperAdmin");
         }
-        return crearUsuario(usuarioDto);
-    }   
 
-        // Resetear contraseña a la por defecto
-        public UsuarioResponseDto resetearPassword(int userId) {
-            Usuario usuario = buscarPorId(userId);
-            String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuario.getApellido());
-            usuario.setPassword(passwordEncoder.encode(rawPassword));
-            usuario.setCambiarPass(true);
-            usuarioRepository.save(usuario);
-            return mapToUsuarioDto(usuario);
-        }
+        UsuarioResponseDto resultado = crearUsuario(usuarioDto);
 
-        // Cambiar rol de usuario
-        public UsuarioResponseDto cambiarRolUsuario(int userId, UsuarioRequestDto dto) {
-            Usuario usuario = buscarPorId(userId);
-            Rol nuevoRol = dto.getRol();
-            if (nuevoRol == null) {
-                throw new IllegalArgumentException("Rol no válido");
-            }
-            usuario.setRol(nuevoRol);
-            usuarioRepository.save(usuario);
-            return mapToUsuarioDto(usuario);
-        }
+        // Auditar creación de usuario
+        auditoriaService.registrarAccion(
+                usuarioCreador,
+                AccionAuditoria.CREATE,
+                "USUARIO",
+                resultado.getId(),
+                "Usuario creado: " + usuarioDto.getEmail() + " con rol " + usuarioDto.getRol(),
+                null,
+                usuarioDto,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.MEDIUM);
 
-        // Listar usuarios por rol
-        public List<UsuarioResponseDto> listarUsuariosPorRol(String rolStr) {
-            Rol rol;
-            try {
-                rol = Rol.valueOf(rolStr.toUpperCase());
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Rol inválido: " + rolStr);
-            }
-            return usuarioRepository.findByRol(rol).stream()
-                    .map(this::mapToUsuarioDto)
-                    .toList();
+        return resultado;
+    }
+
+    // Resetear contraseña a la por defecto
+    public UsuarioResponseDto resetearPassword(int userId) {
+        Usuario usuario = buscarPorId(userId);
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuario.getApellido());
+        usuario.setPassword(passwordEncoder.encode(rawPassword));
+        usuario.setCambiarPass(true);
+        usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
+    }
+
+    // Cambiar rol de usuario
+    public UsuarioResponseDto cambiarRolUsuario(int userId, UsuarioRequestDto dto) {
+        Usuario usuario = buscarPorId(userId);
+        Rol nuevoRol = dto.getRol();
+        if (nuevoRol == null) {
+            throw new IllegalArgumentException("Rol no válido");
         }
+        usuario.setRol(nuevoRol);
+        usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
+    }
+
+    // Listar usuarios por rol
+    public List<UsuarioResponseDto> listarUsuariosPorRol(String rolStr) {
+        Rol rol;
+        try {
+            rol = Rol.valueOf(rolStr.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Rol inválido: " + rolStr);
+        }
+        return usuarioRepository.findByRol(rol).stream()
+                .map(this::mapToUsuarioDto)
+                .toList();
+    }
 
     public java.util.List<UsuarioResponseDto> listarTodosFiltrado(Usuario usuarioAutenticado) {
         if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
@@ -244,13 +294,13 @@ public class UsuarioService {
             throw new SecurityException("No autorizado");
         }
         return usuarioRepository.findAll().stream()
-            .map(usuario -> {
-                if (rol == Rol.ADMIN && usuario.getRol() == Rol.SUPER_ADMIN) {
-                    return null;
-                }
-                return mapToUsuarioDto(usuario);
-            })
-            .filter(java.util.Objects::nonNull)
-            .toList();
-        }
+                .map(usuario -> {
+                    if (rol == Rol.ADMIN && usuario.getRol() == Rol.SUPER_ADMIN) {
+                        return null;
+                    }
+                    return mapToUsuarioDto(usuario);
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
+    }
 }

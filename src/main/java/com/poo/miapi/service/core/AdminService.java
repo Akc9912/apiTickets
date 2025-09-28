@@ -1,11 +1,7 @@
 package com.poo.miapi.service.core;
 
 import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.usuarios.AdminResponseDto;
-import com.poo.miapi.dto.usuarios.TecnicoResponseDto;
-import com.poo.miapi.dto.usuarios.TrabajadorResponseDto;
 import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
 import com.poo.miapi.model.enums.Rol;
@@ -13,10 +9,13 @@ import com.poo.miapi.model.historial.TecnicoPorTicket;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
 
-
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 
 @Service
 public class AdminService {
@@ -24,18 +23,18 @@ public class AdminService {
     private final TicketRepository ticketRepository;
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final TecnicoService tecnicoService;
-
+    private final AuditoriaService auditoriaService;
 
     public AdminService(
             TicketRepository ticketRepository,
             TecnicoPorTicketRepository tecnicoPorTicketRepository,
-            TecnicoService tecnicoService) {
+            TecnicoService tecnicoService,
+            AuditoriaService auditoriaService) {
         this.ticketRepository = ticketRepository;
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.tecnicoService = tecnicoService;
+        this.auditoriaService = auditoriaService;
     }
-
-
 
     // Reabrir ticket
     public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
@@ -67,11 +66,22 @@ public class AdminService {
         ticket.setFechaUltimaActualizacion(LocalDateTime.now());
         ticketRepository.save(ticket);
 
+        // Auditar reapertura de ticket por admin
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario admin aquí, se puede mejorar pasándolo como parámetro
+                AccionAuditoria.REOPEN_TICKET,
+                "TICKET",
+                ticket.getId(),
+                "Ticket reabierto por admin: " + comentario,
+                EstadoTicket.FINALIZADO,
+                EstadoTicket.REABIERTO,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.HIGH);
+
         return mapToTicketDto(ticket);
     }
 
-
-    private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
+    public void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
                 usuarioDto.getEmail() == null || usuarioDto.getRol() == null) {
             throw new IllegalArgumentException("Todos los campos son obligatorios");
@@ -88,7 +98,7 @@ public class AdminService {
         }
     }
 
-    private Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
+    public Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
         switch (dto.getRol()) {
             case ADMIN:
                 return new Admin(dto.getNombre(), dto.getApellido(), dto.getEmail());
@@ -114,27 +124,36 @@ public class AdminService {
     }
 
     // Mapeo de entidad Usuario a DTO
-    /* 
-    private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
-       if (usuario instanceof Admin) {
-            return new AdminResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
-                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
-                    usuario.isBloqueado());
-        } else if (usuario instanceof Tecnico) {
-            return new TecnicoResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
-                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
-                    usuario.isBloqueado(), ((Tecnico)usuario).getFallas(), ((Tecnico)usuario).getMarcas());
-        } else if (usuario instanceof Trabajador) {
-            return new TrabajadorResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
-                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
-                    usuario.isBloqueado());
-        } else {
-            return new UsuarioResponseDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(),
-                    usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(), usuario.isActivo(),
-                    usuario.isBloqueado());
-        }
-    }
-    */
+    /*
+     * private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
+     * if (usuario instanceof Admin) {
+     * return new AdminResponseDto(usuario.getId(), usuario.getNombre(),
+     * usuario.getApellido(),
+     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
+     * usuario.isActivo(),
+     * usuario.isBloqueado());
+     * } else if (usuario instanceof Tecnico) {
+     * return new TecnicoResponseDto(usuario.getId(), usuario.getNombre(),
+     * usuario.getApellido(),
+     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
+     * usuario.isActivo(),
+     * usuario.isBloqueado(), ((Tecnico)usuario).getFallas(),
+     * ((Tecnico)usuario).getMarcas());
+     * } else if (usuario instanceof Trabajador) {
+     * return new TrabajadorResponseDto(usuario.getId(), usuario.getNombre(),
+     * usuario.getApellido(),
+     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
+     * usuario.isActivo(),
+     * usuario.isBloqueado());
+     * } else {
+     * return new UsuarioResponseDto(usuario.getId(), usuario.getNombre(),
+     * usuario.getApellido(),
+     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
+     * usuario.isActivo(),
+     * usuario.isBloqueado());
+     * }
+     * }
+     */
 
     // Mapeo de entidad Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
@@ -149,5 +168,4 @@ public class AdminService {
                 ticket.getFechaUltimaActualizacion());
     }
 
-    
 }

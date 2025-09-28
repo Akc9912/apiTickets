@@ -12,6 +12,10 @@ import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
@@ -23,14 +27,17 @@ public class IncidenteTecnicoService {
     private final TecnicoRepository tecnicoRepository;
     @Autowired
     private final TicketRepository ticketRepository;
+    private final AuditoriaService auditoriaService;
 
     public IncidenteTecnicoService(
             IncidenteTecnicoRepository incidenteTecnicoRepository,
             TecnicoRepository tecnicoRepository,
-            TicketRepository ticketRepository) {
+            TicketRepository ticketRepository,
+            AuditoriaService auditoriaService) {
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.ticketRepository = ticketRepository;
+        this.auditoriaService = auditoriaService;
     }
 
     // Listar todos los incidentes como DTOs
@@ -79,6 +86,20 @@ public class IncidenteTecnicoService {
                 dto.getTipo(),
                 dto.getMotivo());
         IncidenteTecnico saved = incidenteTecnicoRepository.save(incidente);
+
+        // Auditar registro de incidente
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario que ejecuta la acción
+                AccionAuditoria.CREATE_INCIDENT,
+                "INCIDENTE_TECNICO",
+                saved.getId(),
+                "Incidente registrado para técnico " + tecnico.getNombre() + ": " + dto.getMotivo(),
+                null,
+                saved,
+                CategoriaAuditoria.BUSINESS,
+                dto.getTipo() == IncidenteTecnico.TipoIncidente.FALLA ? SeveridadAuditoria.HIGH
+                        : SeveridadAuditoria.MEDIUM);
+
         return mapToDto(saved);
     }
 

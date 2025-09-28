@@ -11,6 +11,10 @@ import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
@@ -22,24 +26,31 @@ public class HistorialValidacionService {
         private final TrabajadorRepository trabajadorRepository;
         @Autowired
         private final TicketRepository ticketRepository;
+        private final AuditoriaService auditoriaService;
 
         public HistorialValidacionService(
                         HistorialValidacionRepository historialValidacionRepository,
                         TrabajadorRepository trabajadorRepository,
-                        TicketRepository ticketRepository) {
+                        TicketRepository ticketRepository,
+                        AuditoriaService auditoriaService) {
                 this.historialValidacionRepository = historialValidacionRepository;
                 this.trabajadorRepository = trabajadorRepository;
                 this.ticketRepository = ticketRepository;
+                this.auditoriaService = auditoriaService;
         }
 
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
-                // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin, SuperAdmin)
+                // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin,
+                // SuperAdmin)
                 // Por ahora, se usa Trabajador como ejemplo:
                 Trabajador usuarioValidador = trabajadorRepository.findById(dto.getIdUsuarioValidador())
-                                .orElseThrow(() -> new EntityNotFoundException("Usuario validador no encontrado con ID: " + dto.getIdUsuarioValidador()));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Usuario validador no encontrado con ID: "
+                                                                + dto.getIdUsuarioValidador()));
                 Ticket ticket = ticketRepository.findById(dto.getIdTicket())
-                                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + dto.getIdTicket()));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Ticket no encontrado con ID: " + dto.getIdTicket()));
 
                 HistorialValidacion validacion = new HistorialValidacion(
                                 usuarioValidador,
@@ -47,6 +58,20 @@ public class HistorialValidacionService {
                                 dto.isFueAprobado(),
                                 dto.getComentario());
                 HistorialValidacion saved = historialValidacionRepository.save(validacion);
+
+                // Auditar validación de ticket
+                auditoriaService.registrarAccion(
+                                usuarioValidador,
+                                AccionAuditoria.EVALUATE_TICKET,
+                                "VALIDACION_TICKET",
+                                saved.getId(),
+                                "Validación de ticket: " + (dto.isFueAprobado() ? "Aprobado" : "Rechazado") + " - "
+                                                + dto.getComentario(),
+                                null,
+                                saved,
+                                CategoriaAuditoria.BUSINESS,
+                                dto.isFueAprobado() ? SeveridadAuditoria.LOW : SeveridadAuditoria.MEDIUM);
+
                 return mapToDto(saved);
         }
 

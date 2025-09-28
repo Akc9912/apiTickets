@@ -17,6 +17,10 @@ import com.poo.miapi.util.PasswordHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +35,7 @@ public class SuperAdminService {
     private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
+    private final AuditoriaService auditoriaService;
     @Value("${app.default-password}")
     private String defaultPassword;
 
@@ -40,13 +45,15 @@ public class SuperAdminService {
             TecnicoRepository tecnicoRepository,
             TecnicoPorTicketRepository tecnicoPorTicketRepository,
             PasswordEncoder passwordEncoder,
-            TecnicoService tecnicoService) {
+            TecnicoService tecnicoService,
+            AuditoriaService auditoriaService) {
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
+        this.auditoriaService = auditoriaService;
     }
 
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
@@ -120,6 +127,18 @@ public class SuperAdminService {
         }
 
         usuarioRepository.delete(usuario);
+
+        // Auditar eliminación de usuario
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario superadmin aquí
+                AccionAuditoria.DELETE,
+                "USUARIO",
+                id,
+                "Usuario eliminado: " + usuario.getEmail() + " (" + usuario.getRol() + ")",
+                usuario,
+                null,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.CRITICAL);
     }
 
     public UsuarioResponseDto activarUsuario(int id) {
@@ -205,6 +224,19 @@ public class SuperAdminService {
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
 
+        // Auditar cambio de rol
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario superadmin aquí
+                AccionAuditoria.UPDATE,
+                "USUARIO",
+                usuario.getId(),
+                "Rol cambiado de " + usuario.getRol() + " a " + usuarioCambioRol.getRol() + " para usuario: "
+                        + usuario.getEmail(),
+                usuario.getRol(),
+                usuarioCambioRol.getRol(),
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.HIGH);
+
         return mapToUsuarioDto(nuevoUsuario);
     }
 
@@ -216,7 +248,6 @@ public class SuperAdminService {
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
-
 
     public List<UsuarioResponseDto> listarAdministradores() {
         return usuarioRepository.findByRolIn(List.of(Rol.SUPER_ADMIN, Rol.ADMIN)).stream()

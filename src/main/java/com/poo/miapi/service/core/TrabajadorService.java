@@ -15,6 +15,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 
 import java.util.List;
 
@@ -25,17 +29,20 @@ public class TrabajadorService {
     private final TicketRepository ticketRepository;
     private final TecnicoService tecnicoService;
     private final HistorialValidacionRepository historialValidacionRepository;
+    private final AuditoriaService auditoriaService;
     private static final Logger logger = LoggerFactory.getLogger(TrabajadorService.class);
 
     public TrabajadorService(
             TrabajadorRepository trabajadorRepository,
             TicketRepository ticketRepository,
             TecnicoService tecnicoService,
-            HistorialValidacionRepository historialValidacionRepository) {
+            HistorialValidacionRepository historialValidacionRepository,
+            AuditoriaService auditoriaService) {
         this.trabajadorRepository = trabajadorRepository;
         this.ticketRepository = ticketRepository;
         this.tecnicoService = tecnicoService;
         this.historialValidacionRepository = historialValidacionRepository;
+        this.auditoriaService = auditoriaService;
     }
 
     public Trabajador buscarPorId(int id) {
@@ -54,7 +61,7 @@ public class TrabajadorService {
 
     // Evaluar resolución usando DTO
     public TicketResponseDto evaluarTicket(int idTicket, EvaluarTicketDto dto) {
-    Trabajador trabajador = buscarPorId(dto.getIdUsuarioValidador());
+        Trabajador trabajador = buscarPorId(dto.getIdUsuarioValidador());
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
@@ -79,14 +86,26 @@ public class TrabajadorService {
 
         ticketRepository.save(ticket);
 
-    Usuario usuarioValidador = trabajador; // El trabajador creador valida su propio ticket
-    HistorialValidacion validacion = new HistorialValidacion(
-        usuarioValidador,
-        ticket,
-        dto.isFueResuelto(),
-        dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla()
-    );
-    historialValidacionRepository.save(validacion);
+        Usuario usuarioValidador = trabajador; // El trabajador creador valida su propio ticket
+        HistorialValidacion validacion = new HistorialValidacion(
+                usuarioValidador,
+                ticket,
+                dto.isFueResuelto(),
+                dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla());
+        historialValidacionRepository.save(validacion);
+
+        // Auditar evaluación de ticket
+        auditoriaService.registrarAccion(
+                trabajador,
+                AccionAuditoria.EVALUATE_TICKET,
+                "TICKET",
+                ticket.getId(),
+                "Ticket evaluado: " + (dto.isFueResuelto() ? "Resuelto correctamente"
+                        : "Falla reportada - " + dto.getMotivoFalla()),
+                null,
+                validacion,
+                CategoriaAuditoria.BUSINESS,
+                dto.isFueResuelto() ? SeveridadAuditoria.LOW : SeveridadAuditoria.MEDIUM);
 
         return mapToTicketDto(ticket);
     }
@@ -123,7 +142,8 @@ public class TrabajadorService {
             logger.info("[TrabajadorService] Tickets mapeados: {}", dtos.size());
             return dtos;
         } catch (Exception ex) {
-            logger.error("[TrabajadorService] Error al obtener tickets para trabajador {}: {}", idTrabajador, ex.getMessage(), ex);
+            logger.error("[TrabajadorService] Error al obtener tickets para trabajador {}: {}", idTrabajador,
+                    ex.getMessage(), ex);
             throw ex;
         }
     }
@@ -157,4 +177,3 @@ public class TrabajadorService {
                 trabajador.isActivo());
     }
 }
-    

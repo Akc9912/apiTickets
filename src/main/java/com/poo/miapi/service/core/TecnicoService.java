@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
@@ -28,18 +32,21 @@ public class TecnicoService {
     private final TecnicoPorTicketService tecnicoPorTicketService;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
     private final SolicitudDevolucionRepository solicitudDevolucionRepository;
+    private final AuditoriaService auditoriaService;
 
     public TecnicoService(
             TecnicoRepository tecnicoRepository,
             TicketRepository ticketRepository,
             IncidenteTecnicoRepository incidenteTecnicoRepository,
             TecnicoPorTicketService tecnicoPorTicketService,
-            SolicitudDevolucionRepository solicitudDevolucionRepository) {
+            SolicitudDevolucionRepository solicitudDevolucionRepository,
+            AuditoriaService auditoriaService) {
         this.tecnicoRepository = tecnicoRepository;
         this.ticketRepository = ticketRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
         this.tecnicoPorTicketService = tecnicoPorTicketService;
         this.solicitudDevolucionRepository = solicitudDevolucionRepository;
+        this.auditoriaService = auditoriaService;
     }
 
     public Tecnico buscarPorId(int idTecnico) {
@@ -112,8 +119,8 @@ public class TecnicoService {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO) && 
-            !ticket.getEstado().equals(EstadoTicket.REABIERTO)) {
+        if (!ticket.getEstado().equals(EstadoTicket.NO_ATENDIDO) &&
+                !ticket.getEstado().equals(EstadoTicket.REABIERTO)) {
             throw new IllegalStateException("El ticket ya está siendo atendido o no está disponible");
         }
 
@@ -121,6 +128,19 @@ public class TecnicoService {
         TecnicoPorTicket historial = tecnicoPorTicketService.registrarToma(ticket, tecnico);
         ticket.agregarEntradaHistorial(historial);
         ticketRepository.save(ticket);
+
+        // Auditar asignación de ticket
+        auditoriaService.registrarAccion(
+                tecnico,
+                AccionAuditoria.ASSIGN_TICKET,
+                "TICKET",
+                ticket.getId(),
+                "Ticket asignado a técnico: " + tecnico.getNombre(),
+                EstadoTicket.NO_ATENDIDO,
+                EstadoTicket.ATENDIDO,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.MEDIUM);
+
         return mapToTicketDto(ticket);
     }
 
@@ -155,14 +175,27 @@ public class TecnicoService {
                     tecnico.setFallas(tecnico.getFallas() - 1);
                     tecnicoRepository.save(tecnico);
                     // Registrar incidente técnico
-                    IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
-                        "Falla restada por resolver ticket reabierto");
+                    IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket,
+                            IncidenteTecnico.TipoIncidente.FALLA,
+                            "Falla restada por resolver ticket reabierto");
                     incidenteTecnicoRepository.save(incidente);
                 }
             }
         }
         ticket.setEstado(EstadoTicket.RESUELTO);
         ticketRepository.save(ticket);
+
+        // Auditar resolución de ticket
+        auditoriaService.registrarAccion(
+                tecnico,
+                AccionAuditoria.RESOLVE_TICKET,
+                "TICKET",
+                ticket.getId(),
+                "Ticket resuelto por técnico: " + tecnico.getNombre(),
+                EstadoTicket.ATENDIDO,
+                EstadoTicket.RESUELTO,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.LOW);
 
         return mapToTicketDto(ticket);
     }
@@ -190,14 +223,26 @@ public class TecnicoService {
         SolicitudDevolucion solicitud = new SolicitudDevolucion(tecnico, ticket, motivo);
         solicitudDevolucionRepository.save(solicitud);
 
+        // Auditar solicitud de devolución
+        auditoriaService.registrarAccion(
+                tecnico,
+                AccionAuditoria.REQUEST_RETURN,
+                "TICKET",
+                ticket.getId(),
+                "Solicitud de devolución creada: " + motivo,
+                null,
+                solicitud,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.MEDIUM);
+
         return mapToTicketDto(ticket);
     }
 
     // ver tickets pendientes de devolucion para un técnico
     public List<SolicitudDevolucion> verSolicitudesDevolucionPendientes(int idTecnico) {
         return solicitudDevolucionRepository.findByTecnicoId(idTecnico).stream()
-            .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
-            .toList();
+                .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
+                .toList();
     }
 
     // Devuelve historial de incidentes como DTOs
@@ -216,11 +261,11 @@ public class TecnicoService {
 
     // Devuelve tickets asignados como DTOs
     public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
-    Tecnico tecnico = buscarPorId(idTecnico);
-    return tecnico.getTicketsActuales().stream()
-        .filter(ticket -> ticket.getEstado() == EstadoTicket.ATENDIDO)
-        .map(this::mapToTicketDto)
-        .toList();
+        Tecnico tecnico = buscarPorId(idTecnico);
+        return tecnico.getTicketsActuales().stream()
+                .filter(ticket -> ticket.getEstado() == EstadoTicket.ATENDIDO)
+                .map(this::mapToTicketDto)
+                .toList();
     }
 
     // Métodos auxiliares para mapear entidades a DTOs
@@ -266,17 +311,17 @@ public class TecnicoService {
     public TecnicoResponseDto getDatosTecnico(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
         return new TecnicoResponseDto(
-            tecnico.getId(),
-            tecnico.getNombre(),
-            tecnico.getApellido(),
-            tecnico.getEmail(),
-            tecnico.getRol().name(),
-            tecnico.isCambiarPass(),
-            tecnico.isActivo(),
-            tecnico.isBloqueado(),
-            tecnico.getFallas(),
-            tecnico.getMarcas(),
-            null // No lista de incidentes
+                tecnico.getId(),
+                tecnico.getNombre(),
+                tecnico.getApellido(),
+                tecnico.getEmail(),
+                tecnico.getRol().name(),
+                tecnico.isCambiarPass(),
+                tecnico.isActivo(),
+                tecnico.isBloqueado(),
+                tecnico.getFallas(),
+                tecnico.getMarcas(),
+                null // No lista de incidentes
         );
     }
 }

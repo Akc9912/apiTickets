@@ -23,6 +23,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -38,16 +42,17 @@ public class TicketService {
     private final TecnicoRepository tecnicoRepository;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
     private final SolicitudDevolucionRepository solicitudDevolucionRepository;
+    private final AuditoriaService auditoriaService;
 
     public TicketService(
-        TicketRepository ticketRepository,
-        TrabajadorRepository trabajadorRepository,
-        UsuarioRepository usuarioRepository,
-        TecnicoPorTicketRepository tecnicoPorTicketRepository,
-        TecnicoRepository tecnicoRepository,
-        IncidenteTecnicoRepository incidenteTecnicoRepository,
-        SolicitudDevolucionRepository solicitudDevolucionRepository
-    ) {
+            TicketRepository ticketRepository,
+            TrabajadorRepository trabajadorRepository,
+            UsuarioRepository usuarioRepository,
+            TecnicoPorTicketRepository tecnicoPorTicketRepository,
+            TecnicoRepository tecnicoRepository,
+            IncidenteTecnicoRepository incidenteTecnicoRepository,
+            SolicitudDevolucionRepository solicitudDevolucionRepository,
+            AuditoriaService auditoriaService) {
         this.ticketRepository = ticketRepository;
         this.trabajadorRepository = trabajadorRepository;
         this.usuarioRepository = usuarioRepository;
@@ -55,6 +60,7 @@ public class TicketService {
         this.tecnicoRepository = tecnicoRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
         this.solicitudDevolucionRepository = solicitudDevolucionRepository;
+        this.auditoriaService = auditoriaService;
     }
 
     public Usuario obtenerUsuarioPorEmail(String email) {
@@ -78,7 +84,9 @@ public class TicketService {
 
     public TicketResponseDto crearTicketConCreador(TicketRequestDto dto, Usuario creador) {
         Logger logger = LoggerFactory.getLogger(TicketService.class);
-        logger.debug("[TicketService] Creando ticket: titulo={}, descripcion={}, creadorEmail={}, creadorRol={}", dto.getTitulo(), dto.getDescripcion(), creador != null ? creador.getEmail() : null, creador != null ? creador.getRol() : null);
+        logger.debug("[TicketService] Creando ticket: titulo={}, descripcion={}, creadorEmail={}, creadorRol={}",
+                dto.getTitulo(), dto.getDescripcion(), creador != null ? creador.getEmail() : null,
+                creador != null ? creador.getRol() : null);
         Ticket ticket = new Ticket(dto.getTitulo(), dto.getDescripcion(), creador);
         if (creador instanceof Trabajador trabajador) {
             logger.debug("[TicketService] El creador es Trabajador, agregando ticket a su lista");
@@ -88,6 +96,19 @@ public class TicketService {
         }
         Ticket saved = ticketRepository.save(ticket);
         logger.info("[TicketService] Ticket guardado con id {}", saved.getId());
+
+        // Auditar creación de ticket
+        auditoriaService.registrarAccion(
+                creador,
+                AccionAuditoria.CREATE,
+                "TICKET",
+                saved.getId(),
+                "Ticket creado: " + saved.getTitulo(),
+                null,
+                saved,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.MEDIUM);
+
         return mapToDto(saved);
     }
 
@@ -131,8 +152,23 @@ public class TicketService {
     public TicketResponseDto actualizarEstado(int idTicket, EstadoTicket nuevoEstado) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+
+        EstadoTicket estadoAnterior = ticket.getEstado();
         ticket.setEstado(nuevoEstado);
         Ticket actualizado = ticketRepository.save(ticket);
+
+        // Auditar cambio de estado
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario aquí, se puede mejorar pasándolo como parámetro
+                AccionAuditoria.UPDATE,
+                "TICKET",
+                actualizado.getId(),
+                "Estado actualizado de " + estadoAnterior + " a " + nuevoEstado,
+                estadoAnterior,
+                nuevoEstado,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.MEDIUM);
+
         return mapToDto(actualizado);
     }
 
@@ -144,7 +180,7 @@ public class TicketService {
     // Compatibilidad: crear ticket usando idTrabajador
     public TicketResponseDto crearTicket(TicketRequestDto dto) {
         Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
-            .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
         return crearTicketConCreador(dto, trabajador);
     }
 
@@ -171,27 +207,30 @@ public class TicketService {
 
     // Tickets asignados al técnico en estado atendido
     public List<TicketResponseDto> listarTicketsAsignadosAlTecnico(int tecnicoId) {
-    Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
-    if (!(usuario instanceof Tecnico tecnico)) return Collections.emptyList();
-    List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
-    // Filtrar tickets que NO tengan una solicitud de devolución pendiente
-    return atendidos.stream()
-        .filter(ticket -> {
-            List<SolicitudDevolucion> solicitudes = solicitudDevolucionRepository.findByTicketId(ticket.getId());
-            return solicitudes.stream().noneMatch(s -> s.getEstado() == EstadoSolicitud.PENDIENTE);
-        })
-        .map(this::mapToDto)
-        .toList();
+        Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
+        if (!(usuario instanceof Tecnico tecnico))
+            return Collections.emptyList();
+        List<Ticket> atendidos = ticketRepository.findByEstadoAndTecnicoActual(EstadoTicket.ATENDIDO, tecnico);
+        // Filtrar tickets que NO tengan una solicitud de devolución pendiente
+        return atendidos.stream()
+                .filter(ticket -> {
+                    List<SolicitudDevolucion> solicitudes = solicitudDevolucionRepository
+                            .findByTicketId(ticket.getId());
+                    return solicitudes.stream().noneMatch(s -> s.getEstado() == EstadoSolicitud.PENDIENTE);
+                })
+                .map(this::mapToDto)
+                .toList();
     }
 
     // Historial de todos los tickets donde participó el técnico
     public List<TicketResponseDto> listarHistorialTecnico(int tecnicoId) {
-    Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
-    if (!(usuario instanceof Tecnico)) return Collections.emptyList();
-    List<TecnicoPorTicket> historial = tecnicoPorTicketRepository.findByTecnicoId(tecnicoId);
-    return historial.stream()
-        .map(tpt -> mapToDto(tpt.getTicket()))
-        .toList();
+        Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
+        if (!(usuario instanceof Tecnico))
+            return Collections.emptyList();
+        List<TecnicoPorTicket> historial = tecnicoPorTicketRepository.findByTecnicoId(tecnicoId);
+        return historial.stream()
+                .map(tpt -> mapToDto(tpt.getTicket()))
+                .toList();
     }
 
     // Lógica de negocio para determinar el creador según el rol
@@ -221,16 +260,16 @@ public class TicketService {
     // Verifica si el ticket pertenece al usuario
     public boolean esTicketDeUsuario(int ticketId, int usuarioId) {
         Ticket ticket = ticketRepository.findById(ticketId)
-            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
         return ticket.getCreador() != null && ticket.getCreador().getId() == usuarioId;
     }
 
     // Reabrir ticket (solo lógica, sin reglas de acceso)
     public TicketResponseDto reabrirTicket(int idTicket, String comentario, int usuarioId) {
         Ticket ticket = ticketRepository.findById(idTicket)
-            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Usuario no encontrado"));
         if (!ticket.getEstado().equals(EstadoTicket.FINALIZADO)) {
             throw new IllegalArgumentException("El ticket no está cerrado, no se puede reabrir");
         }
@@ -262,8 +301,9 @@ public class TicketService {
                         // Guardar el técnico actualizado
                         tecnicoRepository.save(ultimoTecnico);
                         // Registrar incidente técnico
-                        IncidenteTecnico incidente = new IncidenteTecnico(ultimoTecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
-                            "Falla por ticket reabierto por trabajador");
+                        IncidenteTecnico incidente = new IncidenteTecnico(ultimoTecnico, ticket,
+                                IncidenteTecnico.TipoIncidente.FALLA,
+                                "Falla por ticket reabierto por trabajador");
                         incidenteTecnicoRepository.save(incidente);
                         break;
                     }
@@ -271,6 +311,19 @@ public class TicketService {
             }
         }
         ticketRepository.save(ticket);
+
+        // Auditar reapertura de ticket
+        auditoriaService.registrarAccion(
+                usuario,
+                AccionAuditoria.UPDATE,
+                "TICKET",
+                ticket.getId(),
+                "Ticket reabierto: " + comentario,
+                EstadoTicket.FINALIZADO,
+                EstadoTicket.REABIERTO,
+                CategoriaAuditoria.BUSINESS,
+                SeveridadAuditoria.HIGH);
+
         return mapToDto(ticket);
     }
 }

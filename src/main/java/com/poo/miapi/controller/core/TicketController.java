@@ -35,13 +35,14 @@ public class TicketController {
         // 1. /api/tickets/todos - Admin/SuperAdmin: ver todos los tickets
         @Operation(summary = "Listar todos los tickets", description = "Devuelve todos los tickets del sistema. Solo Admin/SuperAdmin.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/todos")
         public List<TicketResponseDto> listarTodosTicketsAdmin(Authentication authentication) {
                 Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
-                if (usuario == null || !(usuario.getRol().name().equals("ADMIN") || usuario.getRol().name().equals("SUPERADMIN"))) {
+                if (usuario == null || !(usuario.getRol().name().equals("ADMIN")
+                                || usuario.getRol().name().equals("SUPERADMIN"))) {
                         throw new AccessDeniedException("No autorizado");
                 }
                 return ticketService.listarTodos();
@@ -50,8 +51,8 @@ public class TicketController {
         // 2. /api/tickets/trabajador/mis-tickets - Trabajador: ver sus tickets
         @Operation(summary = "Listar mis tickets (Trabajador)", description = "Devuelve los tickets creados por el trabajador autenticado.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/trabajador/mis-tickets")
         public List<TicketResponseDto> listarMisTicketsTrabajador(Authentication authentication) {
@@ -65,33 +66,37 @@ public class TicketController {
         // Endpoint: tickets en estado RESUELTO para evaluación del trabajador
         @Operation(summary = "Listar tickets para evaluar (Trabajador)", description = "Devuelve los tickets creados por el trabajador autenticado en estado RESUELTO.")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-                @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/trabajador/tickets-para-evaluar")
         public List<TicketResponseDto> listarTicketsParaEvaluarTrabajador(Authentication authentication) {
-                                        Logger logger = LoggerFactory.getLogger(TicketController.class);
-                                        logger.info("[TicketController] GET /trabajador/tickets-para-evaluar usuario: {}", authentication.getName());
-                                        Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
-                                        if (usuario == null) {
-                                                logger.error("[TicketController] Usuario no encontrado para email: {}", authentication.getName());
-                                                throw new AccessDeniedException("No autorizado");
-                                        }
-                                        if (!usuario.getRol().name().equals("TRABAJADOR")) {
-                                                logger.error("[TicketController] Usuario con rol incorrecto: {}", usuario.getRol());
-                                                throw new AccessDeniedException("No autorizado");
-                                        }
-                                        logger.info("[TicketController] Buscando tickets RESUELTO para trabajador id: {}", usuario.getId());
-                                        List<TicketResponseDto> result = ticketService.listarPorCreadorYEstado(usuario.getId(), EstadoTicket.RESUELTO);
-                                        logger.info("[TicketController] Tickets encontrados: {}", result.size());
-                                        return result;
+                Logger logger = LoggerFactory.getLogger(TicketController.class);
+                logger.info("[TicketController] GET /trabajador/tickets-para-evaluar usuario: {}",
+                                authentication.getName());
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null) {
+                        logger.error("[TicketController] Usuario no encontrado para email: {}",
+                                        authentication.getName());
+                        throw new AccessDeniedException("No autorizado");
+                }
+                if (!usuario.getRol().name().equals("TRABAJADOR")) {
+                        logger.error("[TicketController] Usuario con rol incorrecto: {}", usuario.getRol());
+                        throw new AccessDeniedException("No autorizado");
+                }
+                logger.info("[TicketController] Buscando tickets RESUELTO para trabajador id: {}", usuario.getId());
+                List<TicketResponseDto> result = ticketService.listarPorCreadorYEstado(usuario.getId(),
+                                EstadoTicket.RESUELTO);
+                logger.info("[TicketController] Tickets encontrados: {}", result.size());
+                return result;
         }
 
-        // 3. /api/tickets/tecnico/tickets-disponibles - Técnico: tickets no asignados y reabiertos
+        // 3. /api/tickets/tecnico/tickets-disponibles - Técnico: tickets no asignados y
+        // reabiertos
         @Operation(summary = "Listar tickets disponibles (Técnico)", description = "Devuelve tickets no asignados y reabiertos para técnicos.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/tecnico/tickets-disponibles")
         public List<TicketResponseDto> listarTicketsDisponiblesTecnico(Authentication authentication) {
@@ -102,11 +107,12 @@ public class TicketController {
                 return ticketService.listarTicketsNoAsignadosYReabiertos();
         }
 
-        // 4. /api/tickets/tecnico/mis-tickets - Técnico: sus tickets en estado atendido o resuelto
+        // 4. /api/tickets/tecnico/mis-tickets - Técnico: sus tickets en estado atendido
+        // o resuelto
         @Operation(summary = "Listar mis tickets (Técnico)", description = "Devuelve los tickets asignados al técnico autenticado en estado atendido o resuelto.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/tecnico/mis-tickets")
         public List<TicketResponseDto> listarMisTicketsTecnico(Authentication authentication) {
@@ -117,11 +123,12 @@ public class TicketController {
                 return ticketService.listarTicketsAsignadosAlTecnico(usuario.getId());
         }
 
-        // 5. /api/tickets/tecnico/historial - Técnico: historial de tickets donde participó
+        // 5. /api/tickets/tecnico/historial - Técnico: historial de tickets donde
+        // participó
         @Operation(summary = "Historial de tickets (Técnico)", description = "Devuelve el historial de tickets donde el técnico autenticado participó.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Listado de tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @GetMapping("/tecnico/historial")
         public List<TicketResponseDto> listarHistorialTecnico(Authentication authentication) {
@@ -135,9 +142,9 @@ public class TicketController {
         // 6. /api/tickets/crear-ticket Endpoint para crear ticket
         @Operation(summary = "Crear ticket", description = "Permite crear un ticket según el rol del usuario autenticado.")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Ticket creado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
-            @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
+                        @ApiResponse(responseCode = "201", description = "Ticket creado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content)
         })
         @PostMapping("/crear-ticket")
         public TicketResponseDto crearTicket(@RequestBody @Valid TicketRequestDto dto, Authentication authentication) {
@@ -161,19 +168,19 @@ public class TicketController {
         // POST /api/tickets/{id}/reabrir
         @Operation(summary = "Reabrir ticket", description = "Permite reabrir un ticket según el rol del usuario autenticado.")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Ticket reabierto exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
-                @ApiResponse(responseCode = "404", description = "Ticket no encontrado", content = @Content),
-                @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content),
-                @ApiResponse(responseCode = "400", description = "El ticket no puede ser reabierto", content = @Content)
+                        @ApiResponse(responseCode = "200", description = "Ticket reabierto exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "404", description = "Ticket no encontrado", content = @Content),
+                        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content),
+                        @ApiResponse(responseCode = "400", description = "El ticket no puede ser reabierto", content = @Content)
         })
         @PostMapping("/{id}/reabrir")
-        public TicketResponseDto reabrirTicket(@PathVariable int id, @RequestParam String comentario, Authentication authentication) {
-                        Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
-                        if (usuario == null || !usuario.puedeRealizarAcciones()) {
-                                throw new AccessDeniedException("Usuario bloqueado o no encontrado");
-                        }
-                        return ticketService.reabrirTicket(id, comentario, usuario.getId());
+        public TicketResponseDto reabrirTicket(@PathVariable int id, @RequestParam String comentario,
+                        Authentication authentication) {
+                Usuario usuario = ticketService.obtenerUsuarioPorEmail(authentication.getName());
+                if (usuario == null || !usuario.puedeRealizarAcciones()) {
+                        throw new AccessDeniedException("Usuario bloqueado o no encontrado");
+                }
+                return ticketService.reabrirTicket(id, comentario, usuario.getId());
         }
 
 }
-        
