@@ -13,8 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
 import com.poo.miapi.dto.tecnico.IncidenciasDto;
+import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.service.core.TecnicoService;
+import com.poo.miapi.service.notificacion.motor.EventPublisherService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
@@ -23,10 +27,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class TecnicoController {
 
         private final TecnicoService tecnicoService;
+        private final EventPublisherService eventPublisherService;
+        private final TicketRepository ticketRepository;
         private static final Logger logger = LoggerFactory.getLogger(TecnicoController.class);
 
-        public TecnicoController(TecnicoService tecnicoService) {
+        public TecnicoController(TecnicoService tecnicoService, EventPublisherService eventPublisherService,
+                        TicketRepository ticketRepository) {
                 this.tecnicoService = tecnicoService;
+                this.eventPublisherService = eventPublisherService;
+                this.ticketRepository = ticketRepository;
         }
 
         // POST /api/tecnico/tickets/{ticketId}/tomar
@@ -40,21 +49,21 @@ public class TecnicoController {
         public ResponseEntity<String> tomarTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
-                                logger.info("[TecnicoController] POST /tickets/{}/tomar idTecnico: {}", ticketId, idTecnico);
-                                try {
-                                        tecnicoService.tomarTicket(idTecnico, ticketId);
-                                        logger.info("[TecnicoController] Ticket tomado correctamente");
-                                        return ResponseEntity.ok("Ticket tomado correctamente");
-                                } catch (EntityNotFoundException e) {
-                                        logger.error("Técnico o ticket no encontrado", e);
-                                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
-                                } catch (IllegalStateException | IllegalArgumentException e) {
-                                        logger.error("Error de negocio al tomar ticket", e);
-                                        return ResponseEntity.status(400).body(e.getMessage());
-                                } catch (Exception e) {
-                                        logger.error("Error inesperado al tomar ticket", e);
-                                        return ResponseEntity.status(500).body("Error interno del servidor");
-                                }
+                logger.info("[TecnicoController] POST /tickets/{}/tomar idTecnico: {}", ticketId, idTecnico);
+                try {
+                        tecnicoService.tomarTicket(idTecnico, ticketId);
+                        logger.info("[TecnicoController] Ticket tomado correctamente");
+                        return ResponseEntity.ok("Ticket tomado correctamente");
+                } catch (EntityNotFoundException e) {
+                        logger.error("Técnico o ticket no encontrado", e);
+                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
+                } catch (IllegalStateException | IllegalArgumentException e) {
+                        logger.error("Error de negocio al tomar ticket", e);
+                        return ResponseEntity.status(400).body(e.getMessage());
+                } catch (Exception e) {
+                        logger.error("Error inesperado al tomar ticket", e);
+                        return ResponseEntity.status(500).body("Error interno del servidor");
+                }
         }
 
         // POST /api/tecnico/tickets/{ticketId}/resolver
@@ -67,22 +76,33 @@ public class TecnicoController {
         })
         public ResponseEntity<String> resolverTicket(
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
-                        @Parameter(description = "ID del ticket") @PathVariable int ticketId) {
-                                logger.info("[TecnicoController] INICIO resolverTicket - ticketId: {} idTecnico: {}", ticketId, idTecnico);
-                                try {
-                                        tecnicoService.resolverTicket(idTecnico, ticketId);
-                                        logger.info("[TecnicoController] Estado de ticket actualizado a: Resuelto");
-                                        return ResponseEntity.ok("Estado de ticket actualizado a: Resuelto");
-                                } catch (EntityNotFoundException e) {
-                                        logger.error("Ticket no encontrado", e);
-                                        return ResponseEntity.status(404).body("Ticket no encontrado");
-                                } catch (IllegalStateException | IllegalArgumentException e) {
-                                        logger.error("Error de negocio al resolver ticket", e);
-                                        return ResponseEntity.status(400).body(e.getMessage());
-                                } catch (Exception e) {
-                                        logger.error("Error inesperado al resolver ticket", e);
-                                        return ResponseEntity.status(500).body("Error interno del servidor");
-                                }
+                        @Parameter(description = "ID del ticket") @PathVariable int ticketId,
+                        @Parameter(description = "Comentario de resolución") @RequestParam(required = false) String comentario) {
+                logger.info("[TecnicoController] INICIO resolverTicket - ticketId: {} idTecnico: {}", ticketId,
+                                idTecnico);
+                try {
+                        // 1. Resolver el ticket (lógica de negocio existente)
+                        TicketResponseDto resultado = tecnicoService.resolverTicket(idTecnico, ticketId);
+
+                        // 2. Publicar evento para notificación automática
+                        Ticket ticket = ticketRepository.findById(ticketId)
+                                        .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+                        Usuario tecnico = tecnicoService.buscarPorId(idTecnico);
+                        eventPublisherService.publicarTicketEvaluacionSolicitada(ticket, tecnico,
+                                        comentario != null ? comentario : "Ticket marcado como resuelto");
+
+                        logger.info("[TecnicoController] Estado de ticket actualizado a: Resuelto - Evento publicado");
+                        return ResponseEntity.ok("Estado de ticket actualizado a: Resuelto");
+                } catch (EntityNotFoundException e) {
+                        logger.error("Ticket no encontrado", e);
+                        return ResponseEntity.status(404).body("Ticket no encontrado");
+                } catch (IllegalStateException | IllegalArgumentException e) {
+                        logger.error("Error de negocio al resolver ticket", e);
+                        return ResponseEntity.status(400).body(e.getMessage());
+                } catch (Exception e) {
+                        logger.error("Error inesperado al resolver ticket", e);
+                        return ResponseEntity.status(500).body("Error interno del servidor");
+                }
         }
 
         // POST /api/tecnico/tickets/{ticketId}/devolver
@@ -97,32 +117,43 @@ public class TecnicoController {
                         @Parameter(description = "ID del técnico") @RequestParam int idTecnico,
                         @Parameter(description = "ID del ticket") @PathVariable int ticketId,
                         @Parameter(description = "Motivo de la devolución del ticket") @RequestParam String motivo) {
-                                logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId, idTecnico, motivo);
-                                try {
-                                        tecnicoService.solicitarDevolucion(idTecnico, ticketId, motivo);
-                                        logger.info("[TecnicoController] Solicitud de devolución registrada");
-                                        return ResponseEntity.ok("Solicitud de devolución registrada");
-                                } catch (EntityNotFoundException e) {
-                                        logger.error("Técnico o ticket no encontrado", e);
-                                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
-                                } catch (IllegalStateException | IllegalArgumentException e) {
-                                        logger.error("Error de negocio al solicitar devolución", e);
-                                        return ResponseEntity.status(400).body(e.getMessage());
-                                } catch (Exception e) {
-                                        logger.error("Error inesperado al solicitar devolución", e);
-                                        return ResponseEntity.status(500).body("Error interno del servidor");
-                                }
+                logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId,
+                                idTecnico, motivo);
+                try {
+                        // 1. Crear solicitud de devolución (lógica de negocio existente)
+                        tecnicoService.solicitarDevolucion(idTecnico, ticketId, motivo);
+
+                        // 2. Publicar evento para notificación automática
+                        Ticket ticket = ticketRepository.findById(ticketId)
+                                        .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+                        Usuario tecnico = tecnicoService.buscarPorId(idTecnico);
+                        eventPublisherService.publicarSolicitudDevolucion(ticket, tecnico, motivo);
+
+                        logger.info("[TecnicoController] Solicitud de devolución registrada y evento publicado");
+                        return ResponseEntity.ok("Solicitud de devolución registrada");
+                } catch (EntityNotFoundException e) {
+                        logger.error("Técnico o ticket no encontrado", e);
+                        return ResponseEntity.status(404).body("Técnico o ticket no encontrado");
+                } catch (IllegalStateException | IllegalArgumentException e) {
+                        logger.error("Error de negocio al solicitar devolución", e);
+                        return ResponseEntity.status(400).body(e.getMessage());
+                } catch (Exception e) {
+                        logger.error("Error inesperado al solicitar devolución", e);
+                        return ResponseEntity.status(500).body("Error interno del servidor");
+                }
         }
 
         // GET /api/tecnico/incidentes
         @GetMapping("/incidentes")
         @Operation(summary = "Ver incidencias actuales", description = "Devuelve la cantidad de marcas y fallas del técnico autenticado")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Incidencias actuales", content = @Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IncidenciasDto.class)))
+                        @ApiResponse(responseCode = "200", description = "Incidencias actuales", content = @Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IncidenciasDto.class)))
         })
         public ResponseEntity<IncidenciasDto> verIncidentes(@AuthenticationPrincipal Usuario usuarioAutenticado) {
-                logger.info("[TecnicoController] GET /incidentes usuario: {}", usuarioAutenticado != null ? usuarioAutenticado.getId() : null);
-                if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null || !"TECNICO".equals(usuarioAutenticado.getRol().name())) {
+                logger.info("[TecnicoController] GET /incidentes usuario: {}",
+                                usuarioAutenticado != null ? usuarioAutenticado.getId() : null);
+                if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null
+                                || !"TECNICO".equals(usuarioAutenticado.getRol().name())) {
                         return ResponseEntity.status(403).build();
                 }
                 var tecnico = tecnicoService.buscarPorId(usuarioAutenticado.getId());

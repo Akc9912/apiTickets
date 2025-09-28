@@ -2,7 +2,10 @@ package com.poo.miapi.controller.core;
 
 import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
+import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.service.core.TicketService;
+import com.poo.miapi.service.notificacion.motor.EventPublisherService;
 import com.poo.miapi.model.core.Usuario;
 import com.poo.miapi.model.enums.EstadoTicket;
 
@@ -27,9 +30,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TicketController {
 
         private final TicketService ticketService;
+        private final EventPublisherService eventPublisherService;
+        private final TicketRepository ticketRepository;
 
-        public TicketController(TicketService ticketService) {
+        public TicketController(TicketService ticketService, EventPublisherService eventPublisherService,
+                        TicketRepository ticketRepository) {
                 this.ticketService = ticketService;
+                this.eventPublisherService = eventPublisherService;
+                this.ticketRepository = ticketRepository;
         }
 
         // 1. /api/tickets/todos - Admin/SuperAdmin: ver todos los tickets
@@ -180,7 +188,20 @@ public class TicketController {
                 if (usuario == null || !usuario.puedeRealizarAcciones()) {
                         throw new AccessDeniedException("Usuario bloqueado o no encontrado");
                 }
-                return ticketService.reabrirTicket(id, comentario, usuario.getId());
+
+                // 1. Reabrir ticket (lógica de negocio existente)
+                TicketResponseDto resultado = ticketService.reabrirTicket(id, comentario, usuario.getId());
+
+                // 2. Publicar evento para notificación automática
+                Ticket ticket = ticketRepository.findById(id)
+                                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                                                "Ticket no encontrado"));
+                Usuario trabajador = ticket.getCreador(); // El creador del ticket
+                Usuario ultimoTecnico = ticket.getUltimoTecnicoAtendio(); // El último técnico que trabajó en el ticket
+
+                eventPublisherService.publicarTicketReabierto(ticket, usuario, trabajador, ultimoTecnico, comentario);
+
+                return resultado;
         }
 
 }
