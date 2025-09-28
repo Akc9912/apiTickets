@@ -67,7 +67,7 @@ public class UsuarioLogoutEvent extends ApplicationEvent {
     public String getTiempoSesionFormateado() {
         long horas = tiempoSesion.toHours();
         long minutos = tiempoSesion.toMinutes() % 60;
-        
+
         if (horas > 0) {
             return String.format("%dh %dm", horas, minutos);
         } else {
@@ -93,7 +93,7 @@ public class UsuarioLogoutEvent extends ApplicationEvent {
 
     @Override
     public String toString() {
-        return String.format("UsuarioLogoutEvent{usuario=%s, duracion=%s, motivo=%s}", 
-            usuario.getEmail(), getTiempoSesionFormateado(), motivoCierre);
+        return String.format("UsuarioLogoutEvent{usuario=%s, duracion=%s, motivo=%s}",
+                usuario.getEmail(), getTiempoSesionFormateado(), motivoCierre);
     }
 }

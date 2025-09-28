@@ -260,6 +260,140 @@ public class EstadisticaController {
         }
 
         // ========================================
+        // ENDPOINTS FASE 3 - ESTADÍSTICAS AVANZADAS
+        // ========================================
+
+        @GetMapping("/resumen-ejecutivo")
+        @Operation(summary = "Resumen ejecutivo completo", description = "Dashboard principal con todas las métricas clave del sistema")
+        public ResponseEntity<Map<String, Object>> obtenerResumenEjecutivo() {
+                try {
+                        logger.info("[EstadisticaController] GET /resumen-ejecutivo");
+                        Map<String, Object> resumen = estadisticaService.obtenerResumenEjecutivo();
+                        return ResponseEntity.ok(resumen);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo resumen ejecutivo", e);
+                        return ResponseEntity.status(500).body(Map.of(
+                                        "error", "Error al obtener resumen ejecutivo: " + e.getMessage()));
+                }
+        }
+
+        @GetMapping("/incidentes")
+        @Operation(summary = "Estadísticas de incidentes", description = "Métricas filtradas de tickets/incidentes del sistema")
+        public ResponseEntity<List<EstadisticaPeriodoDto>> obtenerEstadisticasIncidentes(
+                        @Parameter(description = "Tipo de período (MENSUAL, SEMANAL, DIARIO)") @RequestParam(defaultValue = "MENSUAL") PeriodoTipo periodo,
+                        @Parameter(description = "Año de consulta") @RequestParam(required = false) Integer anio,
+                        @Parameter(description = "Mes de consulta (1-12)") @RequestParam(required = false) Integer mes) {
+                try {
+                        logger.info("[EstadisticaController] GET /incidentes - periodo: {}, año: {}, mes: {}",
+                                        periodo, anio, mes);
+
+                        List<EstadisticaPeriodoDto> estadisticas = estadisticaService
+                                        .obtenerEstadisticasIncidentes(periodo, anio, mes);
+
+                        return ResponseEntity.ok(estadisticas);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo estadísticas de incidentes", e);
+                        return ResponseEntity.status(500).body(List.of());
+                }
+        }
+
+        @GetMapping("/tecnicos/ranking")
+        @Operation(summary = "Ranking de técnicos", description = "Clasificación de técnicos por rendimiento y métricas")
+        public ResponseEntity<List<Map<String, Object>>> obtenerRankingTecnicos(
+                        @Parameter(description = "Límite de resultados") @RequestParam(defaultValue = "10") int limite,
+                        @Parameter(description = "Criterio de ordenamiento") @RequestParam(defaultValue = "resueltos") String ordenarPor) {
+                try {
+                        logger.info("[EstadisticaController] GET /tecnicos/ranking - limite: {}, orden: {}",
+                                        limite, ordenarPor);
+
+                        List<Map<String, Object>> ranking = estadisticaService.obtenerRankingTecnicos(limite,
+                                        ordenarPor);
+
+                        return ResponseEntity.ok(ranking);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo ranking de técnicos", e);
+                        return ResponseEntity.status(500).body(List.of());
+                }
+        }
+
+        @GetMapping("/tiempo-real")
+        @Operation(summary = "Actividad en tiempo real", description = "Métricas actualizadas del estado actual del sistema")
+        public ResponseEntity<Map<String, Object>> obtenerActividadTiempoReal() {
+                try {
+                        logger.info("[EstadisticaController] GET /tiempo-real");
+                        Map<String, Object> actividad = estadisticaService.obtenerActividadTiempoReal();
+                        return ResponseEntity.ok(actividad);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo actividad en tiempo real", e);
+                        return ResponseEntity.status(500).body(Map.of(
+                                        "error", "Error al obtener actividad en tiempo real"));
+                }
+        }
+
+        @GetMapping("/rango-fechas")
+        @Operation(summary = "Estadísticas por rango de fechas", description = "Consulta personalizada de estadísticas entre dos fechas específicas")
+        public ResponseEntity<Map<String, Object>> obtenerEstadisticasRangoFechas(
+                        @Parameter(description = "Fecha de inicio (yyyy-MM-dd)") @RequestParam String fechaInicio,
+                        @Parameter(description = "Fecha de fin (yyyy-MM-dd)") @RequestParam String fechaFin,
+                        @Parameter(description = "Incluir datos de usuarios") @RequestParam(defaultValue = "false") boolean incluirUsuarios,
+                        @Parameter(description = "Incluir datos de técnicos") @RequestParam(defaultValue = "true") boolean incluirTecnicos) {
+                try {
+                        logger.info("[EstadisticaController] GET /rango-fechas - desde: {} hasta: {}",
+                                        fechaInicio, fechaFin);
+
+                        LocalDateTime inicio = LocalDateTime.parse(fechaInicio + "T00:00:00");
+                        LocalDateTime fin = LocalDateTime.parse(fechaFin + "T23:59:59");
+
+                        Map<String, Object> estadisticas = estadisticaService.obtenerEstadisticasRangoFechas(
+                                        inicio, fin, incluirUsuarios, incluirTecnicos);
+
+                        return ResponseEntity.ok(estadisticas);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo estadísticas por rango de fechas", e);
+                        return ResponseEntity.status(500).body(Map.of(
+                                        "error", "Error al procesar rango de fechas: " + e.getMessage()));
+                }
+        }
+
+        @GetMapping("/tendencias")
+        @Operation(summary = "Análisis de tendencias", description = "Evolución de métricas durante los últimos meses")
+        public ResponseEntity<Map<String, Object>> obtenerTendenciasMensuales(
+                        @Parameter(description = "Número de meses a analizar") @RequestParam(defaultValue = "6") int meses) {
+                try {
+                        logger.info("[EstadisticaController] GET /tendencias - meses: {}", meses);
+
+                        Map<String, Object> tendencias = estadisticaService.obtenerTendenciasMensuales(meses);
+                        return ResponseEntity.ok(tendencias);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo tendencias mensuales", e);
+                        return ResponseEntity.status(500).body(Map.of(
+                                        "error", "Error al calcular tendencias: " + e.getMessage()));
+                }
+        }
+
+        @GetMapping("/comparativo")
+        @Operation(summary = "Comparativo entre períodos", description = "Comparación detallada entre dos períodos de tiempo específicos")
+        public ResponseEntity<Map<String, Object>> obtenerComparativoPeriodos(
+                        @Parameter(description = "Año del período actual") @RequestParam int anioActual,
+                        @Parameter(description = "Mes del período actual") @RequestParam int mesActual,
+                        @Parameter(description = "Año del período de comparación") @RequestParam int anioComparacion,
+                        @Parameter(description = "Mes del período de comparación") @RequestParam int mesComparacion) {
+                try {
+                        logger.info("[EstadisticaController] GET /comparativo - actual: {}/{} vs comparación: {}/{}",
+                                        mesActual, anioActual, mesComparacion, anioComparacion);
+
+                        Map<String, Object> comparativo = estadisticaService.obtenerComparativoPeriodos(
+                                        anioActual, mesActual, anioComparacion, mesComparacion);
+
+                        return ResponseEntity.ok(comparativo);
+                } catch (Exception e) {
+                        logger.error("Error obteniendo comparativo de períodos", e);
+                        return ResponseEntity.status(500).body(Map.of(
+                                        "error", "Error al generar comparativo: " + e.getMessage()));
+                }
+        }
+
+        // ========================================
         // MÉTODOS AUXILIARES
         // ========================================
 

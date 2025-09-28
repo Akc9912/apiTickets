@@ -25,7 +25,8 @@ public class UsuarioLoginEvent extends ApplicationEvent {
         this.esPrimerLoginDelDia = false;
     }
 
-    public UsuarioLoginEvent(Object source, Usuario usuario, String ipAddress, String userAgent, boolean esPrimerLoginDelDia) {
+    public UsuarioLoginEvent(Object source, Usuario usuario, String ipAddress, String userAgent,
+            boolean esPrimerLoginDelDia) {
         super(source);
         this.usuario = usuario;
         this.fechaLogin = LocalDateTime.now();
@@ -57,8 +58,8 @@ public class UsuarioLoginEvent extends ApplicationEvent {
 
     // Métodos de utilidad
     public String getHoraFormateada() {
-        return fechaLogin.getHour() + ":" + 
-               String.format("%02d", fechaLogin.getMinute());
+        return fechaLogin.getHour() + ":" +
+                String.format("%02d", fechaLogin.getMinute());
     }
 
     public boolean esLoginFueraDeHorario() {
@@ -73,7 +74,7 @@ public class UsuarioLoginEvent extends ApplicationEvent {
 
     @Override
     public String toString() {
-        return String.format("UsuarioLoginEvent{usuario=%s, fecha=%s, ip=%s}", 
-            usuario.getEmail(), fechaLogin, ipAddress);
+        return String.format("UsuarioLoginEvent{usuario=%s, fecha=%s, ip=%s}",
+                usuario.getEmail(), fechaLogin, ipAddress);
     }
 }
