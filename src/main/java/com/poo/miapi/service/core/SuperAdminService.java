@@ -36,6 +36,7 @@ public class SuperAdminService {
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
     private final AuditoriaService auditoriaService;
+
     @Value("${app.default-password}")
     private String defaultPassword;
 
@@ -56,6 +57,8 @@ public class SuperAdminService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
+    // Crear nuevo usuario
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
         validarDatosUsuario(usuarioDto);
 
@@ -81,18 +84,21 @@ public class SuperAdminService {
         return mapToUsuarioDto(nuevoUsuario);
     }
 
+    // Listar todos los usuarios
     public List<UsuarioResponseDto> listarTodosLosUsuarios() {
         return usuarioRepository.findAll().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Ver usuario por ID
     public UsuarioResponseDto verUsuarioPorId(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         return mapToUsuarioDto(usuario);
     }
 
+    // Editar usuario
     public UsuarioResponseDto editarUsuario(int id, UsuarioRequestDto usuarioDto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -114,6 +120,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Eliminar usuario
     public void eliminarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -141,6 +148,7 @@ public class SuperAdminService {
                 SeveridadAuditoria.CRITICAL);
     }
 
+    // Activar usuario
     public UsuarioResponseDto activarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -149,6 +157,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Desactivar usuario
     public UsuarioResponseDto desactivarUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -167,6 +176,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Bloquear usuario
     public UsuarioResponseDto bloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -181,6 +191,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Desbloquear usuario
     public UsuarioResponseDto desbloquearUsuario(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -192,6 +203,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Resetear contraseña
     public UsuarioResponseDto resetearPassword(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -201,6 +213,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Cambiar rol de usuario
     public UsuarioResponseDto cambiarRolUsuario(int id, UsuarioRequestDto usuarioCambioRol) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -240,6 +253,7 @@ public class SuperAdminService {
         return mapToUsuarioDto(nuevoUsuario);
     }
 
+    // Listar usuarios por rol
     public List<UsuarioResponseDto> listarUsuariosPorRol(String rol) {
         if (rol == null || rol.isBlank()) {
             throw new IllegalArgumentException("El rol no puede ser nulo o vacío");
@@ -249,12 +263,14 @@ public class SuperAdminService {
                 .toList();
     }
 
+    // Listar administradores
     public List<UsuarioResponseDto> listarAdministradores() {
         return usuarioRepository.findByRolIn(List.of(Rol.SUPER_ADMIN, Rol.ADMIN)).stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Promover a administrador
     public UsuarioResponseDto promoverAAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -272,6 +288,7 @@ public class SuperAdminService {
         return cambiarRolUsuario(id, adminDto);
     }
 
+    // Degradar administrador
     public UsuarioResponseDto degradarAdmin(int id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -289,12 +306,14 @@ public class SuperAdminService {
         return cambiarRolUsuario(id, trabajadorDto);
     }
 
+    // Listar todos los tickets
     public List<TicketResponseDto> listarTodosLosTickets() {
         return ticketRepository.findAll().stream()
                 .map(this::mapToTicketDto)
                 .toList();
     }
 
+    // Reabrir ticket
     public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + idTicket));
@@ -327,12 +346,14 @@ public class SuperAdminService {
         return mapToTicketDto(ticket);
     }
 
+    // Eliminar ticket
     public void eliminarTicket(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         ticketRepository.delete(ticket);
     }
 
+    // Obtener estadísticas de usuarios
     public Map<String, Object> obtenerEstadisticasUsuarios() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsuarios", usuarioRepository.count());
@@ -345,6 +366,7 @@ public class SuperAdminService {
         return stats;
     }
 
+    // Obtener estadísticas de tickets
     public Map<String, Object> obtenerEstadisticasTickets() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalTickets", ticketRepository.count());
@@ -356,6 +378,7 @@ public class SuperAdminService {
         return stats;
     }
 
+    // Obtener estadísticas del sistema
     public Map<String, Object> obtenerEstadisticasSistema() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("usuarios", obtenerEstadisticasUsuarios());
@@ -364,6 +387,28 @@ public class SuperAdminService {
         return stats;
     }
 
+    // Crear SuperAdmin
+    public SuperAdmin crearSuperAdmin(String nombre, String apellido, String email) {
+        return new SuperAdmin(nombre, apellido, email);
+    }
+
+    // Crear Admin
+    public Admin crearAdmin(String nombre, String apellido, String email) {
+        return new Admin(nombre, apellido, email);
+    }
+
+    // Crear Técnico
+    public Tecnico crearTecnico(String nombre, String apellido, String email) {
+        return new Tecnico(nombre, apellido, email);
+    }
+
+    // Crear Trabajador
+    public Trabajador crearTrabajador(String nombre, String apellido, String email) {
+        return new Trabajador(nombre, apellido, email);
+    }
+
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Validar datos del usuario
     private void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
                 usuarioDto.getEmail() == null ||
@@ -373,12 +418,14 @@ public class SuperAdminService {
         validarRol(usuarioDto.getRol());
     }
 
+    // Validar rol
     private void validarRol(Rol rol) {
         if (rol == null) {
             throw new IllegalArgumentException("El rol no puede ser nulo");
         }
     }
 
+    // Crear usuario por rol
     private Usuario crearUsuarioPorRol(UsuarioRequestDto usuarioDto) {
         switch (usuarioDto.getRol()) {
             case SUPER_ADMIN:
@@ -394,23 +441,7 @@ public class SuperAdminService {
         }
     }
 
-    public SuperAdmin crearSuperAdmin(String nombre, String apellido, String email) {
-        return new SuperAdmin(nombre, apellido, email);
-    }
-
-    public Admin crearAdmin(String nombre, String apellido, String email) {
-        return new Admin(nombre, apellido, email);
-    }
-
-    public Tecnico crearTecnico(String nombre, String apellido, String email) {
-        return new Tecnico(nombre, apellido, email);
-    }
-
-    public Trabajador crearTrabajador(String nombre, String apellido, String email) {
-        return new Trabajador(nombre, apellido, email);
-    }
-
-    // Mapeo de entidad Usuario a DTO
+    // Método auxiliar para mapear Usuario a DTO
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
         return new UsuarioResponseDto(
                 usuario.getId(),
@@ -423,7 +454,7 @@ public class SuperAdminService {
                 usuario.isBloqueado());
     }
 
-    // Mapeo de entidad Ticket a DTO
+    // Método auxiliar para mapear Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),

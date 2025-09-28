@@ -45,6 +45,8 @@ public class TrabajadorService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
+    // Buscar trabajador por ID
     public Trabajador buscarPorId(int id) {
         return trabajadorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
@@ -155,7 +157,8 @@ public class TrabajadorService {
                 .toList();
     }
 
-    // Métodos auxiliares para mapear entidades a DTOs
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),
@@ -168,6 +171,7 @@ public class TrabajadorService {
                 ticket.getFechaUltimaActualizacion());
     }
 
+    // Método auxiliar para mapear Trabajador a DTO
     private TrabajadorResponseDto mapToTrabajadorDto(Trabajador trabajador) {
         return new TrabajadorResponseDto(
                 trabajador.getId(),

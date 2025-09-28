@@ -35,6 +35,7 @@ import java.util.Collections;
 
 @Service
 public class TicketService {
+
     private final TicketRepository ticketRepository;
     private final TrabajadorRepository trabajadorRepository;
     private final UsuarioRepository usuarioRepository;
@@ -63,6 +64,8 @@ public class TicketService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
+    // Obtener usuario por email
     public Usuario obtenerUsuarioPorEmail(String email) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
         if (usuarioOpt.isPresent()) {
@@ -78,10 +81,12 @@ public class TicketService {
         return null;
     }
 
+    // Obtener trabajador por ID
     public Trabajador obtenerTrabajadorPorId(int id) {
         return trabajadorRepository.findById(id).orElse(null);
     }
 
+    // Crear ticket con creador específico
     public TicketResponseDto crearTicketConCreador(TicketRequestDto dto, Usuario creador) {
         Logger logger = LoggerFactory.getLogger(TicketService.class);
         logger.debug("[TicketService] Creando ticket: titulo={}, descripcion={}, creadorEmail={}, creadorRol={}",
@@ -112,43 +117,49 @@ public class TicketService {
         return mapToDto(saved);
     }
 
+    // Buscar ticket por ID
     public TicketResponseDto buscarPorId(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
         return mapToDto(ticket);
     }
 
+    // Listar todos los tickets
     public List<TicketResponseDto> listarTodos() {
         return ticketRepository.findAll().stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
+    // Listar tickets por estado
     public List<TicketResponseDto> listarPorEstado(EstadoTicket estado) {
         return ticketRepository.findByEstado(estado).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
+    // Listar tickets por creador
     public List<TicketResponseDto> listarPorCreador(int idTrabajador) {
         return ticketRepository.findByCreadorId(idTrabajador).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
-    // Tickets por creador y estado (para evaluación)
+    // Listar tickets por creador y estado (para evaluación)
     public List<TicketResponseDto> listarPorCreadorYEstado(int idTrabajador, EstadoTicket estado) {
         return ticketRepository.findByEstadoAndCreadorId(estado, idTrabajador).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
+    // Buscar tickets por título
     public List<TicketResponseDto> buscarPorTitulo(String palabra) {
         return ticketRepository.findByTituloContainingIgnoreCase(palabra).stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
+    // Actualizar estado del ticket
     public TicketResponseDto actualizarEstado(int idTicket, EstadoTicket nuevoEstado) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
@@ -172,31 +183,20 @@ public class TicketService {
         return mapToDto(actualizado);
     }
 
+    // Guardar ticket
     public TicketResponseDto guardar(Ticket ticket) {
         Ticket saved = ticketRepository.save(ticket);
         return mapToDto(saved);
     }
 
-    // Compatibilidad: crear ticket usando idTrabajador
+    // Crear ticket usando idTrabajador (compatibilidad)
     public TicketResponseDto crearTicket(TicketRequestDto dto) {
         Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
                 .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
         return crearTicketConCreador(dto, trabajador);
     }
 
-    private TicketResponseDto mapToDto(Ticket ticket) {
-        return new TicketResponseDto(
-                ticket.getId(),
-                ticket.getTitulo(),
-                ticket.getDescripcion(),
-                ticket.getEstado(),
-                ticket.getCreador() != null ? ticket.getCreador().getNombre() : null,
-                ticket.getTecnicoActual() != null ? ticket.getTecnicoActual().getNombre() : null,
-                ticket.getFechaCreacion(),
-                ticket.getFechaUltimaActualizacion());
-    }
-
-    // Tickets no asignados y reabiertos (para técnicos)
+    // Listar tickets no asignados y reabiertos (para técnicos)
     public List<TicketResponseDto> listarTicketsNoAsignadosYReabiertos() {
         List<Ticket> noAsignados = ticketRepository.findByEstado(EstadoTicket.NO_ATENDIDO);
         List<Ticket> reabiertos = ticketRepository.findByEstado(EstadoTicket.REABIERTO);
@@ -205,7 +205,7 @@ public class TicketService {
                 .toList();
     }
 
-    // Tickets asignados al técnico en estado atendido
+    // Listar tickets asignados al técnico en estado atendido
     public List<TicketResponseDto> listarTicketsAsignadosAlTecnico(int tecnicoId) {
         Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
         if (!(usuario instanceof Tecnico tecnico))
@@ -222,7 +222,7 @@ public class TicketService {
                 .toList();
     }
 
-    // Historial de todos los tickets donde participó el técnico
+    // Listar historial de todos los tickets donde participó el técnico
     public List<TicketResponseDto> listarHistorialTecnico(int tecnicoId) {
         Usuario usuario = usuarioRepository.findById(tecnicoId).orElse(null);
         if (!(usuario instanceof Tecnico))
@@ -233,7 +233,7 @@ public class TicketService {
                 .toList();
     }
 
-    // Lógica de negocio para determinar el creador según el rol
+    // Crear ticket con lógica de rol
     public TicketResponseDto crearTicketConRol(TicketRequestDto dto, Usuario usuario) {
         Usuario creadorTicket = null;
         switch (usuario.getRol().name()) {
@@ -257,14 +257,14 @@ public class TicketService {
         return crearTicketConCreador(dto, creadorTicket);
     }
 
-    // Verifica si el ticket pertenece al usuario
+    // Verificar si el ticket pertenece al usuario
     public boolean esTicketDeUsuario(int ticketId, int usuarioId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
         return ticket.getCreador() != null && ticket.getCreador().getId() == usuarioId;
     }
 
-    // Reabrir ticket (solo lógica, sin reglas de acceso)
+    // Reabrir ticket
     public TicketResponseDto reabrirTicket(int idTicket, String comentario, int usuarioId) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
@@ -325,5 +325,19 @@ public class TicketService {
                 SeveridadAuditoria.HIGH);
 
         return mapToDto(ticket);
+    }
+
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Ticket a DTO
+    private TicketResponseDto mapToDto(Ticket ticket) {
+        return new TicketResponseDto(
+                ticket.getId(),
+                ticket.getTitulo(),
+                ticket.getDescripcion(),
+                ticket.getEstado(),
+                ticket.getCreador() != null ? ticket.getCreador().getNombre() : null,
+                ticket.getTecnicoActual() != null ? ticket.getTecnicoActual().getNombre() : null,
+                ticket.getFechaCreacion(),
+                ticket.getFechaUltimaActualizacion());
     }
 }

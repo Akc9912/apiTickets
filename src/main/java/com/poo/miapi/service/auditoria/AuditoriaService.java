@@ -32,9 +32,8 @@ public class AuditoriaService {
         this.objectMapper = objectMapper;
     }
 
-    /**
-     * Registra una acción de auditoría de forma asíncrona
-     */
+    // MÉTODOS PÚBLICOS
+    // Registra una acción de auditoría básica de forma asíncrona
     @Async
     public void registrarAccion(Usuario usuario, AccionAuditoria accion, String entidadTipo,
             Integer entidadId, String detalleAccion) {
@@ -42,9 +41,7 @@ public class AuditoriaService {
                 null, null, CategoriaAuditoria.BUSINESS, SeveridadAuditoria.MEDIUM);
     }
 
-    /**
-     * Registra una acción de auditoría completa de forma asíncrona
-     */
+    // Registra una acción de auditoría completa de forma asíncrona
     @Async
     public void registrarAccion(Usuario usuario, AccionAuditoria accion, String entidadTipo,
             Integer entidadId, String detalleAccion, Object valoresAnteriores,
@@ -93,25 +90,19 @@ public class AuditoriaService {
         }
     }
 
-    /**
-     * Registra eventos de seguridad críticos
-     */
+    // Registra eventos de seguridad críticos
     public void registrarEventoSeguridad(Usuario usuario, AccionAuditoria accion, String detalle) {
         registrarAccion(usuario, accion, "SECURITY", null, detalle,
                 null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.HIGH);
     }
 
-    /**
-     * Registra login exitoso
-     */
+    // Registra login exitoso del usuario
     public void registrarLogin(Usuario usuario) {
         registrarAccion(usuario, AccionAuditoria.LOGIN, "USUARIO", usuario.getId(),
                 "Login exitoso", null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.LOW);
     }
 
-    /**
-     * Registra intento de login fallido
-     */
+    // Registra intento de login fallido
     public void registrarLoginFallido(String email, String direccionIp) {
         try {
             Auditoria auditoria = new Auditoria();
@@ -133,63 +124,76 @@ public class AuditoriaService {
     }
 
     // Métodos de consulta
+    // Obtener auditorías por usuario
     public List<Auditoria> obtenerPorUsuario(Integer usuarioId) {
         return auditoriaRepository.findByUsuarioIdOrderByFechaAccionDesc(usuarioId);
     }
 
+    // Obtener auditorías por entidad
     public List<Auditoria> obtenerPorEntidad(String entidadTipo, Integer entidadId) {
         return auditoriaRepository.findByEntidadTipoAndEntidadIdOrderByFechaAccionDesc(entidadTipo, entidadId);
     }
 
+    // Obtener auditorías por categoría
     public Page<Auditoria> obtenerPorCategoria(CategoriaAuditoria categoria, Pageable pageable) {
         return auditoriaRepository.findByCategoriaOrderByFechaAccionDesc(categoria, pageable);
     }
 
+    // Obtener eventos de seguridad críticos
     public List<Auditoria> obtenerEventosSeguridadCriticos() {
         return auditoriaRepository.findEventosSeguridadCriticos();
     }
 
+    // Obtener actividad reciente (24 horas)
     public List<Auditoria> obtenerActividadReciente() {
         LocalDateTime hace24Horas = LocalDateTime.now().minusHours(24);
         return auditoriaRepository.findActividadReciente(hace24Horas);
     }
 
+    // Obtener auditorías en rango de fechas
     public List<Auditoria> obtenerEnRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return auditoriaRepository.findByFechaAccionBetween(inicio, fin);
     }
 
     // Métodos para el controlador
+    // Obtener actividad reciente con DTOs
     public List<AuditoriaResponseDto> getActividadReciente(int horas) {
         LocalDateTime fechaDesde = LocalDateTime.now().minusHours(horas);
         List<Auditoria> auditorias = auditoriaRepository.findActividadReciente(fechaDesde);
         return auditorias.stream().map(this::toDto).toList();
     }
 
+    // Obtener auditoría por usuario con DTOs
     public List<AuditoriaResponseDto> getAuditoriaPorUsuario(Integer usuarioId) {
         List<Auditoria> auditorias = auditoriaRepository.findByUsuarioIdOrderByFechaAccionDesc(usuarioId);
         return auditorias.stream().map(this::toDto).toList();
     }
 
+    // Obtener auditoría por entidad con DTOs
     public List<AuditoriaResponseDto> getAuditoriaPorEntidad(String entidadTipo, Integer entidadId) {
         List<Auditoria> auditorias = auditoriaRepository
                 .findByEntidadTipoAndEntidadIdOrderByFechaAccionDesc(entidadTipo, entidadId);
         return auditorias.stream().map(this::toDto).toList();
     }
 
+    // Obtener eventos de seguridad críticos con DTOs
     public List<AuditoriaResponseDto> getEventosSeguridadCriticos() {
         List<Auditoria> auditorias = auditoriaRepository.findEventosSeguridadCriticos();
         return auditorias.stream().map(this::toDto).toList();
     }
 
+    // Obtener auditoría por categoría con DTOs paginados
     public Page<AuditoriaResponseDto> getAuditoriaPorCategoria(CategoriaAuditoria categoria, Pageable pageable) {
         Page<Auditoria> auditorias = auditoriaRepository.findByCategoriaOrderByFechaAccionDesc(categoria, pageable);
         return auditorias.map(this::toDto);
     }
 
+    // Obtener estadísticas por usuario
     public List<Object[]> getEstadisticasPorUsuario() {
         return auditoriaRepository.getEstadisticasPorUsuario();
     }
 
+    // Buscar en auditoría con filtros
     public List<AuditoriaResponseDto> buscarEnAuditoria(LocalDateTime fechaInicio, LocalDateTime fechaFin,
             AccionAuditoria accion, String entidadTipo) {
         List<Auditoria> auditorias;
@@ -209,6 +213,8 @@ public class AuditoriaService {
         return auditorias.stream().map(this::toDto).toList();
     }
 
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear entidad a DTO
     private AuditoriaResponseDto toDto(Auditoria auditoria) {
         AuditoriaResponseDto dto = new AuditoriaResponseDto();
         dto.setId(auditoria.getId());
@@ -231,6 +237,7 @@ public class AuditoriaService {
     }
 
     // Métodos auxiliares
+    // Método auxiliar para obtener IP del cliente
     private String getClientIpAddress(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader == null) {
@@ -239,6 +246,7 @@ public class AuditoriaService {
         return xfHeader.split(",")[0].trim();
     }
 
+    // Método auxiliar para generar hash de integridad
     private String generarHashIntegridad(Auditoria auditoria) {
         try {
             String data = (auditoria.getUsuario() != null ? String.valueOf(auditoria.getUsuario().getId()) : "") +

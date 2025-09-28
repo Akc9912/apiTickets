@@ -60,13 +60,15 @@ public class AuthService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
     /**
+     * Autenticar usuario con email y contraseña
+     * 
      * @param loginRequest Datos de login (email y contraseña)
      * @return Token JWT y datos del usuario si la autenticación es exitosa
      * @throws EntityNotFoundException  Si el usuario no existe o está inactivo
      * @throws IllegalArgumentException Si la contraseña es incorrecta
      */
-
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElse(null);
@@ -221,7 +223,7 @@ public class AuthService {
         return new LoginResponseDto(token, usuarioDto);
     }
 
-    // Cambiar contraseña: recibe ChangePasswordDto
+    // Cambiar contraseña del usuario
     public void cambiarPassword(ChangePasswordDto dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -244,7 +246,7 @@ public class AuthService {
                 null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.MEDIUM);
     }
 
-    // Reiniciar contraseña: recibe ResetPasswordDto
+    // Reiniciar contraseña de usuario (por administrador)
     public void reiniciarPassword(ResetPasswordDto dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -259,6 +261,7 @@ public class AuthService {
                 null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.HIGH);
     }
 
+    // MÉTODOS PRIVADOS/UTILIDADES
     // Método auxiliar para obtener la IP del cliente
     private String getClientIpAddress() {
         try {

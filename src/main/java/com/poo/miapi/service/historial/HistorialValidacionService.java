@@ -39,6 +39,7 @@ public class HistorialValidacionService {
                 this.auditoriaService = auditoriaService;
         }
 
+        // MÉTODOS PÚBLICOS
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
                 // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin,
@@ -96,6 +97,7 @@ public class HistorialValidacionService {
                                 .toList();
         }
 
+        // MÉTODOS PRIVADOS/UTILIDADES
         // Método auxiliar para mapear entidad a DTO
         private HistorialValidacionResponseDto mapToDto(HistorialValidacion validacion) {
                 return new HistorialValidacionResponseDto(

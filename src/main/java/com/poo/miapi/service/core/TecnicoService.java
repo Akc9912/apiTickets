@@ -49,11 +49,14 @@ public class TecnicoService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
+    // Buscar técnico por ID
     public Tecnico buscarPorId(int idTecnico) {
         return tecnicoRepository.findById(idTecnico)
                 .orElseThrow(() -> new EntityNotFoundException("Técnico no encontrado"));
     }
 
+    // Sumar falla al técnico
     public void sumarFalla(Tecnico tecnico) {
         tecnico.setFallas(tecnico.getFallas() + 1);
         if (tecnico.getFallas() >= 2) {
@@ -62,6 +65,7 @@ public class TecnicoService {
         tecnicoRepository.save(tecnico);
     }
 
+    // Sumar marca al técnico
     public void sumarMarca(Tecnico tecnico) {
         tecnico.setMarcas(tecnico.getMarcas() + 1);
         if (tecnico.getMarcas() >= 2) {
@@ -71,6 +75,7 @@ public class TecnicoService {
         tecnicoRepository.save(tecnico);
     }
 
+    // Reiniciar fallas y marcas del técnico
     public void reiniciarFallasYMarcas(Tecnico tecnico) {
         tecnico.setFallas(0);
         tecnico.setMarcas(0);
@@ -78,11 +83,13 @@ public class TecnicoService {
         tecnicoRepository.save(tecnico);
     }
 
+    // Reiniciar fallas y marcas por ID de técnico
     public void reiniciarFallasYMarcas(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
         reiniciarFallasYMarcas(tecnico);
     }
 
+    // Marcar falla al técnico
     public void marcarFalla(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarFalla(tecnico);
@@ -96,6 +103,7 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
+    // Marcar marca al técnico
     public void marcarMarca(int idTecnico, String motivo, Ticket ticket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         sumarMarca(tecnico);
@@ -111,6 +119,7 @@ public class TecnicoService {
         incidenteTecnicoRepository.save(incidente);
     }
 
+    // Tomar ticket asignándolo al técnico
     public TicketResponseDto tomarTicket(int idTecnico, int idTicket) {
         Tecnico tecnico = buscarPorId(idTecnico);
         if (tecnico.isBloqueado()) {
@@ -144,8 +153,8 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
+    // Resolver ticket como técnico
     @Transactional
-    // revisar que la desasignacion final va en si el trabajador acepta o rechaza
     public TicketResponseDto resolverTicket(int idTecnico, int idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
@@ -200,6 +209,7 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
+    // Solicitar devolución de ticket
     @Transactional
     public TicketResponseDto solicitarDevolucion(int idTecnico, int idTicket, String motivo) {
         Tecnico tecnico = buscarPorId(idTecnico);
@@ -238,28 +248,28 @@ public class TecnicoService {
         return mapToTicketDto(ticket);
     }
 
-    // ver tickets pendientes de devolucion para un técnico
+    // Ver solicitudes de devolución pendientes para un técnico
     public List<SolicitudDevolucion> verSolicitudesDevolucionPendientes(int idTecnico) {
         return solicitudDevolucionRepository.findByTecnicoId(idTecnico).stream()
                 .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
                 .toList();
     }
 
-    // Devuelve historial de incidentes como DTOs
+    // Obtener historial de incidentes como DTOs
     public List<IncidenteTecnicoResponseDto> obtenerHistorialIncidentes(int idTecnico) {
         return incidenteTecnicoRepository.findByTecnicoId(idTecnico).stream()
                 .map(this::mapToIncidenteDto)
                 .toList();
     }
 
-    // Devuelve todos los técnicos como DTOs
+    // Listar todos los técnicos como DTOs
     public List<TecnicoResponseDto> listarTodos() {
         return tecnicoRepository.findAll().stream()
                 .map(this::mapToTecnicoDto)
                 .toList();
     }
 
-    // Devuelve tickets asignados como DTOs
+    // Ver tickets asignados como DTOs
     public List<TicketResponseDto> verTicketsAsignados(int idTecnico) {
         Tecnico tecnico = buscarPorId(idTecnico);
         return tecnico.getTicketsActuales().stream()
@@ -268,7 +278,26 @@ public class TecnicoService {
                 .toList();
     }
 
-    // Métodos auxiliares para mapear entidades a DTOs
+    // Obtener datos del técnico
+    public TecnicoResponseDto getDatosTecnico(int idTecnico) {
+        Tecnico tecnico = buscarPorId(idTecnico);
+        return new TecnicoResponseDto(
+                tecnico.getId(),
+                tecnico.getNombre(),
+                tecnico.getApellido(),
+                tecnico.getEmail(),
+                tecnico.getRol().name(),
+                tecnico.isCambiarPass(),
+                tecnico.isActivo(),
+                tecnico.isBloqueado(),
+                tecnico.getFallas(),
+                tecnico.getMarcas(),
+                null // No lista de incidentes
+        );
+    }
+
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),
@@ -281,6 +310,7 @@ public class TecnicoService {
                 ticket.getFechaUltimaActualizacion());
     }
 
+    // Método auxiliar para mapear Tecnico a DTO
     private TecnicoResponseDto mapToTecnicoDto(Tecnico tecnico) {
         return new TecnicoResponseDto(
                 tecnico.getId(),
@@ -298,6 +328,7 @@ public class TecnicoService {
                         .toList());
     }
 
+    // Método auxiliar para mapear IncidenteTecnico a DTO
     private IncidenteTecnicoResponseDto mapToIncidenteDto(IncidenteTecnico incidente) {
         return new IncidenteTecnicoResponseDto(
                 incidente.getId(),
@@ -306,22 +337,5 @@ public class TecnicoService {
                 incidente.getTipo(),
                 incidente.getMotivo(),
                 incidente.getFechaRegistro());
-    }
-
-    public TecnicoResponseDto getDatosTecnico(int idTecnico) {
-        Tecnico tecnico = buscarPorId(idTecnico);
-        return new TecnicoResponseDto(
-                tecnico.getId(),
-                tecnico.getNombre(),
-                tecnico.getApellido(),
-                tecnico.getEmail(),
-                tecnico.getRol().name(),
-                tecnico.isCambiarPass(),
-                tecnico.isActivo(),
-                tecnico.isBloqueado(),
-                tecnico.getFallas(),
-                tecnico.getMarcas(),
-                null // No lista de incidentes
-        );
     }
 }

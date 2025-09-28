@@ -40,6 +40,7 @@ public class IncidenteTecnicoService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
     // Listar todos los incidentes como DTOs
     public List<IncidenteTecnicoResponseDto> listarTodos() {
         return incidenteTecnicoRepository.findAll().stream()
@@ -103,6 +104,7 @@ public class IncidenteTecnicoService {
         return mapToDto(saved);
     }
 
+    // MÉTODOS PRIVADOS/UTILIDADES
     // Método auxiliar para mapear entidad a DTO
     private IncidenteTecnicoResponseDto mapToDto(IncidenteTecnico incidente) {
         return new IncidenteTecnicoResponseDto(

@@ -36,6 +36,7 @@ public class AdminService {
         this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
     // Reabrir ticket
     public TicketResponseDto reabrirTicket(int idTicket, String comentario) {
         Ticket ticket = ticketRepository.findById(idTicket)
@@ -81,6 +82,7 @@ public class AdminService {
         return mapToTicketDto(ticket);
     }
 
+    // Validar datos del usuario
     public void validarDatosUsuario(UsuarioRequestDto usuarioDto) {
         if (usuarioDto.getNombre() == null || usuarioDto.getApellido() == null ||
                 usuarioDto.getEmail() == null || usuarioDto.getRol() == null) {
@@ -89,15 +91,7 @@ public class AdminService {
         validarRol(usuarioDto.getRol());
     }
 
-    private void validarRol(Rol rol) {
-        if (rol == null) {
-            throw new IllegalArgumentException("El rol no puede ser nulo");
-        }
-        if (rol == Rol.SUPER_ADMIN) {
-            throw new IllegalArgumentException("No se puede asignar rol SUPER_ADMIN");
-        }
-    }
-
+    // Crear usuario por rol
     public Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
         switch (dto.getRol()) {
             case ADMIN:
@@ -111,51 +105,33 @@ public class AdminService {
         }
     }
 
+    // Crear Admin
     public Admin crearAdmin(String nombre, String apellido, String email) {
         return new Admin(nombre, apellido, email);
     }
 
+    // Crear Técnico
     public Tecnico crearTecnico(String nombre, String apellido, String email) {
         return new Tecnico(nombre, apellido, email);
     }
 
+    // Crear Trabajador
     public Trabajador crearTrabajador(String nombre, String apellido, String email) {
         return new Trabajador(nombre, apellido, email);
     }
 
-    // Mapeo de entidad Usuario a DTO
-    /*
-     * private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
-     * if (usuario instanceof Admin) {
-     * return new AdminResponseDto(usuario.getId(), usuario.getNombre(),
-     * usuario.getApellido(),
-     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
-     * usuario.isActivo(),
-     * usuario.isBloqueado());
-     * } else if (usuario instanceof Tecnico) {
-     * return new TecnicoResponseDto(usuario.getId(), usuario.getNombre(),
-     * usuario.getApellido(),
-     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
-     * usuario.isActivo(),
-     * usuario.isBloqueado(), ((Tecnico)usuario).getFallas(),
-     * ((Tecnico)usuario).getMarcas());
-     * } else if (usuario instanceof Trabajador) {
-     * return new TrabajadorResponseDto(usuario.getId(), usuario.getNombre(),
-     * usuario.getApellido(),
-     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
-     * usuario.isActivo(),
-     * usuario.isBloqueado());
-     * } else {
-     * return new UsuarioResponseDto(usuario.getId(), usuario.getNombre(),
-     * usuario.getApellido(),
-     * usuario.getEmail(), usuario.getRol(), usuario.isCambiarPass(),
-     * usuario.isActivo(),
-     * usuario.isBloqueado());
-     * }
-     * }
-     */
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Validar rol
+    private void validarRol(Rol rol) {
+        if (rol == null) {
+            throw new IllegalArgumentException("El rol no puede ser nulo");
+        }
+        if (rol == Rol.SUPER_ADMIN) {
+            throw new IllegalArgumentException("No se puede asignar rol SUPER_ADMIN");
+        }
+    }
 
-    // Mapeo de entidad Ticket a DTO
+    // Método auxiliar para mapear Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),

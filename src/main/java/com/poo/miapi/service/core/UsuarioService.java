@@ -44,7 +44,8 @@ public class UsuarioService {
         this.auditoriaService = auditoriaService;
     }
 
-    // Estado del usuario - cambia de true a false
+    // MÉTODOS PÚBLICOS
+    // Cambiar estado activo del usuario
     public UsuarioResponseDto setUsuarioActivo(int userId) {
         Usuario usuario = buscarPorId(userId);
         boolean estadoAnterior = usuario.isActivo();
@@ -68,6 +69,7 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
+    // Cambiar estado bloqueado del usuario
     public UsuarioResponseDto setUsuarioBloqueado(int userId) {
         Usuario usuario = buscarPorId(userId);
         boolean estadoAnterior = usuario.isBloqueado();
@@ -96,40 +98,45 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    // Consultas y operaciones sobre usuarios
-
+    // Buscar usuario por ID
     public Usuario buscarPorId(int id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
 
+    // Buscar usuario por email
     public Usuario buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
 
+    // Listar todos los usuarios
     public List<UsuarioResponseDto> listarTodos() {
         return usuarioRepository.findAll().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Listar usuarios activos
     public List<UsuarioResponseDto> listarActivos() {
         return usuarioRepository.findByActivoTrue().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Listar técnicos bloqueados
     public List<UsuarioResponseDto> listarTecnicosBloqueados() {
         return tecnicoRepository.findByBloqueadoTrue().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Obtener tipo de usuario
     public String getTipoUsuario(int id) {
         return buscarPorId(id).getTipoUsuario();
     }
 
+    // Obtener datos del usuario
     public UsuarioResponseDto obtenerDatos(int id) {
         Usuario usuario = buscarPorId(id);
         return mapToUsuarioDto(usuario);
@@ -146,7 +153,7 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    // Ver mis tickets (como trabajador o técnico).
+    // Ver mis tickets (como trabajador o técnico)
     public List<TicketResponseDto> verMisTickets(int userId) {
         Usuario usuario = buscarPorId(userId);
         List<Ticket> tickets;
@@ -168,55 +175,6 @@ public class UsuarioService {
                         ticket.getFechaCreacion(),
                         ticket.getFechaUltimaActualizacion()))
                 .toList();
-    }
-
-    // Metodo auxiliar para mapear Usuario a UsuarioResponseDto
-    private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
-        return new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getRol(),
-                usuario.isCambiarPass(),
-                usuario.isActivo(),
-                usuario.isBloqueado());
-    }
-
-    // Crear usuario (usado por crearUsuarioConValidacion)
-    private UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
-        if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
-            throw new IllegalArgumentException("El email ya está en uso");
-        }
-        Rol rolEnum = usuarioDto.getRol();
-        if (rolEnum == null) {
-            throw new IllegalArgumentException("Rol no válido");
-        }
-        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
-        nuevoUsuario.setRol(rolEnum);
-        nuevoUsuario.setActivo(true);
-        nuevoUsuario.setBloqueado(false);
-        nuevoUsuario.setCambiarPass(true);
-        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
-        nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
-        usuarioRepository.save(nuevoUsuario);
-        return mapToUsuarioDto(nuevoUsuario);
-    }
-
-    // Instancia el tipo correcto de usuario según el rol
-    private Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
-        switch (dto.getRol()) {
-            case SUPER_ADMIN:
-                return new SuperAdmin(dto.getNombre(), dto.getApellido(), dto.getEmail());
-            case ADMIN:
-                return new Admin(dto.getNombre(), dto.getApellido(), dto.getEmail());
-            case TECNICO:
-                return new Tecnico(dto.getNombre(), dto.getApellido(), dto.getEmail());
-            case TRABAJADOR:
-                return new Trabajador(dto.getNombre(), dto.getApellido(), dto.getEmail());
-            default:
-                throw new IllegalArgumentException("Rol no válido: " + dto.getRol());
-        }
     }
 
     // Creación de usuario con validación de rol del creador
@@ -285,6 +243,7 @@ public class UsuarioService {
                 .toList();
     }
 
+    // Listar todos los usuarios con filtro por rol del usuario autenticado
     public java.util.List<UsuarioResponseDto> listarTodosFiltrado(Usuario usuarioAutenticado) {
         if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
             throw new SecurityException("No autorizado");
@@ -302,5 +261,55 @@ public class UsuarioService {
                 })
                 .filter(java.util.Objects::nonNull)
                 .toList();
+    }
+
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Usuario a UsuarioResponseDto
+    private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
+        return new UsuarioResponseDto(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getEmail(),
+                usuario.getRol(),
+                usuario.isCambiarPass(),
+                usuario.isActivo(),
+                usuario.isBloqueado());
+    }
+
+    // Crear usuario (usado por crearUsuarioConValidacion)
+    private UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
+        if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está en uso");
+        }
+        Rol rolEnum = usuarioDto.getRol();
+        if (rolEnum == null) {
+            throw new IllegalArgumentException("Rol no válido");
+        }
+        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
+        nuevoUsuario.setRol(rolEnum);
+        nuevoUsuario.setActivo(true);
+        nuevoUsuario.setBloqueado(false);
+        nuevoUsuario.setCambiarPass(true);
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
+        nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
+        usuarioRepository.save(nuevoUsuario);
+        return mapToUsuarioDto(nuevoUsuario);
+    }
+
+    // Instanciar el tipo correcto de usuario según el rol
+    private Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
+        switch (dto.getRol()) {
+            case SUPER_ADMIN:
+                return new SuperAdmin(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case ADMIN:
+                return new Admin(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case TECNICO:
+                return new Tecnico(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case TRABAJADOR:
+                return new Trabajador(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            default:
+                throw new IllegalArgumentException("Rol no válido: " + dto.getRol());
+        }
     }
 }
