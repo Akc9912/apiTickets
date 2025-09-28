@@ -10,6 +10,7 @@ import com.poo.miapi.model.enums.SeveridadNotificacion;
 import com.poo.miapi.repository.notificacion.NotificacionRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
 import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.service.websocket.NotificacionWebSocketService;
 import com.poo.miapi.model.enums.AccionAuditoria;
 import com.poo.miapi.model.enums.CategoriaAuditoria;
 import com.poo.miapi.model.enums.SeveridadAuditoria;
@@ -33,13 +34,16 @@ public class NotificacionService {
     private final NotificacionRepository notificacionRepository;
     private final UsuarioRepository usuarioRepository;
     private final AuditoriaService auditoriaService;
+    private final NotificacionWebSocketService webSocketService;
 
     public NotificacionService(NotificacionRepository notificacionRepository,
             UsuarioRepository usuarioRepository,
-            AuditoriaService auditoriaService) {
+            AuditoriaService auditoriaService,
+            NotificacionWebSocketService webSocketService) {
         this.notificacionRepository = notificacionRepository;
         this.usuarioRepository = usuarioRepository;
         this.auditoriaService = auditoriaService;
+        this.webSocketService = webSocketService;
     }
 
     // MÉTODOS PÚBLICOS
@@ -59,7 +63,12 @@ public class NotificacionService {
                 saved.getId(), "Notificación creada: " + titulo, null, saved,
                 CategoriaAuditoria.BUSINESS, SeveridadAuditoria.LOW);
 
-        return mapToDto(saved);
+        NotificacionResponseDto responseDto = mapToDto(saved);
+
+        // Enviar notificación vía WebSocket
+        webSocketService.enviarNotificacionAUsuario(usuarioId, responseDto);
+
+        return responseDto;
     }
 
     // Crear notificación completa
@@ -89,7 +98,12 @@ public class NotificacionService {
                 "NOTIFICACION", saved.getId(), "Notificación completa creada: " + titulo,
                 null, saved, CategoriaAuditoria.BUSINESS, SeveridadAuditoria.LOW);
 
-        return mapToDto(saved);
+        NotificacionResponseDto responseDto = mapToDto(saved);
+
+        // Enviar notificación vía WebSocket
+        webSocketService.enviarNotificacionAUsuario(usuarioId, responseDto);
+
+        return responseDto;
     }
 
     // Crear notificación para ticket asignado
@@ -156,6 +170,11 @@ public class NotificacionService {
             auditoriaService.registrarAccion(notificacion.getUsuario(), AccionAuditoria.UPDATE,
                     "NOTIFICACION", notificacionId, "Notificación marcada como leída",
                     false, true, CategoriaAuditoria.BUSINESS, SeveridadAuditoria.LOW);
+
+            // Notificar vía WebSocket la lectura y actualizar contador
+            webSocketService.notificarNotificacionLeida(usuarioId, notificacionId);
+            long cantidadNoLeidas = contarNoLeidas(usuarioId);
+            webSocketService.enviarContadorNotificaciones(usuarioId, cantidadNoLeidas);
         }
 
         return mapToDto(notificacion);
