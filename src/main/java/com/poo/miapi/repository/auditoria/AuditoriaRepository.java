@@ -49,6 +49,6 @@ public interface AuditoriaRepository extends JpaRepository<Auditoria, Long> {
     List<Auditoria> findActividadReciente(@Param("fecha") LocalDateTime fecha);
 
     // Estadísticas por usuario
-    @Query("SELECT u.nombreUsuario, u.emailUsuario, COUNT(a), MAX(a.fechaAccion) FROM Auditoria a JOIN a.usuario u GROUP BY u.id, u.nombreUsuario, u.emailUsuario ORDER BY COUNT(a) DESC")
+    @Query("SELECT a.nombreUsuario, a.emailUsuario, COUNT(a), MAX(a.fechaAccion) FROM Auditoria a GROUP BY a.nombreUsuario, a.emailUsuario ORDER BY COUNT(a) DESC")
     List<Object[]> getEstadisticasPorUsuario();
 }

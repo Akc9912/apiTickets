@@ -2,9 +2,9 @@ package com.poo.miapi.model.enums;
 
 public enum PrioridadNotificacion {
     BAJA("Baja"),
-    MEDIA("Media"),
+    NORMAL("Normal"),
     ALTA("Alta"),
-    CRITICA("Crítica");
+    URGENTE("Urgente");
 
     private final String descripcion;
 

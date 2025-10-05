@@ -42,8 +42,17 @@ public class Auditoria implements Serializable {
     @Column(name = "entidad_id")
     private Integer entidadId;
 
-    @Column(name = "detalle_accion", columnDefinition = "TEXT")
-    private String detalleAccion;
+    @Column(name = "entidad_nombre", length = 255)
+    private String entidadNombre;
+
+    @Column(name = "ip_address", length = 45)
+    private String ipAddress;
+
+    @Column(name = "user_agent", columnDefinition = "TEXT")
+    private String userAgent;
+
+    @Column(name = "session_id", length = 128)
+    private String sessionId;
 
     @JsonRawValue
     @Column(name = "valores_anteriores", columnDefinition = "JSON")
@@ -53,32 +62,25 @@ public class Auditoria implements Serializable {
     @Column(name = "valores_nuevos", columnDefinition = "JSON")
     private String valoresNuevos;
 
-    @Column(name = "direccion_ip", length = 45)
-    private String direccionIp;
-
-    @Column(name = "user_agent", columnDefinition = "TEXT")
-    private String userAgent;
-
-    @Column(name = "sesion_id")
-    private String sesionId;
-
-    @Column(name = "fecha_accion", nullable = false)
-    private LocalDateTime fechaAccion;
-
-    @Column(name = "fecha_procesamiento")
-    private LocalDateTime fechaProcesamiento;
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
 
     @Enumerated(EnumType.STRING)
-    private CategoriaAuditoria categoria;
+    @Column(nullable = false)
+    private String resultado = "SUCCESS"; // SUCCESS, ERROR, WARNING
+
+    @Column(name = "mensaje_error", columnDefinition = "TEXT")
+    private String mensajeError;
 
     @Enumerated(EnumType.STRING)
-    private SeveridadAuditoria severidad;
+    @Column(nullable = false)
+    private String origen = "WEB"; // WEB, API, SYSTEM, MIGRATION
 
-    @Column(name = "hash_integridad", length = 64)
-    private String hashIntegridad;
+    @Column(nullable = false)
+    private LocalDateTime fecha = LocalDateTime.now();
 
-    @Column(name = "retencion_hasta")
-    private LocalDateTime retencionHasta;
+    @Column(nullable = false)
+    private Boolean procesado = false;
 
     // Constructores
     public Auditoria() {

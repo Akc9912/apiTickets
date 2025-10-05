@@ -22,6 +22,8 @@ import com.poo.miapi.service.auditoria.AuditoriaService;
 import com.poo.miapi.model.enums.AccionAuditoria;
 import com.poo.miapi.model.enums.CategoriaAuditoria;
 import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.model.enums.TipoIncidente;
+
 import java.util.List;
 
 @Service
@@ -98,7 +100,7 @@ public class TecnicoService {
             tecnico.setBloqueado(true);
         }
 
-        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.FALLA,
+        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, TipoIncidente.FALLA,
                 motivo);
         incidenteTecnicoRepository.save(incidente);
     }
@@ -114,7 +116,7 @@ public class TecnicoService {
             marcarFalla(idTecnico, motivo, ticket);
         }
 
-        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, IncidenteTecnico.TipoIncidente.MARCA,
+        IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket, TipoIncidente.MARCA,
                 motivo);
         incidenteTecnicoRepository.save(incidente);
     }
@@ -185,7 +187,7 @@ public class TecnicoService {
                     tecnicoRepository.save(tecnico);
                     // Registrar incidente técnico
                     IncidenteTecnico incidente = new IncidenteTecnico(tecnico, ticket,
-                            IncidenteTecnico.TipoIncidente.FALLA,
+                            TipoIncidente.FALLA,
                             "Falla restada por resolver ticket reabierto");
                     incidenteTecnicoRepository.save(incidente);
                 }
@@ -330,12 +332,12 @@ public class TecnicoService {
 
     // Método auxiliar para mapear IncidenteTecnico a DTO
     private IncidenteTecnicoResponseDto mapToIncidenteDto(IncidenteTecnico incidente) {
-        return new IncidenteTecnicoResponseDto(
-                incidente.getId(),
-                incidente.getTecnico().getId(),
-                incidente.getTicket().getId(),
-                incidente.getTipo(),
-                incidente.getMotivo(),
-                incidente.getFechaRegistro());
+        IncidenteTecnicoResponseDto dto = new IncidenteTecnicoResponseDto();
+        dto.setIdTecnico(incidente.getTecnico().getId());
+        dto.setIdTicket(incidente.getTicket().getId());
+        dto.setMotivo(incidente.getMotivo());
+        dto.setTipo(incidente.getTipo());
+        dto.setFechaRegistro(incidente.getFechaRegistro());
+        return dto;
     }
 }

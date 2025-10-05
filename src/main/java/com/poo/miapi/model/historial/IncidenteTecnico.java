@@ -4,14 +4,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.poo.miapi.model.core.Tecnico;
 import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.model.enums.TipoIncidente;
 
 @Entity
 public class IncidenteTecnico {
-
-    public enum TipoIncidente {
-        MARCA,
-        FALLA
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +17,7 @@ public class IncidenteTecnico {
     @JoinColumn(name = "id_tecnico")
     private Tecnico tecnico;
 
-    @ManyToOne(optional = false) 
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_ticket")
     private Ticket ticket;
 

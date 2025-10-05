@@ -1,7 +1,8 @@
 package com.poo.miapi.dto.tecnico;
 
 import java.time.LocalDateTime;
-import com.poo.miapi.model.historial.IncidenteTecnico.TipoIncidente;
+
+import com.poo.miapi.model.enums.TipoIncidente;
 
 public class IncidenteTecnicoResponseDto {
     private int id;

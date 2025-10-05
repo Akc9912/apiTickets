@@ -27,9 +27,10 @@
 		<url/>
 	</scm>
 	<properties>
-	<java.version>24</java.version>
-	<maven.compiler.source>24</maven.compiler.source>
-	<maven.compiler.target>24</maven.compiler.target>
+		<java.version>24</java.version>
+		<maven.compiler.source>24</maven.compiler.source>
+		<maven.compiler.target>24</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -142,7 +143,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.1.2</version>
 				<configuration>
-					<skipTests>true</skipTests>
+					<skipTests>false</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>

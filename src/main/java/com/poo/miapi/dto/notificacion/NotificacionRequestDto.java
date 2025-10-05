@@ -1,25 +1,14 @@
 package com.poo.miapi.dto.notificacion;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
-public class NotificacionResponseDto {
-    private int id;
+public class NotificacionRequestDto {
     private String titulo;
     private String mensaje;
     private String tipo;
     private String origenTipo;
     private int origenId;
-    private String metadata;
-    private LocalDateTime fechaCreacion;
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private String metadata; // información extra opcional
 
     public String getTitulo() {
         return this.titulo;
@@ -49,7 +38,7 @@ public class NotificacionResponseDto {
         return this.origenTipo;
     }
 
-    public void setOrigenTipo(String origenTipo) {
+    public void setOtigenTipo(String origenTipo) {
         this.origenTipo = origenTipo;
     }
 
@@ -67,13 +56,5 @@ public class NotificacionResponseDto {
 
     public void setMetadata(String metadata) {
         this.metadata = metadata;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return this.fechaCreacion;
-    }
-
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
     }
 }

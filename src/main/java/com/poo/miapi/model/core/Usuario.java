@@ -1,5 +1,6 @@
 
 package com.poo.miapi.model.core;
+
 import com.poo.miapi.model.enums.Rol;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,23 @@ public abstract class Usuario implements UserDetails {
     private boolean cambiarPass;
     private boolean activo;
     private boolean bloqueado;
+
+    @Column(name = "created_at")
+    private java.time.LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private java.time.LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = java.time.LocalDateTime.now();
+        updatedAt = java.time.LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = java.time.LocalDateTime.now();
+    }
 
     public Usuario() {
     }
@@ -147,7 +165,7 @@ public abstract class Usuario implements UserDetails {
     public boolean puedeIniciarSesion() {
         return this.activo;
     }
-    
+
     // Usuarios activos y no bloqueados pueden realizar acciones
     public boolean puedeRealizarAcciones() {
         return this.activo && !this.bloqueado;

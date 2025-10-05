@@ -27,6 +27,8 @@ import com.poo.miapi.service.auditoria.AuditoriaService;
 import com.poo.miapi.model.enums.AccionAuditoria;
 import com.poo.miapi.model.enums.CategoriaAuditoria;
 import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.model.enums.TipoIncidente;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -302,7 +304,7 @@ public class TicketService {
                         tecnicoRepository.save(ultimoTecnico);
                         // Registrar incidente técnico
                         IncidenteTecnico incidente = new IncidenteTecnico(ultimoTecnico, ticket,
-                                IncidenteTecnico.TipoIncidente.FALLA,
+                                TipoIncidente.FALLA,
                                 "Falla por ticket reabierto por trabajador");
                         incidenteTecnicoRepository.save(incidente);
                         break;

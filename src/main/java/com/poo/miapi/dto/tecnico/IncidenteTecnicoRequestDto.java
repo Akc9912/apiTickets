@@ -1,6 +1,6 @@
 package com.poo.miapi.dto.tecnico;
 
-import com.poo.miapi.model.historial.IncidenteTecnico.TipoIncidente;
+import com.poo.miapi.model.enums.TipoIncidente;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 
