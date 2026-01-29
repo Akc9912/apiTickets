@@ -11,33 +11,36 @@ import com.poo.miapi.model.historial.IncidenteTecnico;
 import com.poo.miapi.model.historial.TecnicoPorTicket;
 
 @Entity
+@Table(name = "tecnico")
 @DiscriminatorValue("TECNICO")
 public class Tecnico extends Usuario {
 
-    /* ---------- Campos propios ---------- */
     private int fallas = 0;
     private int marcas = 0;
 
-    /* Incidentes disciplinarios registrados al técnico */
+    // Incidentes disciplinarios registrados al técnico
     @OneToMany(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IncidenteTecnico> incidentes = new ArrayList<>();
 
-    /* Historial de tickets atendidos por el técnico */
+    // Historial de tickets atendidos por el técnico
     @OneToMany(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
 
-    /* ---------- Constructores ---------- */
     public Tecnico() {
         super();
         this.setRol(Rol.TECNICO);
+        this.incidentes = new ArrayList<>();
+        this.historialTecnicos = new ArrayList<>();
     }
 
     public Tecnico(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
         this.setRol(Rol.TECNICO);
+        this.incidentes = new ArrayList<>();
+        this.historialTecnicos = new ArrayList<>();
     }
 
-    /* ---------- Getters / Setters ---------- */
+    // Getters / Setters 
     public int getFallas() {
         return fallas;
     }
@@ -70,7 +73,7 @@ public class Tecnico extends Usuario {
         this.historialTecnicos = hist;
     }
 
-    /* ---------- Utilidades de dominio ---------- */
+
     public void addIncidente(IncidenteTecnico incidente) {
         if (incidente != null) {
             incidentes.add(incidente);
@@ -85,10 +88,6 @@ public class Tecnico extends Usuario {
         }
     }
 
-    /**
-     * Devuelve los tickets actualmente asignados al técnico (sin fecha de
-     * desasignación).
-     */
     public List<Ticket> getTicketsActuales() {
         return historialTecnicos.stream()
                 .filter(h -> h.getFechaDesasignacion() == null)

@@ -1,61 +1,71 @@
 package com.poo.miapi.service.notificacion;
 
+import org.springframework.stereotype.Service;
+
+import com.poo.miapi.dto.notificacion.NotificacionRequestDto;
 import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import com.poo.miapi.model.notificacion.Notificacion;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.notificacion.NotificacionRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class NotificacionService {
 
-    @Autowired
-    private final NotificacionRepository notificacionRepository;
-    @Autowired
-    private final UsuarioRepository usuarioRepository;
+    // CRUD básico
 
-    public NotificacionService(NotificacionRepository notificacionRepository, UsuarioRepository usuarioRepository) {
-        this.notificacionRepository = notificacionRepository;
-        this.usuarioRepository = usuarioRepository;
+    // crearNotificacion(NotificacionDTO notificacionDTO)
+    public void crearNotificacion(NotificacionRequestDto dto) {
+        Notificacion n = new Notificacion(dto.getTitulo(),);
     }
 
-    // Enviar una notificación a un usuario (devuelve DTO)
-    public NotificacionResponseDto enviarNotificacion(int idUsuario, String mensaje) {
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        Notificacion n = new Notificacion(usuario, mensaje);
-        Notificacion saved = notificacionRepository.save(n);
-        return mapToDto(saved);
-    }
+    // obtenerNotificacionPorId(Long id)
 
-    // Obtener todas las notificaciones de un usuario (devuelve DTOs)
-    public List<NotificacionResponseDto> obtenerNotificaciones(int idUsuario) {
-        return notificacionRepository.findAllByUsuarioId(idUsuario).stream()
-                .map(this::mapToDto)
-                .toList();
-    }
+    // actualizarNotificacion(Long id, NotificacionDTO notificacionDTO)
 
-    // Eliminar todas las notificaciones de un usuario
-    public void eliminarTodasDelUsuario(int idUsuario) {
-        notificacionRepository.deleteAllByUsuarioId(idUsuario);
-    }
+    // eliminarNotificacion(Long id)
 
-    // Contar notificaciones de un usuario
-    public int contarNotificaciones(int idUsuario) {
-        return notificacionRepository.countByUsuarioId(idUsuario);
-    }
+    // Gestión por usuario
 
-    // Método auxiliar para mapear entidad a DTO
-    private NotificacionResponseDto mapToDto(Notificacion n) {
-        return new NotificacionResponseDto(
-                n.getId(),
-                n.getUsuario().getId(),
-                n.getMensaje(),
-                n.getFechaCreacion());
-    }
+    // listarNotificacionesPorUsuario(Long usuarioId)
 
+    // listarNoLeidasPorUsuario(Long usuarioId)
+
+    // marcarComoLeida(Long id)
+
+    // marcarTodasComoLeidas(Long usuarioId)
+
+    // eliminarTodasPorUsuario(Long usuarioId)
+
+    // Lógica avanzada
+
+    // contarNoLeidas(Long usuarioId)
+
+    // buscarPorFiltros(Long usuarioId, String tipo, Boolean leida, LocalDateTime
+    // desde, LocalDateTime hasta)
+
+    // enviarNotificacion(Notificacion notificacion) → (para integrar con WebSocket
+    // o colas)
+
+    // procesarEventoDeSistema(EventoSistema evento) → (para emitir notificaciones
+    // automáticas, ej. ticket resuelto)
+
+    // Integración en tiempo real (WebSocket / Event Bus)
+
+    // notificarUsuario(Long usuarioId, Notificacion notificacion)
+
+    // notificarGrupo(List<Long> usuariosIds, Notificacion notificacion)
+
+    // notificarSistema(Notificacion notificacion)
+
+    // Utilidades
+
+    NotificacionResponseDto mapToDto(Notificacion n) {
+        NotificacionResponseDto dto = new NotificacionResponseDto();
+        dto.setId(n.getId());
+        dto.setTitulo(n.getTitulo());
+        dto.setMensaje(n.getMensaje());
+        dto.setOrigenTipo(n.getOrigenTipo());
+        dto.setOrigenId(n.getOrigenId());
+        dto.setMetadata(n.getMetadate());
+        dto.setFechaCreacion(n.getFechaCreacion());
+        return dto;
+    }
 }

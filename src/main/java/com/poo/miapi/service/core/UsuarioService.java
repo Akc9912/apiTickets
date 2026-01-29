@@ -1,22 +1,22 @@
 package com.poo.miapi.service.core;
 
-import com.poo.miapi.dto.auth.ChangePasswordDto;
-import com.poo.miapi.dto.auth.LoginRequestDto;
-import com.poo.miapi.dto.auth.LoginResponseDto;
-import com.poo.miapi.dto.auth.ResetPasswordDto;
-import com.poo.miapi.dto.usuario.UsuarioRequestDto;
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
 import com.poo.miapi.model.core.*;
+import com.poo.miapi.model.enums.Rol;
 import com.poo.miapi.repository.core.TecnicoRepository;
 import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.service.notificacion.NotificacionService;
-import com.poo.miapi.service.security.JwtService;
+import com.poo.miapi.util.PasswordHelper;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
@@ -24,10 +24,9 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final TecnicoRepository tecnicoRepository;
-    private final NotificacionService notificacionService;
-    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final TecnicoService tecnicoService;
+    private final AuditoriaService auditoriaService;
 
     @Value("${app.default-password}")
     private String defaultPassword;
@@ -35,146 +34,109 @@ public class UsuarioService {
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             TecnicoRepository tecnicoRepository,
-            NotificacionService notificacionService,
-            JwtService jwtService, 
             PasswordEncoder passwordEncoder,
-            TecnicoService tecnicoService) {
+            TecnicoService tecnicoService,
+            AuditoriaService auditoriaService) {
         this.usuarioRepository = usuarioRepository;
         this.tecnicoRepository = tecnicoRepository;
-        this.notificacionService = notificacionService;
-        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.tecnicoService = tecnicoService;
+        this.auditoriaService = auditoriaService;
     }
 
-    // Autenticación y Login
-
-    public LoginResponseDto login(LoginRequestDto request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-
-        // Solo usuarios INACTIVOS se tratan como si no existieran
-        // Usuarios BLOQUEADOS pueden iniciar sesión pero no realizar acciones
-        if (!usuario.isActivo()) {
-            throw new EntityNotFoundException("Usuario no encontrado");
-        }
-
-        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
-            throw new IllegalArgumentException("Contraseña incorrecta");
-        }
-
-        String token = jwtService.generateToken(usuario);
-
-        return new LoginResponseDto(token, mapToUsuarioDto(usuario));
-    }
-
-    // contraseña
-
-    public String cambiarPassword(ChangePasswordDto dto) {
-        Usuario usuario = buscarPorId(dto.getUserId());
-        String nuevaPass = dto.getNewPassword();
-
-        if (nuevaPass == null || nuevaPass.isBlank()) {
-            throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
-        }
-
-        if (passwordEncoder.matches(nuevaPass, usuario.getPassword())) {
-            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior");
-        }
-
-        usuario.setPassword(passwordEncoder.encode(nuevaPass));
-        usuario.setCambiarPass(false);
-        usuarioRepository.save(usuario);
-
-        return "Contraseña actualizada correctamente";
-    }
-
-    public void reiniciarPassword(ResetPasswordDto dto) {
-        Usuario usuario = buscarPorId(dto.getUserId());
-        usuario.setPassword(passwordEncoder.encode(defaultPassword));
-        usuario.setCambiarPass(true);
-        usuarioRepository.save(usuario);
-    }
-
-    // Estado del usuario
-
-    public UsuarioResponseDto bloquearUsuario(int userId) {
+    // MÉTODOS PÚBLICOS
+    // Cambiar estado activo del usuario
+    public UsuarioResponseDto setUsuarioActivo(int userId) {
         Usuario usuario = buscarPorId(userId);
-        usuario.setBloqueado(true);
+        boolean estadoAnterior = usuario.isActivo();
+        boolean nuevoEstado = !usuario.isActivo();
+        usuario.setActivo(nuevoEstado);
         usuarioRepository.save(usuario);
+
+        // Auditar cambio de estado
+        AccionAuditoria accion = nuevoEstado ? AccionAuditoria.ACTIVATE_USER : AccionAuditoria.DEACTIVATE_USER;
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario ejecutor aquí
+                accion,
+                "USUARIO",
+                userId,
+                "Estado de usuario cambiado a " + (nuevoEstado ? "activo" : "inactivo"),
+                estadoAnterior,
+                nuevoEstado,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.MEDIUM);
+
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto desbloquearUsuario(int userId) {
+    // Cambiar estado bloqueado del usuario
+    public UsuarioResponseDto setUsuarioBloqueado(int userId) {
         Usuario usuario = buscarPorId(userId);
-        usuario.setBloqueado(false);
-
-        if (usuario instanceof Tecnico tecnico) {
+        boolean estadoAnterior = usuario.isBloqueado();
+        boolean nuevoEstado = !usuario.isBloqueado();
+        usuario.setBloqueado(nuevoEstado);
+        // Si se está desbloqueando y es técnico, aseguramos que quede activo
+        if (nuevoEstado == false && usuario instanceof Tecnico tecnico) {
+            usuario.setActivo(true);
             tecnicoService.reiniciarFallasYMarcas(tecnico);
         }
-
         usuarioRepository.save(usuario);
+
+        // Auditar cambio de bloqueo
+        AccionAuditoria accion = nuevoEstado ? AccionAuditoria.BLOCK_USER : AccionAuditoria.UNBLOCK_USER;
+        auditoriaService.registrarAccion(
+                null, // No tenemos usuario ejecutor aquí
+                accion,
+                "USUARIO",
+                userId,
+                "Usuario " + (nuevoEstado ? "bloqueado" : "desbloqueado"),
+                estadoAnterior,
+                nuevoEstado,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.HIGH);
+
         return mapToUsuarioDto(usuario);
     }
 
-    public UsuarioResponseDto bajaLogicaUsuario(int id) {
-        Usuario usuario = buscarPorId(id);
-        usuario.setActivo(false);
-        usuarioRepository.save(usuario);
-        return mapToUsuarioDto(usuario);
-    }
-
-    public UsuarioResponseDto altaLogicaUsuario(int id) {
-        Usuario usuario = buscarPorId(id);
-        usuario.setActivo(true);
-        usuarioRepository.save(usuario);
-        return mapToUsuarioDto(usuario);
-    }
-
-    // Consultas y operaciones sobre usuarios
-
+    // Buscar usuario por ID
     public Usuario buscarPorId(int id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
 
+    // Buscar usuario por email
     public Usuario buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
     }
 
+    // Listar todos los usuarios
     public List<UsuarioResponseDto> listarTodos() {
         return usuarioRepository.findAll().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Listar usuarios activos
     public List<UsuarioResponseDto> listarActivos() {
         return usuarioRepository.findByActivoTrue().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
+    // Listar técnicos bloqueados
     public List<UsuarioResponseDto> listarTecnicosBloqueados() {
         return tecnicoRepository.findByBloqueadoTrue().stream()
                 .map(this::mapToUsuarioDto)
                 .toList();
     }
 
-    public UsuarioResponseDto actualizarDatos(int id, UsuarioRequestDto dto) {
-        Usuario usuario = buscarPorId(id);
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellido(dto.getApellido());
-        usuario.setEmail(dto.getEmail());
-        usuarioRepository.save(usuario);
-
-        return mapToUsuarioDto(usuario);
-    }
-
+    // Obtener tipo de usuario
     public String getTipoUsuario(int id) {
         return buscarPorId(id).getTipoUsuario();
     }
 
+    // Obtener datos del usuario
     public UsuarioResponseDto obtenerDatos(int id) {
         Usuario usuario = buscarPorId(id);
         return mapToUsuarioDto(usuario);
@@ -191,7 +153,7 @@ public class UsuarioService {
         return mapToUsuarioDto(usuario);
     }
 
-    // Ver mis tickets (como trabajador o técnico).
+    // Ver mis tickets (como trabajador o técnico)
     public List<TicketResponseDto> verMisTickets(int userId) {
         Usuario usuario = buscarPorId(userId);
         List<Ticket> tickets;
@@ -215,36 +177,139 @@ public class UsuarioService {
                 .toList();
     }
 
-    // Ver mis notificaciones (todos los usuarios)
-    public List<NotificacionResponseDto> verMisNotificaciones(int userId) {
-        return notificacionService.obtenerNotificaciones(userId);
+    // Creación de usuario con validación de rol del creador
+    public UsuarioResponseDto crearUsuarioConValidacion(UsuarioRequestDto usuarioDto, Usuario usuarioCreador) {
+        if (usuarioCreador == null || usuarioCreador.getRol() == null) {
+            throw new IllegalArgumentException("No autorizado");
+        }
+        Rol rolCreador = usuarioCreador.getRol();
+        Rol rolNuevo = usuarioDto.getRol();
+        if (!rolCreador.canManageUsers()) {
+            throw new IllegalArgumentException("Solo Admin o SuperAdmin pueden crear usuarios");
+        }
+        if (rolCreador == Rol.ADMIN && rolNuevo == Rol.SUPER_ADMIN) {
+            throw new IllegalArgumentException("Admin no puede crear SuperAdmin");
+        }
+
+        UsuarioResponseDto resultado = crearUsuario(usuarioDto);
+
+        // Auditar creación de usuario
+        auditoriaService.registrarAccion(
+                usuarioCreador,
+                AccionAuditoria.CREATE,
+                "USUARIO",
+                resultado.getId(),
+                "Usuario creado: " + usuarioDto.getEmail() + " con rol " + usuarioDto.getRol(),
+                null,
+                usuarioDto,
+                CategoriaAuditoria.SECURITY,
+                SeveridadAuditoria.MEDIUM);
+
+        return resultado;
     }
 
-    // Estadísticas de usuarios
-
-    public long contarUsuariosTotales() {
-        return usuarioRepository.count();
+    // Resetear contraseña a la por defecto
+    public UsuarioResponseDto resetearPassword(int userId) {
+        Usuario usuario = buscarPorId(userId);
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuario.getApellido());
+        usuario.setPassword(passwordEncoder.encode(rawPassword));
+        usuario.setCambiarPass(true);
+        usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
-    public long contarUsuariosActivos() {
-        return usuarioRepository.countByActivoTrue();
+    // Cambiar rol de usuario
+    public UsuarioResponseDto cambiarRolUsuario(int userId, UsuarioRequestDto dto) {
+        Usuario usuario = buscarPorId(userId);
+        Rol nuevoRol = dto.getRol();
+        if (nuevoRol == null) {
+            throw new IllegalArgumentException("Rol no válido");
+        }
+        usuario.setRol(nuevoRol);
+        usuarioRepository.save(usuario);
+        return mapToUsuarioDto(usuario);
     }
 
-    public long contarTecnicosBloqueados() {
-        return tecnicoRepository.countByBloqueadoTrue();
+    // Listar usuarios por rol
+    public List<UsuarioResponseDto> listarUsuariosPorRol(String rolStr) {
+        Rol rol;
+        try {
+            rol = Rol.valueOf(rolStr.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Rol inválido: " + rolStr);
+        }
+        return usuarioRepository.findByRol(rol).stream()
+                .map(this::mapToUsuarioDto)
+                .toList();
     }
 
-    // Metodo auxiliar para mapear Usuario a UsuarioResponseDto
+    // Listar todos los usuarios con filtro por rol del usuario autenticado
+    public java.util.List<UsuarioResponseDto> listarTodosFiltrado(Usuario usuarioAutenticado) {
+        if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
+            throw new SecurityException("No autorizado");
+        }
+        Rol rol = usuarioAutenticado.getRol();
+        if (rol != Rol.ADMIN && rol != Rol.SUPER_ADMIN) {
+            throw new SecurityException("No autorizado");
+        }
+        return usuarioRepository.findAll().stream()
+                .map(usuario -> {
+                    if (rol == Rol.ADMIN && usuario.getRol() == Rol.SUPER_ADMIN) {
+                        return null;
+                    }
+                    return mapToUsuarioDto(usuario);
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
+    }
 
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Usuario a UsuarioResponseDto
     private UsuarioResponseDto mapToUsuarioDto(Usuario usuario) {
         return new UsuarioResponseDto(
                 usuario.getId(),
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail(),
-                usuario.getRol() != null ? usuario.getRol().name() : null,
+                usuario.getRol(),
                 usuario.isCambiarPass(),
                 usuario.isActivo(),
                 usuario.isBloqueado());
+    }
+
+    // Crear usuario (usado por crearUsuarioConValidacion)
+    private UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioDto) {
+        if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está en uso");
+        }
+        Rol rolEnum = usuarioDto.getRol();
+        if (rolEnum == null) {
+            throw new IllegalArgumentException("Rol no válido");
+        }
+        Usuario nuevoUsuario = crearUsuarioPorRol(usuarioDto);
+        nuevoUsuario.setRol(rolEnum);
+        nuevoUsuario.setActivo(true);
+        nuevoUsuario.setBloqueado(false);
+        nuevoUsuario.setCambiarPass(true);
+        String rawPassword = PasswordHelper.generarPasswordPorDefecto(usuarioDto.getApellido());
+        nuevoUsuario.setPassword(passwordEncoder.encode(rawPassword));
+        usuarioRepository.save(nuevoUsuario);
+        return mapToUsuarioDto(nuevoUsuario);
+    }
+
+    // Instanciar el tipo correcto de usuario según el rol
+    private Usuario crearUsuarioPorRol(UsuarioRequestDto dto) {
+        switch (dto.getRol()) {
+            case SUPER_ADMIN:
+                return new SuperAdmin(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case ADMIN:
+                return new Admin(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case TECNICO:
+                return new Tecnico(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            case TRABAJADOR:
+                return new Trabajador(dto.getNombre(), dto.getApellido(), dto.getEmail());
+            default:
+                throw new IllegalArgumentException("Rol no válido: " + dto.getRol());
+        }
     }
 }

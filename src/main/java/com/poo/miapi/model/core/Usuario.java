@@ -1,12 +1,13 @@
 
 package com.poo.miapi.model.core;
+
 import com.poo.miapi.model.enums.Rol;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_usuario")
 @Entity
 
@@ -29,24 +30,37 @@ public abstract class Usuario implements UserDetails {
     private boolean activo;
     private boolean bloqueado;
 
-    // Constructor vacío requerido por JPA
+    @Column(name = "created_at")
+    private java.time.LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private java.time.LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = java.time.LocalDateTime.now();
+        updatedAt = java.time.LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = java.time.LocalDateTime.now();
+    }
+
     public Usuario() {
     }
 
-    // Constructor completo para subclases (sin rol, activo ni password como
-    // parámetro)
     public Usuario(String nombre, String apellido, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.password = null;
-        this.rol = null; // Se asigna en la subclase
+        this.rol = null;
         this.cambiarPass = true;
         this.activo = true;
         this.bloqueado = false;
     }
 
-    // Getters
     public int getId() {
         return this.id;
     }
@@ -63,12 +77,11 @@ public abstract class Usuario implements UserDetails {
         return this.email;
     }
 
-    // Implementación de UserDetails
     @Override
-        public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
-            // Usa siempre el formato ROLE_SUPER_ADMIN para el rol de superadmin
-            String roleName = rol != null ? rol.name() : "USER";
-            return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
+    public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
+        // Usa siempre el formato ROLE_SUPER_ADMIN para el rol de superadmin
+        String roleName = rol != null ? rol.name() : "USER";
+        return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
     }
 
     @Override
@@ -116,7 +129,6 @@ public abstract class Usuario implements UserDetails {
         return this.bloqueado;
     }
 
-    // Setters
     public void setNombre(String unNombre) {
         this.nombre = unNombre;
     }
@@ -150,27 +162,17 @@ public abstract class Usuario implements UserDetails {
     }
 
     // Métodos de validación de estado
-    
-    /**
-     * Verifica si el usuario puede iniciar sesión
-     * Solo usuarios activos pueden iniciar sesión
-     */
     public boolean puedeIniciarSesion() {
         return this.activo;
     }
-    
-    /**
-     * Verifica si el usuario puede realizar acciones en el sistema
-     * Usuarios activos y no bloqueados pueden realizar acciones
-     */
+
+    // Usuarios activos y no bloqueados pueden realizar acciones
     public boolean puedeRealizarAcciones() {
         return this.activo && !this.bloqueado;
     }
 
-    // Método abstracto para tipo de usuario
     public abstract String getTipoUsuario();
 
-    // Sobreescritura de métodos
     @Override
     public String toString() {
         return "[" + getTipoUsuario() + "] " + nombre + " (ID: " + id + ")";

@@ -1,10 +1,12 @@
 package com.poo.miapi.controller.core;
 
 import com.poo.miapi.dto.ticket.EvaluarTicketDto;
-import com.poo.miapi.dto.ticket.TicketRequestDto;
 import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
+import com.poo.miapi.model.core.Ticket;
+import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.service.core.TrabajadorService;
+import com.poo.miapi.service.notificacion.motor.EventPublisherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,9 +16,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/trabajador")
@@ -24,58 +23,19 @@ import java.util.List;
 public class TrabajadorController {
 
     private final TrabajadorService trabajadorService;
+    private final EventPublisherService eventPublisherService;
+    private final TicketRepository ticketRepository;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TrabajadorController.class);
 
-    public TrabajadorController(TrabajadorService trabajadorService) {
+    public TrabajadorController(TrabajadorService trabajadorService, EventPublisherService eventPublisherService,
+            TicketRepository ticketRepository) {
         this.trabajadorService = trabajadorService;
+        this.eventPublisherService = eventPublisherService;
+        this.ticketRepository = ticketRepository;
     }
 
-    // POST /api/trabajador/tickets - Crear un nuevo ticket
-    @PostMapping("/tickets")
-    @Operation(summary = "Crear nuevo ticket", description = "Permite a un trabajador crear un nuevo ticket de soporte")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ticket creado exitosamente", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el ticket")
-    })
-    public TicketResponseDto crearTicket(
-            @Parameter(description = "Datos del nuevo ticket") @RequestBody @Valid TicketRequestDto dto) {
-    logger.info("[TrabajadorController] POST /tickets datos: {}", dto);
-    TicketResponseDto resp = trabajadorService.crearTicket(dto);
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
-    }
-
-    // GET /api/trabajador/tickets - Ver todos mis tickets
-    @GetMapping("/tickets")
-    @Operation(summary = "Ver todos mis tickets", description = "Obtiene todos los tickets creados por un trabajador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de tickets obtenida exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Trabajador no encontrado")
-    })
-    public List<TicketResponseDto> verTodosMisTickets(
-            @Parameter(description = "ID del trabajador") @RequestParam int idTrabajador) {
-    logger.info("[TrabajadorController] GET /tickets idTrabajador: {}", idTrabajador);
-    List<TicketResponseDto> resp = trabajadorService.verTodosMisTickets(idTrabajador);
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
-    }
-
-    // GET /api/trabajador/tickets/activos - Ver mis tickets activos
-    @GetMapping("/tickets/activos")
-    @Operation(summary = "Ver tickets activos", description = "Obtiene los tickets activos (no finalizados) de un trabajador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de tickets activos obtenida exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Trabajador no encontrado")
-    })
-    public List<TicketResponseDto> verTicketsActivos(
-            @Parameter(description = "ID del trabajador") @RequestParam int idTrabajador) {
-    logger.info("[TrabajadorController] GET /tickets/activos idTrabajador: {}", idTrabajador);
-    List<TicketResponseDto> resp = trabajadorService.verTicketsActivos(idTrabajador);
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
-    }
-
-    // POST /api/trabajador/tickets/{ticketId}/evaluar - Validación final del trabajador
+    // POST /api/trabajador/tickets/{ticketId}/evaluar - Validación final del
+    // trabajador
     // después de que el técnico finaliza el ticket (aceptar/rechazar solución)
     @PostMapping("/tickets/{ticketId}/evaluar")
     @Operation(summary = "Evaluar solución de ticket", description = "Validación final del trabajador: acepta la solución (RESUELTO) o la rechaza (REABIERTO)")
@@ -87,22 +47,29 @@ public class TrabajadorController {
     public TicketResponseDto evaluarTicket(
             @Parameter(description = "ID del ticket") @PathVariable int ticketId,
             @Parameter(description = "Datos de la evaluación") @RequestBody EvaluarTicketDto dto) {
-    logger.info("[TrabajadorController] POST /tickets/{}/evaluar datos: {}", ticketId, dto);
-    TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
+        logger.info("[TrabajadorController] POST /tickets/{}/evaluar datos: {}", ticketId, dto);
+        logger.info("[TrabajadorController] ticketId recibido: {} (tipo: int)", ticketId);
+        try {
+            // 1. Evaluar ticket (lógica de negocio existente)
+            TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
+
+            // 2. Publicar evento para notificación automática
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
+            Usuario creador = ticket.getCreador(); // El trabajador que evalúa
+            Usuario tecnico = ticket.getUltimoTecnicoAtendio(); // El técnico que resolvió
+
+            if (tecnico != null) {
+                eventPublisherService.publicarTicketEvaluado(ticket, creador, tecnico, dto.isFueResuelto(),
+                        dto.isFueResuelto() ? "Evaluado como resuelto" : dto.getMotivoFalla());
+            }
+
+            logger.info("[TrabajadorController] Respuesta: {} - Evento publicado", resp);
+            return resp;
+        } catch (Exception e) {
+            logger.error("[TrabajadorController] Error al evaluar ticketId {}: {}", ticketId, e.getMessage(), e);
+            throw e;
+        }
     }
 
-    // GET /api/trabajador/listar-todos - Listar todos los trabajadores (admin)
-    @GetMapping("/listar-todos")
-    @Operation(summary = "Listar todos los trabajadores", description = "Obtiene una lista de todos los trabajadores (función administrativa)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de trabajadores obtenida exitosamente")
-    })
-    public List<TrabajadorResponseDto> listarTodos() {
-    logger.info("[TrabajadorController] GET /listar-todos");
-    List<TrabajadorResponseDto> resp = trabajadorService.listarTodos();
-    logger.info("[TrabajadorController] Respuesta: {}", resp);
-    return resp;
-    }
 }

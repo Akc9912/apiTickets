@@ -26,7 +26,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "id_creador", nullable = false)
-    private Trabajador creador;
+    private Usuario creador;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
@@ -37,14 +37,13 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDateTime fechaUltimaActualizacion;
 
-    // Constructor requerido por JPA
     public Ticket() {
         this.estado = EstadoTicket.NO_ATENDIDO;
         this.fechaCreacion = LocalDateTime.now();
         this.fechaUltimaActualizacion = LocalDateTime.now();
     }
 
-    public Ticket(String titulo, String descripcion, Trabajador creador) {
+    public Ticket(String titulo, String descripcion, Usuario creador) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.creador = creador;
@@ -53,7 +52,6 @@ public class Ticket {
         this.fechaUltimaActualizacion = LocalDateTime.now();
     }
 
-    // Getters
     public int getId() {
         return id;
     }
@@ -70,7 +68,7 @@ public class Ticket {
         return estado;
     }
 
-    public Trabajador getCreador() {
+    public Usuario getCreador() {
         return creador;
     }
 
@@ -86,8 +84,7 @@ public class Ticket {
         return historialTecnicos;
     }
 
-    // Setters
-    public void setCreador(Trabajador creador) {
+    public void setCreador(Usuario creador) {
         this.creador = creador;
     }
 
@@ -104,11 +101,22 @@ public class Ticket {
         entrada.setTicket(this);
     }
 
-    // Utilidades
+    // Devuelve el técnico actualmente asignado (sin fecha de desasignación)
     public Tecnico getTecnicoActual() {
         for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
             TecnicoPorTicket entrada = historialTecnicos.get(i);
             if (entrada.getFechaDesasignacion() == null) {
+                return entrada.getTecnico();
+            }
+        }
+        return null;
+    }
+
+    // Devuelve el último técnico que atendió el ticket, aunque esté desasignado
+    public Tecnico getUltimoTecnicoAtendio() {
+        for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
+            TecnicoPorTicket entrada = historialTecnicos.get(i);
+            if (entrada.getTecnico() != null) {
                 return entrada.getTecnico();
             }
         }

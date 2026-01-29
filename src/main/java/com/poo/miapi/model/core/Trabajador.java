@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@Table(name = "trabajador")
 @DiscriminatorValue("TRABAJADOR")
 public class Trabajador extends Usuario {
 

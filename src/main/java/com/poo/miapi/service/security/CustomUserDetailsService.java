@@ -4,8 +4,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-// Reemplaza UsuarioRepository por tu repositorio real
 import com.poo.miapi.repository.core.UsuarioRepository;
 
 @Service

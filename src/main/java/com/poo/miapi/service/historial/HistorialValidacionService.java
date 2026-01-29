@@ -2,7 +2,7 @@ package com.poo.miapi.service.historial;
 
 import com.poo.miapi.dto.historial.HistorialValidacionResponseDto;
 import com.poo.miapi.dto.historial.HistorialValidacionRequestDto;
-import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
+import com.poo.miapi.model.historial.HistorialValidacion;
 import com.poo.miapi.model.core.Trabajador;
 import com.poo.miapi.model.core.Ticket;
 import com.poo.miapi.repository.core.TicketRepository;
@@ -11,6 +11,10 @@ import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 import java.util.List;
 
 @Service
@@ -22,35 +26,59 @@ public class HistorialValidacionService {
         private final TrabajadorRepository trabajadorRepository;
         @Autowired
         private final TicketRepository ticketRepository;
+        private final AuditoriaService auditoriaService;
 
         public HistorialValidacionService(
                         HistorialValidacionRepository historialValidacionRepository,
                         TrabajadorRepository trabajadorRepository,
-                        TicketRepository ticketRepository) {
+                        TicketRepository ticketRepository,
+                        AuditoriaService auditoriaService) {
                 this.historialValidacionRepository = historialValidacionRepository;
                 this.trabajadorRepository = trabajadorRepository;
                 this.ticketRepository = ticketRepository;
+                this.auditoriaService = auditoriaService;
         }
 
+        // MÉTODOS PÚBLICOS
         // Registrar validación desde DTO
         public HistorialValidacionResponseDto registrarValidacion(HistorialValidacionRequestDto dto) {
-                Trabajador trabajador = trabajadorRepository.findById(dto.getIdTrabajador())
-                                .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado con ID: " + dto.getIdTrabajador()));
+                // Aquí se debe buscar el usuario validador (puede ser Trabajador, Admin,
+                // SuperAdmin)
+                // Por ahora, se usa Trabajador como ejemplo:
+                Trabajador usuarioValidador = trabajadorRepository.findById(dto.getIdUsuarioValidador())
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Usuario validador no encontrado con ID: "
+                                                                + dto.getIdUsuarioValidador()));
                 Ticket ticket = ticketRepository.findById(dto.getIdTicket())
-                                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + dto.getIdTicket()));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Ticket no encontrado con ID: " + dto.getIdTicket()));
 
-                HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
-                                trabajador,
+                HistorialValidacion validacion = new HistorialValidacion(
+                                usuarioValidador,
                                 ticket,
-                                dto.isFueResuelto(),
+                                dto.isFueAprobado(),
                                 dto.getComentario());
-                HistorialValidacionTrabajador saved = historialValidacionRepository.save(validacion);
+                HistorialValidacion saved = historialValidacionRepository.save(validacion);
+
+                // Auditar validación de ticket
+                auditoriaService.registrarAccion(
+                                usuarioValidador,
+                                AccionAuditoria.EVALUATE_TICKET,
+                                "VALIDACION_TICKET",
+                                saved.getId(),
+                                "Validación de ticket: " + (dto.isFueAprobado() ? "Aprobado" : "Rechazado") + " - "
+                                                + dto.getComentario(),
+                                null,
+                                saved,
+                                CategoriaAuditoria.BUSINESS,
+                                dto.isFueAprobado() ? SeveridadAuditoria.LOW : SeveridadAuditoria.MEDIUM);
+
                 return mapToDto(saved);
         }
 
         // Listar por trabajador como DTOs
-        public List<HistorialValidacionResponseDto> listarPorTrabajador(int trabajadorId) {
-                return historialValidacionRepository.findByTrabajadorId(trabajadorId).stream()
+        public List<HistorialValidacionResponseDto> listarPorUsuarioValidador(int usuarioValidadorId) {
+                return historialValidacionRepository.findByUsuarioValidadorId(usuarioValidadorId).stream()
                                 .map(this::mapToDto)
                                 .toList();
         }
@@ -69,14 +97,15 @@ public class HistorialValidacionService {
                                 .toList();
         }
 
+        // MÉTODOS PRIVADOS/UTILIDADES
         // Método auxiliar para mapear entidad a DTO
-        private HistorialValidacionResponseDto mapToDto(HistorialValidacionTrabajador validacion) {
+        private HistorialValidacionResponseDto mapToDto(HistorialValidacion validacion) {
                 return new HistorialValidacionResponseDto(
                                 validacion.getId(),
-                                validacion.getTrabajador().getId(),
+                                validacion.getUsuarioValidador().getId(),
                                 validacion.getTicket().getId(),
-                                validacion.isFueResuelto(),
+                                validacion.isFueAprobado(),
                                 validacion.getComentario(),
-                                validacion.getFechaRegistro());
+                                validacion.getFechaValidacion());
         }
 }

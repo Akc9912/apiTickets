@@ -3,34 +3,34 @@ package com.poo.miapi.dto.historial;
 import jakarta.validation.constraints.NotNull;
 
 public class HistorialValidacionRequestDto {
-    @NotNull(message = "El ID del trabajador es obligatorio")
-    private int idTrabajador;
+    @NotNull(message = "El ID del usuario validador es obligatorio")
+    private int idUsuarioValidador;
 
     @NotNull(message = "El ID del ticket es obligatorio")
     private int idTicket;
 
-    @NotNull(message = "Debe indicar si fue resuelto")
-    private boolean fueResuelto;
+    @NotNull(message = "Debe indicar si fue aprobado")
+    private boolean fueAprobado;
 
     private String comentario; // Opcional
 
     public HistorialValidacionRequestDto() {
     }
 
-    public HistorialValidacionRequestDto(int idTrabajador, int idTicket, boolean fueResuelto, String comentario) {
-        this.idTrabajador = idTrabajador;
+    public HistorialValidacionRequestDto(int idUsuarioValidador, int idTicket, boolean fueAprobado, String comentario) {
+        this.idUsuarioValidador = idUsuarioValidador;
         this.idTicket = idTicket;
-        this.fueResuelto = fueResuelto;
+        this.fueAprobado = fueAprobado;
         this.comentario = comentario;
     }
 
     // Getters y setters
-    public int getIdTrabajador() {
-        return idTrabajador;
+    public int getIdUsuarioValidador() {
+        return idUsuarioValidador;
     }
 
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
+    public void setIdUsuarioValidador(int idUsuarioValidador) {
+        this.idUsuarioValidador = idUsuarioValidador;
     }
 
     public int getIdTicket() {
@@ -41,12 +41,12 @@ public class HistorialValidacionRequestDto {
         this.idTicket = idTicket;
     }
 
-    public boolean isFueResuelto() {
-        return fueResuelto;
+    public boolean isFueAprobado() {
+        return fueAprobado;
     }
 
-    public void setFueResuelto(boolean fueResuelto) {
-        this.fueResuelto = fueResuelto;
+    public void setFueAprobado(boolean fueAprobado) {
+        this.fueAprobado = fueAprobado;
     }
 
     public String getComentario() {

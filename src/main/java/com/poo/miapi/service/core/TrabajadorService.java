@@ -6,14 +6,19 @@ import com.poo.miapi.dto.ticket.TicketResponseDto;
 import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
 import com.poo.miapi.model.core.*;
 import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.historial.HistorialValidacionTrabajador;
-import com.poo.miapi.repository.core.TecnicoRepository;
+import com.poo.miapi.model.historial.HistorialValidacion;
 import com.poo.miapi.repository.core.TicketRepository;
 import com.poo.miapi.repository.core.TrabajadorRepository;
 import com.poo.miapi.repository.historial.HistorialValidacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.poo.miapi.service.auditoria.AuditoriaService;
+import com.poo.miapi.model.enums.AccionAuditoria;
+import com.poo.miapi.model.enums.CategoriaAuditoria;
+import com.poo.miapi.model.enums.SeveridadAuditoria;
 
 import java.util.List;
 
@@ -22,23 +27,26 @@ public class TrabajadorService {
 
     private final TrabajadorRepository trabajadorRepository;
     private final TicketRepository ticketRepository;
-    private final TecnicoRepository tecnicoRepository;
     private final TecnicoService tecnicoService;
     private final HistorialValidacionRepository historialValidacionRepository;
+    private final AuditoriaService auditoriaService;
+    private static final Logger logger = LoggerFactory.getLogger(TrabajadorService.class);
 
     public TrabajadorService(
             TrabajadorRepository trabajadorRepository,
             TicketRepository ticketRepository,
-            TecnicoRepository tecnicoRepository,
             TecnicoService tecnicoService,
-            HistorialValidacionRepository historialValidacionRepository) {
+            HistorialValidacionRepository historialValidacionRepository,
+            AuditoriaService auditoriaService) {
         this.trabajadorRepository = trabajadorRepository;
         this.ticketRepository = ticketRepository;
-        this.tecnicoRepository = tecnicoRepository;
         this.tecnicoService = tecnicoService;
         this.historialValidacionRepository = historialValidacionRepository;
+        this.auditoriaService = auditoriaService;
     }
 
+    // MÉTODOS PÚBLICOS
+    // Buscar trabajador por ID
     public Trabajador buscarPorId(int id) {
         return trabajadorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Trabajador no encontrado"));
@@ -55,12 +63,12 @@ public class TrabajadorService {
 
     // Evaluar resolución usando DTO
     public TicketResponseDto evaluarTicket(int idTicket, EvaluarTicketDto dto) {
-        Trabajador trabajador = buscarPorId(dto.getIdTrabajador());
+        Trabajador trabajador = buscarPorId(dto.getIdUsuarioValidador());
         Ticket ticket = ticketRepository.findById(idTicket)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
 
-        if (ticket.getTecnicoActual() == null) {
-            throw new IllegalStateException("El ticket no tiene técnico asignado");
+        if (ticket.getUltimoTecnicoAtendio() == null) {
+            throw new IllegalStateException("El ticket no tiene técnico en historial");
         }
 
         if (ticket.getCreador().getId() != trabajador.getId()) {
@@ -75,15 +83,31 @@ public class TrabajadorService {
             ticket.setEstado(EstadoTicket.FINALIZADO);
         } else {
             ticket.setEstado(EstadoTicket.REABIERTO); // Primero va a REABIERTO
-            tecnicoService.marcarFalla(ticket.getTecnicoActual().getId(), dto.getMotivoFalla(), ticket);
+            tecnicoService.marcarFalla(ticket.getUltimoTecnicoAtendio().getId(), dto.getMotivoFalla(), ticket);
         }
 
         ticketRepository.save(ticket);
 
-        HistorialValidacionTrabajador validacion = new HistorialValidacionTrabajador(
-                trabajador, ticket, dto.isFueResuelto(),
+        Usuario usuarioValidador = trabajador; // El trabajador creador valida su propio ticket
+        HistorialValidacion validacion = new HistorialValidacion(
+                usuarioValidador,
+                ticket,
+                dto.isFueResuelto(),
                 dto.isFueResuelto() ? "Resuelto correctamente" : dto.getMotivoFalla());
         historialValidacionRepository.save(validacion);
+
+        // Auditar evaluación de ticket
+        auditoriaService.registrarAccion(
+                trabajador,
+                AccionAuditoria.EVALUATE_TICKET,
+                "TICKET",
+                ticket.getId(),
+                "Ticket evaluado: " + (dto.isFueResuelto() ? "Resuelto correctamente"
+                        : "Falla reportada - " + dto.getMotivoFalla()),
+                null,
+                validacion,
+                CategoriaAuditoria.BUSINESS,
+                dto.isFueResuelto() ? SeveridadAuditoria.LOW : SeveridadAuditoria.MEDIUM);
 
         return mapToTicketDto(ticket);
     }
@@ -99,10 +123,31 @@ public class TrabajadorService {
 
     // Ver todos mis tickets (devuelve DTOs)
     public List<TicketResponseDto> verTodosMisTickets(int idTrabajador) {
-        Trabajador trabajador = buscarPorId(idTrabajador);
-        return trabajador.getMisTickets().stream()
-                .map(this::mapToTicketDto)
-                .toList();
+        try {
+            logger.info("[TrabajadorService] Buscando trabajador con ID: {}", idTrabajador);
+            Trabajador trabajador = buscarPorId(idTrabajador);
+            logger.info("[TrabajadorService] Trabajador encontrado: {}", trabajador);
+            List<Ticket> tickets = trabajador.getMisTickets();
+            logger.info("[TrabajadorService] Tickets encontrados: {}", tickets.size());
+            List<TicketResponseDto> dtos = tickets.stream()
+                    .map(ticket -> {
+                        try {
+                            TicketResponseDto dto = mapToTicketDto(ticket);
+                            logger.info("[TrabajadorService] Ticket mapeado: {}", dto);
+                            return dto;
+                        } catch (Exception e) {
+                            logger.error("[TrabajadorService] Error al mapear ticket: {}", ticket, e);
+                            throw e;
+                        }
+                    })
+                    .toList();
+            logger.info("[TrabajadorService] Tickets mapeados: {}", dtos.size());
+            return dtos;
+        } catch (Exception ex) {
+            logger.error("[TrabajadorService] Error al obtener tickets para trabajador {}: {}", idTrabajador,
+                    ex.getMessage(), ex);
+            throw ex;
+        }
     }
 
     // Listar todos los trabajadores (devuelve DTOs)
@@ -112,7 +157,8 @@ public class TrabajadorService {
                 .toList();
     }
 
-    // Métodos auxiliares para mapear entidades a DTOs
+    // MÉTODOS PRIVADOS/UTILIDADES
+    // Método auxiliar para mapear Ticket a DTO
     private TicketResponseDto mapToTicketDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),
@@ -125,6 +171,7 @@ public class TrabajadorService {
                 ticket.getFechaUltimaActualizacion());
     }
 
+    // Método auxiliar para mapear Trabajador a DTO
     private TrabajadorResponseDto mapToTrabajadorDto(Trabajador trabajador) {
         return new TrabajadorResponseDto(
                 trabajador.getId(),

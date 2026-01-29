@@ -1,6 +1,7 @@
 package com.poo.miapi.dto.auth;
 
-import com.poo.miapi.dto.usuario.UsuarioResponseDto;
+import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginResponseDto {
