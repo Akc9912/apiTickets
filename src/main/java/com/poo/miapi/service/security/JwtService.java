@@ -20,7 +20,7 @@ public class JwtService {
 
     private long jwtExpirationMs = 1000 * 60 * 60 * 10; // 10 horas
 
-    private Key getSigningKey() {
+    public Key getSigningKey() {
         if (jwtSecret == null || jwtSecret.length() < 32) {
             throw new IllegalArgumentException("JWT_SECRET debe tener al menos 32 caracteres");
         }
