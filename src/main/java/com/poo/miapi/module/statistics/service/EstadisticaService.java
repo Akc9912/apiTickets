@@ -1,21 +1,23 @@
-package com.poo.miapi.service.estadistica;
+package com.poo.miapi.module.statistics.service;
 
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.TrabajadorRepository;
-import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
-import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaPeriodoRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaTecnicoRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaUsuarioRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaDevolucionRepository;
-import com.poo.miapi.model.estadistica.EstadisticaPeriodo;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.enums.PeriodoTipo;
-import com.poo.miapi.dto.estadistica.EstadisticaPeriodoDto;
-import com.poo.miapi.dto.estadistica.EstadisticaUsuarioDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.audit.repository.IncidenteTecnicoRepository;
+import com.poo.miapi.module.audit.repository.TecnicoPorTicketRepository;
+import com.poo.miapi.module.statistics.dto.EstadisticaPeriodoDto;
+import com.poo.miapi.module.statistics.dto.EstadisticaUsuarioDto;
+import com.poo.miapi.module.statistics.model.EstadisticaPeriodo;
+import com.poo.miapi.module.statistics.model.EstadisticaTecnico;
+import com.poo.miapi.module.statistics.repository.EstadisticaDevolucionRepository;
+import com.poo.miapi.module.statistics.repository.EstadisticaPeriodoRepository;
+import com.poo.miapi.module.statistics.repository.EstadisticaTecnicoRepository;
+import com.poo.miapi.module.statistics.repository.EstadisticaUsuarioRepository;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.module.user.repository.TrabajadorRepository;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+// import com.poo.miapi.module.statistics.model.EstadisticaIncidente;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,11 +42,8 @@ public class EstadisticaService {
     private final TecnicoRepository tecnicoRepository;
     private final TrabajadorRepository trabajadorRepository;
     private final IncidenteTecnicoRepository incidenteTecnicoRepository;
-    private final TecnicoPorTicketRepository tecnicoPorTicketRepository;
     private final EstadisticaPeriodoRepository estadisticaPeriodoRepository;
     private final EstadisticaTecnicoRepository estadisticaTecnicoRepository;
-    private final EstadisticaUsuarioRepository estadisticaUsuarioRepository;
-    private final EstadisticaDevolucionRepository estadisticaDevolucionRepository;
 
     public EstadisticaService(
             TicketRepository ticketRepository,
@@ -62,11 +61,8 @@ public class EstadisticaService {
         this.tecnicoRepository = tecnicoRepository;
         this.trabajadorRepository = trabajadorRepository;
         this.incidenteTecnicoRepository = incidenteTecnicoRepository;
-        this.tecnicoPorTicketRepository = tecnicoPorTicketRepository;
         this.estadisticaPeriodoRepository = estadisticaPeriodoRepository;
         this.estadisticaTecnicoRepository = estadisticaTecnicoRepository;
-        this.estadisticaUsuarioRepository = estadisticaUsuarioRepository;
-        this.estadisticaDevolucionRepository = estadisticaDevolucionRepository;
     }
 
     public Object obtenerEstadisticasUsuarios() {
@@ -311,7 +307,7 @@ public class EstadisticaService {
         resumen.put("tickets", obtenerEstadisticasTickets());
 
         // Métricas de tiempo real
-        LocalDateTime ahora = LocalDateTime.now();
+        // LocalDateTime ahora = LocalDateTime.now();
         Map<String, Object> tiempoReal = new HashMap<>();
         tiempoReal.put("ticketsHoy", ticketRepository.count()); // Simplificado
         tiempoReal.put("usuariosActivos", usuarioRepository.countByActivoTrue());
@@ -532,13 +528,13 @@ public class EstadisticaService {
     }
 
     private Map<String, Object> obtenerTecnicoMasProductivoBasico() {
-        List<com.poo.miapi.model.estadistica.EstadisticaTecnico> tecnicos = estadisticaTecnicoRepository.findAll();
+        List<EstadisticaTecnico> tecnicos = estadisticaTecnicoRepository.findAll();
 
         if (tecnicos.isEmpty()) {
             return Map.of("mensaje", "No hay datos disponibles");
         }
 
-        com.poo.miapi.model.estadistica.EstadisticaTecnico masProductivo = tecnicos.stream()
+        EstadisticaTecnico masProductivo = tecnicos.stream()
                 .max((t1, t2) -> Integer.compare(t1.getTicketsCompletados(), t2.getTicketsCompletados()))
                 .orElse(null);
 

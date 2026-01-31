@@ -1,6 +1,4 @@
-package com.poo.miapi.security;
-
-import com.poo.miapi.model.core.Usuario;
+package com.poo.miapi.shared.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,7 +12,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.poo.miapi.service.security.JwtService;
+import com.poo.miapi.module.auth.service.JwtService;
+import com.poo.miapi.module.user.model.Usuario;
 
 import java.io.IOException;
 

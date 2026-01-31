@@ -1,8 +1,9 @@
-package com.poo.miapi.model.estadistica;
+package com.poo.miapi.module.statistics.model;
 
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.PeriodoTipo;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

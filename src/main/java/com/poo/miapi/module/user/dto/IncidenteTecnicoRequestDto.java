@@ -1,7 +1,9 @@
-package com.poo.miapi.dto.tecnico;
+package com.poo.miapi.module.user.dto;
 
-import com.poo.miapi.model.enums.TipoIncidente;
 import jakarta.validation.constraints.NotNull;
+
+import com.poo.miapi.shared.events.enums.TipoIncidente;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class IncidenteTecnicoRequestDto {

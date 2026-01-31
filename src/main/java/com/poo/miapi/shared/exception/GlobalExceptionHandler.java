@@ -1,4 +1,4 @@
-package com.poo.miapi.exception;
+package com.poo.miapi.shared.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +44,16 @@ public class GlobalExceptionHandler {
     // (por ejemplo, buscar un usuario por ID y no existe).
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleEntityNotFoundException(EntityNotFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Recurso no encontrado");
+        body.put("status", 404);
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    // Maneja excepciones de recursos no encontrados personalizadas
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
         Map<String, Object> body = new HashMap<>();
         body.put("error", "Recurso no encontrado");
         body.put("status", 404);

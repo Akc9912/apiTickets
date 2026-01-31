@@ -1,10 +1,11 @@
-package com.poo.miapi.model.core;
-import com.poo.miapi.model.enums.Rol;
+package com.poo.miapi.module.user.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.poo.miapi.module.ticket.model.Ticket;
 
 @Entity
 @Table(name = "trabajador")

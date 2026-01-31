@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.estadistica;
+package com.poo.miapi.module.statistics.dto;
 
 public class EstadisticaDto {
 

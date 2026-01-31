@@ -1,9 +1,9 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.user.controller;
 
-import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.service.core.UsuarioService;
+import com.poo.miapi.module.user.dto.UsuarioRequestDto;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

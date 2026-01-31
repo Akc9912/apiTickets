@@ -1,28 +1,29 @@
-package com.poo.miapi.service.core;
+package com.poo.miapi.module.user.service;
 
-import com.poo.miapi.dto.tecnico.TecnicoResponseDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
-import com.poo.miapi.model.core.*;
-import com.poo.miapi.model.enums.EstadoSolicitud;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.historial.*;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
-import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
-import com.poo.miapi.service.historial.TecnicoPorTicketService;
+import com.poo.miapi.module.user.dto.TecnicoResponseDto;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.dto.IncidenteTecnicoResponseDto;
+import com.poo.miapi.module.user.model.*;
+import com.poo.miapi.module.audit.model.*;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.EstadoSolicitud;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.shared.events.enums.TipoIncidente;
+import com.poo.miapi.module.audit.repository.IncidenteTecnicoRepository;
+import com.poo.miapi.module.audit.repository.SolicitudDevolucionRepository;
+import com.poo.miapi.module.audit.service.TecnicoPorTicketService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
-import com.poo.miapi.model.enums.TipoIncidente;
+import com.poo.miapi.module.audit.service.AuditoriaService;
 
 import java.util.List;
 
@@ -288,7 +289,7 @@ public class TecnicoService {
                 tecnico.getNombre(),
                 tecnico.getApellido(),
                 tecnico.getEmail(),
-                tecnico.getRol().name(),
+                tecnico.getRol(),
                 tecnico.isCambiarPass(),
                 tecnico.isActivo(),
                 tecnico.isBloqueado(),
@@ -319,7 +320,7 @@ public class TecnicoService {
                 tecnico.getNombre(),
                 tecnico.getApellido(),
                 tecnico.getEmail(),
-                tecnico.getRol() != null ? tecnico.getRol().name() : null,
+                tecnico.getRol(),
                 tecnico.isCambiarPass(),
                 tecnico.isActivo(),
                 tecnico.isBloqueado(),

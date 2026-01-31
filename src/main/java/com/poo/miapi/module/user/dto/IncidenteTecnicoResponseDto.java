@@ -1,8 +1,8 @@
-package com.poo.miapi.dto.tecnico;
+package com.poo.miapi.module.user.dto;
 
 import java.time.LocalDateTime;
 
-import com.poo.miapi.model.enums.TipoIncidente;
+import com.poo.miapi.shared.events.enums.TipoIncidente;
 
 public class IncidenteTecnicoResponseDto {
     private int id;

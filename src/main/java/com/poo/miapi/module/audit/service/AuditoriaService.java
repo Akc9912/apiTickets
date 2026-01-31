@@ -1,13 +1,14 @@
-package com.poo.miapi.service.auditoria;
+package com.poo.miapi.module.audit.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poo.miapi.model.auditoria.*;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
-import com.poo.miapi.repository.auditoria.AuditoriaRepository;
-import com.poo.miapi.dto.auditoria.AuditoriaResponseDto;
+import com.poo.miapi.module.audit.dto.AuditoriaResponseDto;
+import com.poo.miapi.module.audit.model.Auditoria;
+import com.poo.miapi.module.audit.repository.AuditoriaRepository;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;

@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.tecnico;
+package com.poo.miapi.module.user.dto;
 
 public class IncidenciasDto {
     private int fallas;

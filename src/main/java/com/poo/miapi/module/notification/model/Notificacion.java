@@ -1,4 +1,4 @@
-package com.poo.miapi.model.notificacion;
+package com.poo.miapi.module.notification.model;
 
 import java.time.LocalDateTime;
 
@@ -10,9 +10,11 @@ public class Notificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int usuarioId;
     private String titulo;
     private String mensaje;
     private String tipo;
+    private boolean leida = false;
     private String origenTipo;
     private int origenId;
     private String metadate; // json
@@ -29,6 +31,7 @@ public class Notificacion {
         this.origenTipo = origenTipo;
         this.origenId = origenId;
         this.metadate = metadate;
+        this.leida = false;
         this.fechaCreacion = LocalDateTime.now();
     }
 
@@ -40,6 +43,14 @@ public class Notificacion {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUsuarioId() {
+        return this.usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public String getTitulo() {
@@ -64,6 +75,14 @@ public class Notificacion {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public boolean isLeida() {
+        return this.leida;
+    }
+
+    public void setLeida(boolean leida) {
+        this.leida = leida;
     }
 
     public String getOrigenTipo() {

@@ -1,15 +1,15 @@
-package com.poo.miapi.service.estadistica;
+package com.poo.miapi.module.statistics.service;
 
-import com.poo.miapi.model.estadistica.EstadisticaPeriodo;
-import com.poo.miapi.model.estadistica.EstadisticaTecnico;
-import com.poo.miapi.model.estadistica.EstadisticaUsuario;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.PeriodoTipo;
-import com.poo.miapi.repository.estadistica.EstadisticaPeriodoRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaTecnicoRepository;
-import com.poo.miapi.repository.estadistica.EstadisticaUsuarioRepository;
+import com.poo.miapi.module.statistics.model.EstadisticaPeriodo;
+import com.poo.miapi.module.statistics.model.EstadisticaTecnico;
+import com.poo.miapi.module.statistics.model.EstadisticaUsuario;
+import com.poo.miapi.module.statistics.repository.EstadisticaPeriodoRepository;
+import com.poo.miapi.module.statistics.repository.EstadisticaTecnicoRepository;
+import com.poo.miapi.module.statistics.repository.EstadisticaUsuarioRepository;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+import com.poo.miapi.module.ticket.model.Ticket;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -176,6 +176,7 @@ public class EstadisticaActualizadorService {
     /**
      * Actualizar devolución procesada
      */
+    @SuppressWarnings("null")
     public void actualizarDevolucionProcesada(Ticket ticket, Tecnico tecnico, boolean aprobada) {
         try {
             LocalDateTime ahora = LocalDateTime.now();
@@ -309,6 +310,7 @@ public class EstadisticaActualizadorService {
     /**
      * Incrementar tickets asignados (cuando un admin asigna un ticket)
      */
+    @SuppressWarnings("null")
     public void incrementarTicketsAsignados(Ticket ticket, Tecnico tecnico, Usuario asignador) {
         try {
             LocalDateTime ahora = LocalDateTime.now();

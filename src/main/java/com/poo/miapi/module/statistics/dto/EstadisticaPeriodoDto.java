@@ -1,8 +1,9 @@
-package com.poo.miapi.dto.estadistica;
+package com.poo.miapi.module.statistics.dto;
 
-import com.poo.miapi.model.enums.PeriodoTipo;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
 
 public class EstadisticaPeriodoDto {
 

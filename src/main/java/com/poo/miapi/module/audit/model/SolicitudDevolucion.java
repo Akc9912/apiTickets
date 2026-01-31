@@ -1,13 +1,15 @@
-package com.poo.miapi.model.historial;
+package com.poo.miapi.module.audit.model;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
 
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.enums.EstadoSolicitud;
-import com.poo.miapi.model.core.Admin;
+
 import java.time.LocalDateTime;
+
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Admin;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.shared.events.enums.EstadoSolicitud;
 
 @Entity
 @Table(name = "solicitud_devolucion")

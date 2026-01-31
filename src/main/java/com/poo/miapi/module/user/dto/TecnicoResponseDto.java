@@ -1,104 +1,37 @@
-package com.poo.miapi.dto.tecnico;
+package com.poo.miapi.module.user.dto;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.poo.miapi.module.user.model.Rol;
 
-public class TecnicoResponseDto {
-    private int id;
-    private String nombre;
-    private String apellido;
-    private String email;
-    private String rol;
-    private boolean cambiarPass;
-    private boolean activo;
-    private boolean bloqueado;
+@JsonTypeName("TECNICO")
+public class TecnicoResponseDto extends UsuarioResponseDto {
     private int fallas;
     private int marcas;
     private List<IncidenteTecnicoResponseDto> incidentes; // Usar DTO, no entidad
 
     // Constructor
     public TecnicoResponseDto() {
+        super();
     }
 
-    public TecnicoResponseDto(int id, String nombre, String apellido, String email, String rol,
+    public TecnicoResponseDto(int id, String nombre, String apellido, String email, Rol rol,
+                    boolean cambiarPass, boolean activo, boolean bloqueado, int fallas, int marcas) {
+        super(id, nombre, apellido, email, rol, cambiarPass, activo, bloqueado);
+        this.fallas = fallas;
+        this.marcas = marcas;
+    }
+
+    public TecnicoResponseDto(int id, String nombre, String apellido, String email, Rol rol,
             boolean cambiarPass, boolean activo, boolean bloqueado, int fallas, int marcas,
             List<IncidenteTecnicoResponseDto> incidentes) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.rol = rol;
-        this.cambiarPass = cambiarPass;
-        this.activo = activo;
-        this.bloqueado = bloqueado;
+        super(id, nombre, apellido, email, rol, cambiarPass, activo, bloqueado);
         this.fallas = fallas;
         this.marcas = marcas;
         this.incidentes = incidentes;
     }
 
-    // Getters y setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
-
-    public boolean isCambiarPass() {
-        return cambiarPass;
-    }
-
-    public void setCambiarPass(boolean cambiarPass) {
-        this.cambiarPass = cambiarPass;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public boolean isBloqueado() {
-        return bloqueado;
-    }
-
-    public void setBloqueado(boolean bloqueado) {
-        this.bloqueado = bloqueado;
-    }
+    // Getters y setters solo para campos adicionales
 
     public int getFallas() {
         return fallas;

@@ -1,12 +1,14 @@
-package com.poo.miapi.dto.auditoria;
+package com.poo.miapi.module.audit.dto;
 
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
 
 public class AuditoriaResponseDto implements Serializable {
 

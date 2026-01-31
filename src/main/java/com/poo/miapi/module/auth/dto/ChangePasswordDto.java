@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.auth;
+package com.poo.miapi.module.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

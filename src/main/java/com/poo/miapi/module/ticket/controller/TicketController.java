@@ -1,13 +1,10 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.ticket.controller;
 
-import com.poo.miapi.dto.ticket.TicketRequestDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.service.core.TicketService;
-import com.poo.miapi.service.notificacion.motor.EventPublisherService;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.module.ticket.dto.TicketRequestDto;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.service.TicketService;
+import com.poo.miapi.module.user.model.Usuario;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -30,14 +27,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TicketController {
 
         private final TicketService ticketService;
-        private final EventPublisherService eventPublisherService;
-        private final TicketRepository ticketRepository;
 
-        public TicketController(TicketService ticketService, EventPublisherService eventPublisherService,
-                        TicketRepository ticketRepository) {
+        public TicketController(TicketService ticketService) {
                 this.ticketService = ticketService;
-                this.eventPublisherService = eventPublisherService;
-                this.ticketRepository = ticketRepository;
         }
 
         // 1. /api/tickets/todos - Admin/SuperAdmin: ver todos los tickets
@@ -189,17 +181,8 @@ public class TicketController {
                         throw new AccessDeniedException("Usuario bloqueado o no encontrado");
                 }
 
-                // 1. Reabrir ticket (lógica de negocio existente)
+                // Reabrir ticket (lógica de negocio existente)
                 TicketResponseDto resultado = ticketService.reabrirTicket(id, comentario, usuario.getId());
-
-                // 2. Publicar evento para notificación automática
-                Ticket ticket = ticketRepository.findById(id)
-                                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
-                                                "Ticket no encontrado"));
-                Usuario trabajador = ticket.getCreador(); // El creador del ticket
-                Usuario ultimoTecnico = ticket.getUltimoTecnicoAtendio(); // El último técnico que trabajó en el ticket
-
-                eventPublisherService.publicarTicketReabierto(ticket, usuario, trabajador, ultimoTecnico, comentario);
 
                 return resultado;
         }

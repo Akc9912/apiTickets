@@ -1,4 +1,4 @@
-package com.poo.miapi.model.notificacion;
+package com.poo.miapi.module.notification.model;
 
 import java.time.LocalDateTime;
 

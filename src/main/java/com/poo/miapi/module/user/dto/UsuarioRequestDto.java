@@ -1,6 +1,7 @@
-package com.poo.miapi.dto.usuarios;
+package com.poo.miapi.module.user.dto;
 
-import com.poo.miapi.model.enums.Rol;
+import com.poo.miapi.module.user.model.Rol;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 

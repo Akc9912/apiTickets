@@ -1,12 +1,8 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.user.controller;
 
-import com.poo.miapi.dto.ticket.EvaluarTicketDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.service.core.TrabajadorService;
-import com.poo.miapi.service.notificacion.motor.EventPublisherService;
+import com.poo.miapi.module.ticket.dto.EvaluarTicketDto;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.user.service.TrabajadorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,15 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class TrabajadorController {
 
     private final TrabajadorService trabajadorService;
-    private final EventPublisherService eventPublisherService;
-    private final TicketRepository ticketRepository;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TrabajadorController.class);
 
-    public TrabajadorController(TrabajadorService trabajadorService, EventPublisherService eventPublisherService,
-            TicketRepository ticketRepository) {
+    public TrabajadorController(TrabajadorService trabajadorService) {
         this.trabajadorService = trabajadorService;
-        this.eventPublisherService = eventPublisherService;
-        this.ticketRepository = ticketRepository;
     }
 
     // POST /api/trabajador/tickets/{ticketId}/evaluar - Validación final del
@@ -50,21 +41,10 @@ public class TrabajadorController {
         logger.info("[TrabajadorController] POST /tickets/{}/evaluar datos: {}", ticketId, dto);
         logger.info("[TrabajadorController] ticketId recibido: {} (tipo: int)", ticketId);
         try {
-            // 1. Evaluar ticket (lógica de negocio existente)
+            // Evaluar ticket (lógica de negocio existente)
             TicketResponseDto resp = trabajadorService.evaluarTicket(ticketId, dto);
 
-            // 2. Publicar evento para notificación automática
-            Ticket ticket = ticketRepository.findById(ticketId)
-                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ticket no encontrado"));
-            Usuario creador = ticket.getCreador(); // El trabajador que evalúa
-            Usuario tecnico = ticket.getUltimoTecnicoAtendio(); // El técnico que resolvió
-
-            if (tecnico != null) {
-                eventPublisherService.publicarTicketEvaluado(ticket, creador, tecnico, dto.isFueResuelto(),
-                        dto.isFueResuelto() ? "Evaluado como resuelto" : dto.getMotivoFalla());
-            }
-
-            logger.info("[TrabajadorController] Respuesta: {} - Evento publicado", resp);
+            logger.info("[TrabajadorController] Respuesta: {}", resp);
             return resp;
         } catch (Exception e) {
             logger.error("[TrabajadorController] Error al evaluar ticketId {}: {}", ticketId, e.getMessage(), e);

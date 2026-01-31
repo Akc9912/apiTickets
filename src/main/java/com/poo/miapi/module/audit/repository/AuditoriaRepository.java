@@ -1,14 +1,15 @@
-package com.poo.miapi.repository.auditoria;
+package com.poo.miapi.module.audit.repository;
 
-import com.poo.miapi.model.auditoria.Auditoria;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.poo.miapi.module.audit.model.Auditoria;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
 
 import java.time.LocalDateTime;
 import java.util.List;

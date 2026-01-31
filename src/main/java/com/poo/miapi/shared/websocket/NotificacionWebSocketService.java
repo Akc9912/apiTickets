@@ -1,9 +1,10 @@
-package com.poo.miapi.service.websocket;
+package com.poo.miapi.shared.websocket;
 
-import com.poo.miapi.dto.notificacion.NotificacionResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.poo.miapi.module.notification.dto.NotificacionResponseDto;
 
 @Service
 public class NotificacionWebSocketService {
@@ -69,7 +70,7 @@ public class NotificacionWebSocketService {
     // Notificar cuando una notificación es leída (actualizar UI)
     public void notificarNotificacionLeida(int usuarioId, int notificacionId) {
         try {
-            String destination = "/user/" + usuarioId + "/read";
+            // String destination = "/user/" + usuarioId + "/read";
             logger.info("Notificando lectura de notificación {} a usuario {}", notificacionId, usuarioId);
 
             // TODO: Implementar cuando Maven cargue las dependencias
@@ -86,7 +87,7 @@ public class NotificacionWebSocketService {
     // Enviar evento de conexión exitosa
     public void enviarEventoConexion(int usuarioId) {
         try {
-            String destination = "/user/" + usuarioId + "/status";
+            // String destination = "/user/" + usuarioId + "/status";
             logger.info("Enviando evento de conexión a usuario {}", usuarioId);
 
             // TODO: Implementar cuando Maven cargue las dependencias

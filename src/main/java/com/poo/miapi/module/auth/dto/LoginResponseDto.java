@@ -1,6 +1,8 @@
-package com.poo.miapi.dto.auth;
+package com.poo.miapi.module.auth.dto;
 
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
+
+
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
 
 import jakarta.validation.constraints.NotBlank;
 

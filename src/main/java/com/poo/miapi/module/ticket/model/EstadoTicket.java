@@ -1,4 +1,4 @@
-package com.poo.miapi.model.enums;
+package com.poo.miapi.module.ticket.model;
 
 /**
  * Enum que define los estados de un ticket en el sistema

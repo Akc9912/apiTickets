@@ -1,13 +1,13 @@
-package com.poo.miapi.repository.core;
-
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.core.Tecnico;
+package com.poo.miapi.module.ticket.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Tecnico;
 
 import java.time.LocalDateTime;
 import java.util.List;

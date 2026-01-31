@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.auth;
+package com.poo.miapi.module.auth.dto;
 
 public class ResetPasswordDto {
     private int userId;

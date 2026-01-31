@@ -1,9 +1,10 @@
-package com.poo.miapi.repository.estadistica;
+package com.poo.miapi.module.statistics.repository;
 
-import com.poo.miapi.model.estadistica.EstadisticaUsuario;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.PeriodoTipo;
-import com.poo.miapi.model.enums.Rol;
+import com.poo.miapi.module.statistics.model.EstadisticaUsuario;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+import com.poo.miapi.module.user.model.Rol;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

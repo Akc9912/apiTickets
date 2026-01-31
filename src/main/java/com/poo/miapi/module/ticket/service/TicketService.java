@@ -1,33 +1,35 @@
-package com.poo.miapi.service.core;
+package com.poo.miapi.module.ticket.service;
 
-import com.poo.miapi.dto.ticket.TicketRequestDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.model.enums.EstadoSolicitud;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.historial.IncidenteTecnico;
-import com.poo.miapi.model.historial.SolicitudDevolucion;
-import com.poo.miapi.model.historial.TecnicoPorTicket;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Trabajador;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.TrabajadorRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
-import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
-import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
-import com.poo.miapi.model.enums.TipoIncidente;
+
+import com.poo.miapi.module.audit.model.IncidenteTecnico;
+import com.poo.miapi.module.audit.model.SolicitudDevolucion;
+import com.poo.miapi.module.audit.model.TecnicoPorTicket;
+import com.poo.miapi.module.audit.repository.IncidenteTecnicoRepository;
+import com.poo.miapi.module.audit.repository.SolicitudDevolucionRepository;
+import com.poo.miapi.module.audit.repository.TecnicoPorTicketRepository;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.module.ticket.dto.TicketRequestDto;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.model.Trabajador;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.module.user.repository.TrabajadorRepository;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.EstadoSolicitud;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.shared.events.enums.TipoIncidente;
 
 import java.util.List;
 import java.util.Optional;
@@ -186,6 +188,7 @@ public class TicketService {
     }
 
     // Guardar ticket
+    @SuppressWarnings("null")
     public TicketResponseDto guardar(Ticket ticket) {
         Ticket saved = ticketRepository.save(ticket);
         return mapToDto(saved);

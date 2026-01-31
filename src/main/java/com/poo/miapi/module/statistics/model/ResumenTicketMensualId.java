@@ -1,4 +1,4 @@
-package com.poo.miapi.model.estadistica;
+package com.poo.miapi.module.statistics.model;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,26 +1,26 @@
-package com.poo.miapi.service.auth;
+package com.poo.miapi.module.auth.service;
 
-import com.poo.miapi.dto.auth.ChangePasswordDto;
-import com.poo.miapi.dto.auth.LoginRequestDto;
-import com.poo.miapi.dto.auth.LoginResponseDto;
-import com.poo.miapi.dto.auth.ResetPasswordDto;
-import com.poo.miapi.dto.usuarios.TecnicoResponseDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.model.core.Admin;
-import com.poo.miapi.model.core.SuperAdmin;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Trabajador;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.repository.core.TrabajadorRepository;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.AdminRepository;
-import com.poo.miapi.repository.core.SuperAdminRepository;
-import com.poo.miapi.service.security.JwtService;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.module.auth.dto.*;
+import com.poo.miapi.module.user.dto.AdminResponseDto;
+import com.poo.miapi.module.user.dto.SuperAdminResponseDto;
+import com.poo.miapi.module.user.dto.TecnicoResponseDto;
+import com.poo.miapi.module.user.dto.TrabajadorResponseDto;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.model.Admin;
+import com.poo.miapi.module.user.model.SuperAdmin;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.model.Trabajador;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.repository.AdminRepository;
+import com.poo.miapi.module.user.repository.SuperAdminRepository;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.module.user.repository.TrabajadorRepository;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -174,7 +174,7 @@ public class AuthService {
             }
             case "TRABAJADOR" -> {
                 Trabajador trabajador = (Trabajador) usuario;
-                usuarioDto = new UsuarioResponseDto(
+                usuarioDto = new TrabajadorResponseDto(
                         trabajador.getId(),
                         trabajador.getNombre(),
                         trabajador.getApellido(),
@@ -186,7 +186,7 @@ public class AuthService {
             }
             case "ADMIN" -> {
                 Admin admin = (Admin) usuario;
-                usuarioDto = new UsuarioResponseDto(
+                usuarioDto = new AdminResponseDto(
                         admin.getId(),
                         admin.getNombre(),
                         admin.getApellido(),
@@ -198,7 +198,7 @@ public class AuthService {
             }
             case "SUPERADMIN" -> {
                 SuperAdmin superAdmin = (SuperAdmin) usuario;
-                usuarioDto = new UsuarioResponseDto(
+                usuarioDto = new SuperAdminResponseDto(
                         superAdmin.getId(),
                         superAdmin.getNombre(),
                         superAdmin.getApellido(),

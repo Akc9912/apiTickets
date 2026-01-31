@@ -1,9 +1,9 @@
-package com.poo.miapi.controller.estadistica;
+package com.poo.miapi.module.statistics.controller;
 
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.service.estadistica.EstadisticaService;
-import com.poo.miapi.dto.estadistica.EstadisticaPeriodoDto;
-import com.poo.miapi.model.enums.PeriodoTipo;
+import com.poo.miapi.module.statistics.dto.EstadisticaPeriodoDto;
+import com.poo.miapi.module.statistics.service.EstadisticaService;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

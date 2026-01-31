@@ -1,4 +1,4 @@
-package com.poo.miapi.model.enums;
+package com.poo.miapi.module.user.model;
 
 public enum Rol {
     SUPER_ADMIN("Super Administrador"),

@@ -1,6 +1,7 @@
-package com.poo.miapi.repository.core;
+package com.poo.miapi.module.user.repository;
 
-import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import com.poo.miapi.model.enums.Rol;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {

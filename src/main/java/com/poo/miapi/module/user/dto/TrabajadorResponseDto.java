@@ -1,61 +1,17 @@
-package com.poo.miapi.dto.trabajador;
+package com.poo.miapi.module.user.dto;
 
-public class TrabajadorResponseDto {
-    private int id;
-    private String nombre;
-    private String apellido;
-    private String email;
-    private boolean activo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.poo.miapi.module.user.model.Rol;
+
+@JsonTypeName("TRABAJADOR")
+public class TrabajadorResponseDto extends UsuarioResponseDto {
 
     public TrabajadorResponseDto() {
+        super();
     }
 
-    public TrabajadorResponseDto(int id, String nombre, String apellido, String email, boolean activo) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.activo = activo;
-    }
-
-    // Getters y setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public TrabajadorResponseDto(int id, String nombre, String apellido, String email, Rol rol,
+            boolean cambiarPass, boolean activo, boolean bloqueado) {
+        super(id, nombre, apellido, email, rol, cambiarPass, activo, bloqueado);
     }
 }

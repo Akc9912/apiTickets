@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.ticket;
+package com.poo.miapi.module.ticket.dto;
 
 import jakarta.validation.constraints.NotNull;
 

@@ -1,7 +1,6 @@
 
-package com.poo.miapi.model.core;
+package com.poo.miapi.module.user.model;
 
-import com.poo.miapi.model.enums.Rol;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

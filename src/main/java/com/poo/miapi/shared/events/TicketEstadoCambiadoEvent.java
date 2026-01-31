@@ -1,8 +1,8 @@
-package com.poo.miapi.model.events;
+package com.poo.miapi.shared.events;
 
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.EstadoTicket;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Usuario;
 import org.springframework.context.ApplicationEvent;
 
 /**

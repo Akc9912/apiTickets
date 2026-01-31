@@ -1,19 +1,24 @@
-package com.poo.miapi.controller.auth;
+package com.poo.miapi.module.auth.controller;
 
-import com.poo.miapi.dto.auth.ChangePasswordDto;
-import com.poo.miapi.dto.auth.LoginRequestDto;
-import com.poo.miapi.dto.auth.LoginResponseDto;
-import com.poo.miapi.dto.auth.ResetPasswordDto;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.service.auth.AuthService;
-import com.poo.miapi.service.auditoria.AuditoriaService;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+
+import com.poo.miapi.module.auth.service.AuthService;
+import com.poo.miapi.module.auth.dto.LoginRequestDto;
+import com.poo.miapi.module.auth.dto.LoginResponseDto;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.module.auth.dto.ChangePasswordDto;
+import com.poo.miapi.module.auth.dto.ResetPasswordDto;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.module.user.model.Rol;
+
+
 import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

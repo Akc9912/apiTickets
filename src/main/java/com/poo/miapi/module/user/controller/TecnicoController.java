@@ -1,4 +1,4 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.user.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -12,13 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
-import com.poo.miapi.dto.tecnico.IncidenciasDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.service.core.TecnicoService;
-import com.poo.miapi.service.notificacion.motor.EventPublisherService;
+import com.poo.miapi.module.user.dto.IncidenciasDto;
+//import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.service.TecnicoService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
@@ -27,15 +24,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class TecnicoController {
 
         private final TecnicoService tecnicoService;
-        private final EventPublisherService eventPublisherService;
-        private final TicketRepository ticketRepository;
         private static final Logger logger = LoggerFactory.getLogger(TecnicoController.class);
 
-        public TecnicoController(TecnicoService tecnicoService, EventPublisherService eventPublisherService,
-                        TicketRepository ticketRepository) {
+        public TecnicoController(TecnicoService tecnicoService) {
                 this.tecnicoService = tecnicoService;
-                this.eventPublisherService = eventPublisherService;
-                this.ticketRepository = ticketRepository;
         }
 
         // POST /api/tecnico/tickets/{ticketId}/tomar
@@ -81,17 +73,11 @@ public class TecnicoController {
                 logger.info("[TecnicoController] INICIO resolverTicket - ticketId: {} idTecnico: {}", ticketId,
                                 idTecnico);
                 try {
-                        // 1. Resolver el ticket (lógica de negocio existente)
-                        TicketResponseDto resultado = tecnicoService.resolverTicket(idTecnico, ticketId);
+                        // Resolver el ticket (lógica de negocio existente)
+                        // TicketResponseDto resultado = tecnicoService.resolverTicket(idTecnico,
+                        // ticketId);
 
-                        // 2. Publicar evento para notificación automática
-                        Ticket ticket = ticketRepository.findById(ticketId)
-                                        .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
-                        Usuario tecnico = tecnicoService.buscarPorId(idTecnico);
-                        eventPublisherService.publicarTicketEvaluacionSolicitada(ticket, tecnico,
-                                        comentario != null ? comentario : "Ticket marcado como resuelto");
-
-                        logger.info("[TecnicoController] Estado de ticket actualizado a: Resuelto - Evento publicado");
+                        logger.info("[TecnicoController] Estado de ticket actualizado a: Resuelto");
                         return ResponseEntity.ok("Estado de ticket actualizado a: Resuelto");
                 } catch (EntityNotFoundException e) {
                         logger.error("Ticket no encontrado", e);
@@ -120,16 +106,10 @@ public class TecnicoController {
                 logger.info("[TecnicoController] POST /tickets/{}/devolver idTecnico: {} motivo: {}", ticketId,
                                 idTecnico, motivo);
                 try {
-                        // 1. Crear solicitud de devolución (lógica de negocio existente)
+                        // Crear solicitud de devolución (lógica de negocio existente)
                         tecnicoService.solicitarDevolucion(idTecnico, ticketId, motivo);
 
-                        // 2. Publicar evento para notificación automática
-                        Ticket ticket = ticketRepository.findById(ticketId)
-                                        .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
-                        Usuario tecnico = tecnicoService.buscarPorId(idTecnico);
-                        eventPublisherService.publicarSolicitudDevolucion(ticket, tecnico, motivo);
-
-                        logger.info("[TecnicoController] Solicitud de devolución registrada y evento publicado");
+                        logger.info("[TecnicoController] Solicitud de devolución registrada");
                         return ResponseEntity.ok("Solicitud de devolución registrada");
                 } catch (EntityNotFoundException e) {
                         logger.error("Técnico o ticket no encontrado", e);

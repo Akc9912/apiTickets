@@ -1,20 +1,23 @@
-package com.poo.miapi.service.historial;
+package com.poo.miapi.module.audit.service;
 
-import com.poo.miapi.dto.historial.HistorialValidacionResponseDto;
-import com.poo.miapi.dto.historial.HistorialValidacionRequestDto;
-import com.poo.miapi.model.historial.HistorialValidacion;
-import com.poo.miapi.model.core.Trabajador;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.TrabajadorRepository;
-import com.poo.miapi.repository.historial.HistorialValidacionRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.poo.miapi.module.audit.dto.HistorialValidacionRequestDto;
+import com.poo.miapi.module.audit.dto.HistorialValidacionResponseDto;
+import com.poo.miapi.module.audit.model.HistorialValidacion;
+import com.poo.miapi.module.audit.repository.HistorialValidacionRepository;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.model.Trabajador;
+import com.poo.miapi.module.user.repository.TrabajadorRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+
 import jakarta.persistence.EntityNotFoundException;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+
 import java.util.List;
 
 @Service

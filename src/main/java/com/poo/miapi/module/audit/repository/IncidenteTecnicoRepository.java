@@ -1,9 +1,11 @@
-package com.poo.miapi.repository.historial;
+package com.poo.miapi.module.audit.repository;
 
-import com.poo.miapi.model.enums.TipoIncidente;
-import com.poo.miapi.model.historial.IncidenteTecnico;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.poo.miapi.module.audit.model.IncidenteTecnico;
+import com.poo.miapi.shared.events.enums.TipoIncidente;
 
 import java.util.List;
 

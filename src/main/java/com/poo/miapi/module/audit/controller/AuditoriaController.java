@@ -1,15 +1,18 @@
-package com.poo.miapi.controller.auditoria;
+package com.poo.miapi.module.audit.controller;
 
-import com.poo.miapi.dto.auditoria.AuditoriaResponseDto;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.service.auditoria.AuditoriaService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import com.poo.miapi.module.audit.dto.AuditoriaResponseDto;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

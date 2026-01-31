@@ -1,7 +1,7 @@
-package com.poo.miapi.dto.usuarios;
+package com.poo.miapi.module.user.dto;
 
-import com.poo.miapi.model.enums.Rol;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.poo.miapi.module.user.model.Rol;
 
 @JsonPropertyOrder({"id", "nombre", "apellido", "email", "rol", "cambiarPass", "activo", "bloqueado"})
 public class UsuarioResponseDto {

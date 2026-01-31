@@ -1,12 +1,13 @@
-package com.poo.miapi.service.estadistica;
+package com.poo.miapi.module.statistics.service;
 
-import com.poo.miapi.dto.estadistica.EstadisticaUsuarioDto;
-import com.poo.miapi.model.enums.PeriodoTipo;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.estadistica.EstadisticaUsuario;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.estadistica.EstadisticaUsuarioRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
+import com.poo.miapi.module.statistics.dto.EstadisticaUsuarioDto;
+import com.poo.miapi.module.statistics.model.EstadisticaUsuario;
+import com.poo.miapi.module.statistics.repository.EstadisticaUsuarioRepository;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -248,7 +249,7 @@ public class EstadisticaUsuarioService {
 
             // Métricas de actividad reciente (simplificado)
             List<EstadisticaUsuario> estadisticas = estadisticaUsuarioRepository.findAll();
-            LocalDateTime ultimaSemana = LocalDateTime.now().minusDays(7);
+            // LocalDateTime ultimaSemana = LocalDateTime.now().minusDays(7);
 
             // Cálculos aproximados basados en datos disponibles
             int sesionesActivas = estadisticas.stream()

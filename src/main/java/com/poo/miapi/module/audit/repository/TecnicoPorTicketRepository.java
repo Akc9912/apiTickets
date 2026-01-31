@@ -1,13 +1,14 @@
-package com.poo.miapi.repository.historial;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.historial.TecnicoPorTicket;
+package com.poo.miapi.module.audit.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.poo.miapi.module.audit.model.TecnicoPorTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Tecnico;
 
 @Repository
 public interface TecnicoPorTicketRepository extends JpaRepository<TecnicoPorTicket, Integer> {

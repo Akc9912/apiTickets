@@ -1,4 +1,4 @@
-package com.poo.miapi.service.security;
+package com.poo.miapi.module.auth.service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -7,10 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import com.poo.miapi.module.user.model.Usuario;
+
 import java.security.Key;
 import java.util.Date;
 
-import com.poo.miapi.model.core.Usuario;
+
 
 @Service
 public class JwtService {

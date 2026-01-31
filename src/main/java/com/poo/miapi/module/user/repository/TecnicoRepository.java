@@ -1,7 +1,7 @@
-package com.poo.miapi.repository.core;
+package com.poo.miapi.module.user.repository;
 
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.enums.Rol;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.model.Tecnico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

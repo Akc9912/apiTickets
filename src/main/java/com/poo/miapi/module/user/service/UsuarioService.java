@@ -1,22 +1,22 @@
-package com.poo.miapi.service.core;
+package com.poo.miapi.module.user.service;
 
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.model.core.*;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.util.PasswordHelper;
-
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.dto.UsuarioRequestDto;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.model.*;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.shared.util.PasswordHelper;
+
 import java.util.List;
 
 @Service

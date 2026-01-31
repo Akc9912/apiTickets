@@ -1,4 +1,4 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.user.controller;
 
 import java.util.List;
 
@@ -6,18 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import com.poo.miapi.dto.historial.ProcesarSolicitudDevolucionRequestDto;
-import com.poo.miapi.dto.historial.SolicitudDevolucionResponseDto;
-import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.service.core.UsuarioService;
-import com.poo.miapi.service.historial.SolicitudDevolucionService;
-import com.poo.miapi.service.notificacion.motor.EventPublisherService;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.historial.SolicitudDevolucion;
+import com.poo.miapi.module.user.dto.UsuarioRequestDto;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.service.UsuarioService;
+import com.poo.miapi.module.audit.service.SolicitudDevolucionService;
+import com.poo.miapi.module.audit.dto.ProcesarSolicitudDevolucionRequestDto;
+import com.poo.miapi.module.audit.dto.SolicitudDevolucionResponseDto;
+import com.poo.miapi.module.audit.model.SolicitudDevolucion;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,15 +29,10 @@ public class AdminController {
 
     private final UsuarioService usuarioService;
     private final SolicitudDevolucionService solicitudDevolucionService;
-    private final EventPublisherService eventPublisherService;
-    private final TicketRepository ticketRepository;
 
-    public AdminController(UsuarioService usuarioService, SolicitudDevolucionService solicitudDevolucionService,
-            EventPublisherService eventPublisherService, TicketRepository ticketRepository) {
+    public AdminController(UsuarioService usuarioService, SolicitudDevolucionService solicitudDevolucionService) {
         this.usuarioService = usuarioService;
         this.solicitudDevolucionService = solicitudDevolucionService;
-        this.eventPublisherService = eventPublisherService;
-        this.ticketRepository = ticketRepository;
     }
 
     // procesar solicitud de devolución - POST
@@ -51,20 +42,9 @@ public class AdminController {
             @PathVariable int solicitudId,
             @RequestBody ProcesarSolicitudDevolucionRequestDto requestDto) {
         try {
-            // 1. Procesar solicitud (lógica de negocio existente)
+            // Procesar solicitud (lógica de negocio existente)
             SolicitudDevolucionResponseDto dto = solicitudDevolucionService.procesarSolicitudDevolucion(solicitudId,
                     requestDto.getIdAdmin(), requestDto.isAprobar(), requestDto.getComentario());
-
-            // 2. Publicar evento para notificación automática
-            Ticket ticket = ticketRepository.findById(dto.getIdTicket())
-                    .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
-            Usuario tecnico = usuarioService.buscarPorId(dto.getIdTecnico());
-            Usuario admin = usuarioService.buscarPorId(requestDto.getIdAdmin());
-            Usuario trabajador = ticket.getCreador(); // El creador del ticket (trabajador)
-
-            eventPublisherService.publicarDevolucionProcesada(ticket, admin, tecnico, trabajador,
-                    requestDto.isAprobar(),
-                    requestDto.getComentario());
 
             return ResponseEntity.ok(dto);
         } catch (EntityNotFoundException e) {

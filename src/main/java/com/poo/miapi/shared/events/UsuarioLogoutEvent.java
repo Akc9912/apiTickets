@@ -1,6 +1,6 @@
-package com.poo.miapi.model.events;
+package com.poo.miapi.shared.events;
 
-import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.module.user.model.Usuario;
 import org.springframework.context.ApplicationEvent;
 import java.time.LocalDateTime;
 import java.time.Duration;

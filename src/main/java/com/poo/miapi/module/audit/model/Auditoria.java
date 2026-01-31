@@ -1,11 +1,12 @@
-package com.poo.miapi.model.auditoria;
+package com.poo.miapi.module.audit.model;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.poo.miapi.model.core.Usuario;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -81,6 +82,24 @@ public class Auditoria implements Serializable {
 
     @Column(nullable = false)
     private Boolean procesado = false;
+
+    private String detalleAccion;
+
+    private LocalDateTime fechaAccion;
+
+    private CategoriaAuditoria categoria;
+
+    private SeveridadAuditoria severidad;
+
+    private String direccionIp;
+
+    private String sesionId;
+
+    private String hashIntegridad;
+
+    private LocalDateTime retencionHasta;
+
+    private LocalDateTime fechaProcesamiento;
 
     // Constructores
     public Auditoria() {

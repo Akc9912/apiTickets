@@ -1,6 +1,6 @@
-package com.poo.miapi.repository.core;
+package com.poo.miapi.module.user.repository;
 
-import com.poo.miapi.model.core.SuperAdmin;
+import com.poo.miapi.module.user.model.SuperAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

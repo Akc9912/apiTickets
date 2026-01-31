@@ -1,6 +1,6 @@
-package com.poo.miapi.repository.notificacion;
+package com.poo.miapi.module.notification.repository;
 
-import com.poo.miapi.model.notificacion.Notificacion;
+import com.poo.miapi.module.notification.model.Notificacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.poo.miapi.dto.historial;
+package com.poo.miapi.module.audit.dto;
 
 import jakarta.validation.constraints.NotNull;
 

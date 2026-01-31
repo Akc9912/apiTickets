@@ -1,10 +1,10 @@
-package com.poo.miapi.repository.historial;
+package com.poo.miapi.module.audit.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.poo.miapi.model.historial.SolicitudDevolucion;
+import com.poo.miapi.module.audit.model.SolicitudDevolucion;
 
 public interface SolicitudDevolucionRepository extends JpaRepository<SolicitudDevolucion, Integer> {
     List<SolicitudDevolucion> findByTecnicoId(int tecnicoId);

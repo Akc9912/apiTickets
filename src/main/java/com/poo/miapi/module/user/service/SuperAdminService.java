@@ -1,26 +1,28 @@
-package com.poo.miapi.service.core;
+package com.poo.miapi.module.user.service;
 
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.usuarios.UsuarioRequestDto;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.model.core.*;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.model.historial.TecnicoPorTicket;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.UsuarioRepository;
-import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.dto.UsuarioRequestDto;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.model.*;
+
+import com.poo.miapi.module.audit.model.TecnicoPorTicket;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.module.audit.repository.TecnicoPorTicketRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import com.poo.miapi.util.PasswordHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.module.audit.service.AuditoriaService;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.shared.util.PasswordHelper;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -347,6 +349,7 @@ public class SuperAdminService {
     }
 
     // Eliminar ticket
+    @SuppressWarnings("null")
     public void eliminarTicket(int id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));

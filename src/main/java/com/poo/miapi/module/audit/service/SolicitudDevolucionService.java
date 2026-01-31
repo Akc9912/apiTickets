@@ -1,22 +1,23 @@
-package com.poo.miapi.service.historial;
+package com.poo.miapi.module.audit.service;
 
-import com.poo.miapi.dto.historial.SolicitudDevolucionResponseDto;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.model.enums.EstadoSolicitud;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.historial.SolicitudDevolucion;
-import com.poo.miapi.model.historial.TecnicoPorTicket;
-import com.poo.miapi.repository.historial.SolicitudDevolucionRepository;
-import com.poo.miapi.repository.historial.TecnicoPorTicketRepository;
-import com.poo.miapi.service.core.TecnicoService;
+
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+
+import com.poo.miapi.module.audit.dto.SolicitudDevolucionResponseDto;
+import com.poo.miapi.module.audit.model.SolicitudDevolucion;
+import com.poo.miapi.module.audit.model.TecnicoPorTicket;
+import com.poo.miapi.module.audit.repository.SolicitudDevolucionRepository;
+import com.poo.miapi.module.audit.repository.TecnicoPorTicketRepository;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.service.TecnicoService;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.EstadoSolicitud;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
 
 import java.time.LocalDateTime;
 import java.util.List;

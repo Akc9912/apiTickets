@@ -1,6 +1,6 @@
-package com.poo.miapi.repository.notificacion;
+package com.poo.miapi.module.notification.repository;
 
-import com.poo.miapi.model.notificacion.Notificacion;
+import com.poo.miapi.module.notification.model.Notificacion;
 import java.time.LocalDateTime;
 import java.util.List;
 

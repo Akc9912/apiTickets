@@ -1,6 +1,6 @@
-package com.poo.miapi.repository.core;
+package com.poo.miapi.module.user.repository;
 
-import com.poo.miapi.model.core.Trabajador;
+import com.poo.miapi.module.user.model.Trabajador;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

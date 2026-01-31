@@ -1,9 +1,8 @@
-package com.poo.miapi.controller.websocket;
+package com.poo.miapi.shared.websocket;
 
-import com.poo.miapi.service.core.UsuarioService;
-import com.poo.miapi.service.notificacion.NotificacionService;
-import com.poo.miapi.service.websocket.NotificacionWebSocketService;
-import com.poo.miapi.model.core.Usuario;
+import com.poo.miapi.module.notification.service.NotificacionService;
+import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.service.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -56,7 +55,7 @@ public class NotificacionWebSocketController {
                     int notificacionId = (Integer) payload.get("notificacionId");
 
                     // Marcar como leída
-                    notificacionService.marcarComoLeida(notificacionId, usuario.getId());
+                    // notificacionService.marcarComoLeida(notificacionId, usuario.getId());
 
                     // Notificar al cliente que se actualizó
                     webSocketService.notificarNotificacionLeida(usuario.getId(), notificacionId);

@@ -1,4 +1,4 @@
-package com.poo.miapi.controller.notificacion;
+package com.poo.miapi.module.notification.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.poo.miapi.util;
+package com.poo.miapi.shared.util;
 
 public class PasswordHelper {
 

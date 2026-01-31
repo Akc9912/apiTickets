@@ -1,10 +1,11 @@
-package com.poo.miapi.service.security;
+package com.poo.miapi.module.auth.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.poo.miapi.repository.core.UsuarioRepository;
+
+import com.poo.miapi.module.user.repository.UsuarioRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

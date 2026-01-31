@@ -1,14 +1,21 @@
-package com.poo.miapi.dto.notificacion;
-
-import java.util.Map;
+package com.poo.miapi.module.notification.dto;
 
 public class NotificacionRequestDto {
+    private int usuarioId;
     private String titulo;
     private String mensaje;
     private String tipo;
     private String origenTipo;
     private int origenId;
     private String metadata; // información extra opcional
+
+    public int getUsuarioId() {
+        return this.usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 
     public String getTitulo() {
         return this.titulo;
@@ -38,7 +45,7 @@ public class NotificacionRequestDto {
         return this.origenTipo;
     }
 
-    public void setOtigenTipo(String origenTipo) {
+    public void setOrigenTipo(String origenTipo) {
         this.origenTipo = origenTipo;
     }
 

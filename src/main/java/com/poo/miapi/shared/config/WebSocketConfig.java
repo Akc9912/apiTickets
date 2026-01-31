@@ -1,4 +1,4 @@
-package com.poo.miapi.config;
+package com.poo.miapi.shared.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
+    public void configureMessageBroker(@SuppressWarnings("null") MessageBrokerRegistry config) {
         // Habilita un broker de mensajes en memoria simple para enviar mensajes a los
         // clientes
         config.enableSimpleBroker("/topic", "/queue", "/user");
@@ -24,6 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setUserDestinationPrefix("/user");
     }
 
+    @SuppressWarnings("null")
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Registra el endpoint WebSocket que será usado por los clientes para

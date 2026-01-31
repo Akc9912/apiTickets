@@ -1,4 +1,4 @@
-package com.poo.miapi.model.enums;
+package com.poo.miapi.shared.events.enums;
 
 public enum TipoNotificacion {
     TICKET_ASIGNADO("Ticket Asignado"),

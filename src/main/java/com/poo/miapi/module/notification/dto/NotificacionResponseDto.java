@@ -1,13 +1,14 @@
-package com.poo.miapi.dto.notificacion;
+package com.poo.miapi.module.notification.dto;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 public class NotificacionResponseDto {
     private int id;
+    private int usuarioId;
     private String titulo;
     private String mensaje;
     private String tipo;
+    private boolean leida;
     private String origenTipo;
     private int origenId;
     private String metadata;
@@ -19,6 +20,22 @@ public class NotificacionResponseDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUsuarioId() {
+        return this.usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public boolean isLeida() {
+        return this.leida;
+    }
+
+    public void setLeida(boolean leida) {
+        this.leida = leida;
     }
 
     public String getTitulo() {

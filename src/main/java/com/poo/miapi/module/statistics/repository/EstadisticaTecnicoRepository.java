@@ -1,8 +1,9 @@
-package com.poo.miapi.repository.estadistica;
+package com.poo.miapi.module.statistics.repository;
 
-import com.poo.miapi.model.estadistica.EstadisticaTecnico;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.enums.PeriodoTipo;
+import com.poo.miapi.module.statistics.model.EstadisticaTecnico;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

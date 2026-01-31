@@ -1,11 +1,11 @@
-package com.poo.miapi.controller.core;
+package com.poo.miapi.module.user.controller;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.poo.miapi.dto.usuarios.UsuarioResponseDto;
-import com.poo.miapi.service.core.SuperAdminService;
+import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.service.SuperAdminService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,16 +25,15 @@ public class SuperAdminController {
                 this.superAdminService = superAdminService;
         }
 
-
-    @Operation(summary = "Listar administradores", description = "Obtener lista de todos los administradores del sistema")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de administradores obtenida exitosamente")
-    })
-    @GetMapping("/admins")
-    public ResponseEntity<List<UsuarioResponseDto>> listarAdministradores() {
-        logger.info("[SuperAdminController] GET /admins");
-        List<UsuarioResponseDto> resp = superAdminService.listarAdministradores();
-        logger.info("[SuperAdminController] Respuesta: {}", resp);
-        return ResponseEntity.ok(resp);
-    }
+        @Operation(summary = "Listar administradores", description = "Obtener lista de todos los administradores del sistema")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Lista de administradores obtenida exitosamente")
+        })
+        @GetMapping("/admins")
+        public ResponseEntity<List<UsuarioResponseDto>> listarAdministradores() {
+                logger.info("[SuperAdminController] GET /admins");
+                List<UsuarioResponseDto> resp = superAdminService.listarAdministradores();
+                logger.info("[SuperAdminController] Respuesta: {}", resp);
+                return ResponseEntity.ok(resp);
+        }
 }

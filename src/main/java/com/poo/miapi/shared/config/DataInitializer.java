@@ -1,13 +1,16 @@
-package com.poo.miapi.config;
+package com.poo.miapi.shared.config;
 
-import com.poo.miapi.model.core.SuperAdmin;
-import com.poo.miapi.model.core.Admin;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Trabajador;
-import com.poo.miapi.repository.core.UsuarioRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import com.poo.miapi.module.user.model.Admin;
+import com.poo.miapi.module.user.model.SuperAdmin;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.model.Trabajador;
+import com.poo.miapi.module.user.repository.UsuarioRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

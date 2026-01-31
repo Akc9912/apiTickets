@@ -1,24 +1,25 @@
-package com.poo.miapi.service.core;
+package com.poo.miapi.module.user.service;
 
-import com.poo.miapi.dto.ticket.EvaluarTicketDto;
-import com.poo.miapi.dto.ticket.TicketRequestDto;
-import com.poo.miapi.dto.ticket.TicketResponseDto;
-import com.poo.miapi.dto.trabajador.TrabajadorResponseDto;
-import com.poo.miapi.model.core.*;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.historial.HistorialValidacion;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.core.TrabajadorRepository;
-import com.poo.miapi.repository.historial.HistorialValidacionRepository;
+import com.poo.miapi.module.ticket.dto.EvaluarTicketDto;
+import com.poo.miapi.module.ticket.dto.TicketRequestDto;
+import com.poo.miapi.module.ticket.dto.TicketResponseDto;
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.dto.TrabajadorResponseDto;
+import com.poo.miapi.module.user.model.*;
+import com.poo.miapi.module.audit.model.HistorialValidacion;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.repository.TrabajadorRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.module.audit.repository.HistorialValidacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
+import com.poo.miapi.module.audit.service.AuditoriaService;
 
 import java.util.List;
 
@@ -178,6 +179,9 @@ public class TrabajadorService {
                 trabajador.getNombre(),
                 trabajador.getApellido(),
                 trabajador.getEmail(),
-                trabajador.isActivo());
+                trabajador.getRol(),
+                trabajador.isCambiarPass(),
+                trabajador.isActivo(),
+                trabajador.isBloqueado());
     }
 }

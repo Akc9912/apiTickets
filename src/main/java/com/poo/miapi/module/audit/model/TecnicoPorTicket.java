@@ -1,10 +1,11 @@
-package com.poo.miapi.model.historial;
+package com.poo.miapi.module.audit.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import com.poo.miapi.model.enums.EstadoTicket;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
+
+import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.user.model.Tecnico;
 
 @Entity
 public class TecnicoPorTicket {

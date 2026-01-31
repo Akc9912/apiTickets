@@ -1,22 +1,25 @@
-package com.poo.miapi.service.historial;
+package com.poo.miapi.module.audit.service;
 
-import com.poo.miapi.dto.tecnico.IncidenteTecnicoResponseDto;
-import com.poo.miapi.dto.tecnico.IncidenteTecnicoRequestDto;
-import com.poo.miapi.model.historial.IncidenteTecnico;
-import com.poo.miapi.model.core.Tecnico;
-import com.poo.miapi.model.core.Ticket;
-import com.poo.miapi.repository.core.TecnicoRepository;
-import com.poo.miapi.repository.core.TicketRepository;
-import com.poo.miapi.repository.historial.IncidenteTecnicoRepository;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.poo.miapi.module.audit.model.IncidenteTecnico;
+import com.poo.miapi.module.audit.repository.IncidenteTecnicoRepository;
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.dto.IncidenteTecnicoRequestDto;
+import com.poo.miapi.module.user.dto.IncidenteTecnicoResponseDto;
+import com.poo.miapi.module.user.model.Tecnico;
+import com.poo.miapi.module.user.repository.TecnicoRepository;
+import com.poo.miapi.shared.events.enums.AccionAuditoria;
+import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
+import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.shared.events.enums.TipoIncidente;
+
 import jakarta.persistence.EntityNotFoundException;
-import com.poo.miapi.service.auditoria.AuditoriaService;
-import com.poo.miapi.model.enums.AccionAuditoria;
-import com.poo.miapi.model.enums.CategoriaAuditoria;
-import com.poo.miapi.model.enums.SeveridadAuditoria;
-import com.poo.miapi.model.enums.TipoIncidente;
+
 
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package com.poo.miapi.controller.estadistica;
+package com.poo.miapi.module.statistics.controller;
 
-import com.poo.miapi.dto.estadistica.EstadisticaUsuarioDto;
-import com.poo.miapi.model.enums.PeriodoTipo;
-import com.poo.miapi.model.enums.Rol;
-import com.poo.miapi.service.estadistica.EstadisticaUsuarioService;
+import com.poo.miapi.module.statistics.dto.EstadisticaUsuarioDto;
+import com.poo.miapi.module.statistics.service.EstadisticaUsuarioService;
+import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.shared.events.enums.PeriodoTipo;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

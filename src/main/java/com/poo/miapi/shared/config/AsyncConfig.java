@@ -1,4 +1,4 @@
-package com.poo.miapi.config;
+package com.poo.miapi.shared.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
