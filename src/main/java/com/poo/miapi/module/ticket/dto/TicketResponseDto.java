@@ -2,7 +2,9 @@ package com.poo.miapi.module.ticket.dto;
 
 import java.time.LocalDateTime;
 
-import com.poo.miapi.module.ticket.model.EstadoTicket;
+import com.poo.miapi.module.ticket.enums.TicketStatus;
+import com.poo.miapi.module.user.dto.DeveloperResponseDto;
+import com.poo.miapi.module.user.dto.UserResponseDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,37 +14,39 @@ public class TicketResponseDto {
     private int id;
 
     @NotBlank(message = "El título del ticket es obligatorio")
-    private String titulo;
+    private String tittle;
 
     @NotBlank(message = "La descripción del ticket es obligatoria")
-    private String descripcion;
+    private String description;
 
     @NotNull(message = "El estado del ticket es obligatorio")
-    private EstadoTicket estado;
+    private TicketStatus statis;
 
-    private String creador; // Puede ser null si no hay creador
-    private String tecnicoAsignado; // Puede ser null si no hay técnico
+    private UserResponseDto creator;
+
+    private DeveloperResponseDto Developer; // null si nadie lo tomo o ya esta desasignado
 
     @NotNull(message = "La fecha de creación no puede ser nula")
-    private LocalDateTime fechaCreacion;
+    private LocalDateTime creationDate;
 
     @NotNull(message = "La fecha de última actualización no puede ser nula")
-    private LocalDateTime fechaUltimaActualizacion;
+    private LocalDateTime UpdateDate;
 
     // Constructor
     public TicketResponseDto() {
     }
 
-    public TicketResponseDto(int id, String titulo, String descripcion, EstadoTicket estado, String creador,
-            String tecnicoAsignado, LocalDateTime fechaCreacion, LocalDateTime fechaUltimaActualizacion) {
+    public TicketResponseDto(int id, String tittle, String description, TicketStatus statis,
+            UserResponseDto creator, DeveloperResponseDto developer, LocalDateTime creationDate,
+            LocalDateTime updateDate) {
         this.id = id;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.estado = estado;
-        this.creador = creador;
-        this.tecnicoAsignado = tecnicoAsignado;
-        this.fechaCreacion = fechaCreacion;
-        this.fechaUltimaActualizacion = fechaUltimaActualizacion;
+        this.tittle = tittle;
+        this.description = description;
+        this.statis = statis;
+        this.creator = creator;
+        this.Developer = developer;
+        this.creationDate = creationDate;
+        this.UpdateDate = updateDate;
     }
 
     // Getters y setters
@@ -54,59 +58,59 @@ public class TicketResponseDto {
         this.id = id;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public String getTittle() {
+        return tittle;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public EstadoTicket getEstado() {
-        return estado;
+    public TicketStatus getStatis() {
+        return statis;
     }
 
-    public void setEstado(EstadoTicket estado) {
-        this.estado = estado;
+    public void setStatis(TicketStatus statis) {
+        this.statis = statis;
     }
 
-    public String getCreador() {
-        return creador;
+    public UserResponseDto getCreator() {
+        return creator;
     }
 
-    public void setCreador(String creador) {
-        this.creador = creador;
+    public void setCreator(UserResponseDto creator) {
+        this.creator = creator;
     }
 
-    public String getTecnicoAsignado() {
-        return tecnicoAsignado;
+    public DeveloperResponseDto getDeveloper() {
+        return Developer;
     }
 
-    public void setTecnicoAsignado(String tecnicoAsignado) {
-        this.tecnicoAsignado = tecnicoAsignado;
+    public void setDeveloper(DeveloperResponseDto developer) {
+        this.Developer = developer;
     }
 
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public LocalDateTime getFechaUltimaActualizacion() {
-        return fechaUltimaActualizacion;
+    public LocalDateTime getUpdateDate() {
+        return UpdateDate;
     }
 
-    public void setFechaUltimaActualizacion(LocalDateTime fechaUltimaActualizacion) {
-        this.fechaUltimaActualizacion = fechaUltimaActualizacion;
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.UpdateDate = updateDate;
     }
 }

@@ -1,66 +1,34 @@
 package com.poo.miapi.module.auth.service;
 
-import com.poo.miapi.module.audit.service.AuditoriaService;
 import com.poo.miapi.module.auth.dto.*;
-import com.poo.miapi.module.user.dto.AdminResponseDto;
-import com.poo.miapi.module.user.dto.SuperAdminResponseDto;
-import com.poo.miapi.module.user.dto.TecnicoResponseDto;
-import com.poo.miapi.module.user.dto.TrabajadorResponseDto;
-import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.dto.*;
 import com.poo.miapi.module.user.model.Admin;
-import com.poo.miapi.module.user.model.SuperAdmin;
-import com.poo.miapi.module.user.model.Tecnico;
-import com.poo.miapi.module.user.model.Trabajador;
-import com.poo.miapi.module.user.model.Usuario;
-import com.poo.miapi.module.user.repository.AdminRepository;
-import com.poo.miapi.module.user.repository.SuperAdminRepository;
-import com.poo.miapi.module.user.repository.TecnicoRepository;
-import com.poo.miapi.module.user.repository.TrabajadorRepository;
-import com.poo.miapi.module.user.repository.UsuarioRepository;
-import com.poo.miapi.shared.events.enums.AccionAuditoria;
-import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
-import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
+import com.poo.miapi.module.user.model.Superadmin;
+import com.poo.miapi.module.user.model.Developer;
+import com.poo.miapi.module.user.model.Support;
+import com.poo.miapi.module.user.model.User;
+import com.poo.miapi.module.user.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final TrabajadorRepository trabajadorRepository;
-    private final TecnicoRepository tecnicoRepository;
-    private final AdminRepository adminRepository;
-    private final SuperAdminRepository superAdminRepository;
-    private final AuditoriaService auditoriaService;
 
     public AuthService(
-            UsuarioRepository usuarioRepository,
+            UserService userService,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            TrabajadorRepository trabajadorRepository,
-            TecnicoRepository tecnicoRepository,
-            AdminRepository adminRepository,
-            SuperAdminRepository superAdminRepository,
-            AuditoriaService auditoriaService) {
-        this.usuarioRepository = usuarioRepository;
+            JwtService jwtService) {
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.trabajadorRepository = trabajadorRepository;
-        this.tecnicoRepository = tecnicoRepository;
-        this.adminRepository = adminRepository;
-        this.superAdminRepository = superAdminRepository;
-        this.auditoriaService = auditoriaService;
     }
 
-    // MÉTODOS PÚBLICOS
     /**
      * Autenticar usuario con email y contraseña
      * 
@@ -70,214 +38,133 @@ public class AuthService {
      * @throws IllegalArgumentException Si la contraseña es incorrecta
      */
     public LoginResponseDto login(LoginRequestDto loginRequest) {
-        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
-                .orElse(null);
-        // Instancia hija según rol
-        if (usuario != null && usuario.getRol() != null) {
-            switch (usuario.getRol().name()) {
-                case "TRABAJADOR":
-                    Trabajador trabajador = null;
-                    try {
-                        trabajador = (Trabajador) usuario;
-                    } catch (ClassCastException e) {
-                        // Si no es instancia, buscar por email
-                        if (trabajadorRepository != null) {
-                            trabajador = trabajadorRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-                        }
-                    }
-                    if (trabajador != null)
-                        usuario = trabajador;
-                    break;
-                case "TECNICO":
-                    Tecnico tecnico = null;
-                    try {
-                        tecnico = (Tecnico) usuario;
-                    } catch (ClassCastException e) {
-                        if (tecnicoRepository != null) {
-                            tecnico = tecnicoRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-                        }
-                    }
-                    if (tecnico != null)
-                        usuario = tecnico;
-                    break;
-                case "ADMIN":
-                    Admin admin = null;
-                    try {
-                        admin = (Admin) usuario;
-                    } catch (ClassCastException e) {
-                        if (adminRepository != null) {
-                            admin = adminRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-                        }
-                    }
-                    if (admin != null)
-                        usuario = admin;
-                    break;
-                case "SUPERADMIN":
-                    SuperAdmin superAdmin = null;
-                    try {
-                        superAdmin = (SuperAdmin) usuario;
-                    } catch (ClassCastException e) {
-                        if (superAdminRepository != null) {
-                            superAdmin = superAdminRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-                        }
-                    }
-                    if (superAdmin != null)
-                        usuario = superAdmin;
-                    break;
-            }
-        }
-
-        // Siempre verificar la contraseña
-        boolean passwordMatches = false;
-        if (usuario != null) {
-            passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword());
-        } else {
+        User user;
+        try {
+            user = userService.findByEmail(loginRequest.getEmail());
+        } catch (EntityNotFoundException e) {
             // Ejecutar una verificación dummy para mantener el mismo tiempo de respuesta
             passwordEncoder.matches(loginRequest.getPassword(), "$2a$10$dummyHashToPreventTimingAttacks");
+            throw new EntityNotFoundException("User not found");
         }
 
-        // Verificación de seguridad: usuarios inexistentes o inactivos se tratan igual
+        // Verificar la contraseña
+        boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+
+        // Verificación de seguridad: usuarios inactivos
         // Los usuarios bloqueados SÍ pueden iniciar sesión pero no realizar acciones
-        if (usuario == null || !usuario.isActivo()) {
-            // Registrar intento de login fallido
-            String clientIp = getClientIpAddress();
-            auditoriaService.registrarLoginFallido(loginRequest.getEmail(), clientIp);
-            throw new EntityNotFoundException("Usuario no encontrado");
+        if (!user.isActive()) {
+            throw new EntityNotFoundException("User not found");
         }
 
         if (!passwordMatches) {
-            // Registrar intento de login fallido
-            String clientIp = getClientIpAddress();
-            auditoriaService.registrarLoginFallido(loginRequest.getEmail(), clientIp);
-            throw new IllegalArgumentException("Contraseña incorrecta");
+            throw new IllegalArgumentException("Incorrect password");
         }
 
-        // Registrar login exitoso
-        auditoriaService.registrarLogin(usuario);
+        String token = jwtService.generateToken(user);
+        UserResponseDto userDto;
 
-        String token = jwtService.generateToken(usuario);
-        UsuarioResponseDto usuarioDto;
-        switch (usuario.getRol().name()) {
-            case "TECNICO" -> {
-                Tecnico tecnico = (Tecnico) usuario;
-                usuarioDto = new TecnicoResponseDto(
-                        tecnico.getId(),
-                        tecnico.getNombre(),
-                        tecnico.getApellido(),
-                        tecnico.getEmail(),
-                        tecnico.getRol(),
-                        tecnico.isCambiarPass(),
-                        tecnico.isActivo(),
-                        tecnico.isBloqueado(),
-                        tecnico.getFallas(),
-                        tecnico.getMarcas());
+        switch (user.getRole().name()) {
+            case "DEVELOPER" -> {
+                Developer developer = (Developer) user;
+                userDto = new DeveloperResponseDto(
+                        developer.getId(),
+                        developer.getName(),
+                        developer.getLastName(),
+                        developer.getEmail(),
+                        developer.getRole(),
+                        developer.isChangePassword(),
+                        developer.isActive(),
+                        developer.isBlocked(),
+                        developer.getFailures(),
+                        developer.getWarnings());
             }
-            case "TRABAJADOR" -> {
-                Trabajador trabajador = (Trabajador) usuario;
-                usuarioDto = new TrabajadorResponseDto(
-                        trabajador.getId(),
-                        trabajador.getNombre(),
-                        trabajador.getApellido(),
-                        trabajador.getEmail(),
-                        trabajador.getRol(),
-                        trabajador.isCambiarPass(),
-                        trabajador.isActivo(),
-                        trabajador.isBloqueado());
+            case "SUPPORT" -> {
+                Support support = (Support) user;
+                userDto = new SupportResponseDto(
+                        support.getId(),
+                        support.getName(),
+                        support.getLastName(),
+                        support.getEmail(),
+                        support.getRole(),
+                        support.isChangePassword(),
+                        support.isActive(),
+                        support.isBlocked());
             }
             case "ADMIN" -> {
-                Admin admin = (Admin) usuario;
-                usuarioDto = new AdminResponseDto(
+                Admin admin = (Admin) user;
+                userDto = new AdminResponseDto(
                         admin.getId(),
-                        admin.getNombre(),
-                        admin.getApellido(),
+                        admin.getName(),
+                        admin.getLastName(),
                         admin.getEmail(),
-                        admin.getRol(),
-                        admin.isCambiarPass(),
-                        admin.isActivo(),
-                        admin.isBloqueado());
+                        admin.getRole(),
+                        admin.isChangePassword(),
+                        admin.isActive(),
+                        admin.isBlocked());
             }
             case "SUPERADMIN" -> {
-                SuperAdmin superAdmin = (SuperAdmin) usuario;
-                usuarioDto = new SuperAdminResponseDto(
-                        superAdmin.getId(),
-                        superAdmin.getNombre(),
-                        superAdmin.getApellido(),
-                        superAdmin.getEmail(),
-                        superAdmin.getRol(),
-                        superAdmin.isCambiarPass(),
-                        superAdmin.isActivo(),
-                        superAdmin.isBloqueado());
+                Superadmin superadmin = (Superadmin) user;
+                userDto = new SuperadminResponseDto(
+                        superadmin.getId(),
+                        superadmin.getName(),
+                        superadmin.getLastName(),
+                        superadmin.getEmail(),
+                        superadmin.getRole(),
+                        superadmin.isChangePassword(),
+                        superadmin.isActive(),
+                        superadmin.isBlocked());
             }
             default -> {
-                usuarioDto = new UsuarioResponseDto(
-                        usuario.getId(),
-                        usuario.getNombre(),
-                        usuario.getApellido(),
-                        usuario.getEmail(),
-                        usuario.getRol(),
-                        usuario.isCambiarPass(),
-                        usuario.isActivo(),
-                        usuario.isBloqueado());
+                userDto = new UserResponseDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.isChangePassword(),
+                        user.isActive(),
+                        user.isBlocked());
             }
         }
-        return new LoginResponseDto(token, usuarioDto);
+        return new LoginResponseDto(token, userDto);
     }
 
-    // Cambiar contraseña del usuario
-    public void cambiarPassword(ChangePasswordDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+    /**
+     * Cambiar contraseña del usuario
+     * 
+     * @param dto Datos del cambio de contraseña
+     * @throws EntityNotFoundException  Si el usuario no existe
+     * @throws IllegalArgumentException Si la contraseña es inválida o igual a la
+     *                                  anterior
+     */
+    public void changePassword(ChangePasswordDto dto) {
+        User user = userService.findById(dto.getUserId());
 
         if (dto.getNewPassword() == null || dto.getNewPassword().isBlank()) {
-            throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
+            throw new IllegalArgumentException("New password cannot be empty");
         }
 
-        if (passwordEncoder.matches(dto.getNewPassword(), usuario.getPassword())) {
-            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior");
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("New password cannot be the same as the current password");
         }
 
-        usuario.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-        usuario.setCambiarPass(false);
-        usuarioRepository.save(usuario);
-
-        // Registrar cambio de contraseña en auditoría
-        auditoriaService.registrarAccion(usuario, AccionAuditoria.CHANGE_PASSWORD,
-                "USUARIO", usuario.getId(), "Cambio de contraseña exitoso",
-                null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.MEDIUM);
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        user.setChangePassword(false);
+        userService.save(user);
     }
 
-    // Reiniciar contraseña de usuario (por administrador)
-    public void reiniciarPassword(ResetPasswordDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+    /**
+     * Reiniciar contraseña de usuario (por administrador)
+     * Establece la contraseña al ID del usuario y marca para cambio obligatorio
+     * 
+     * @param dto Datos del reset de contraseña
+     * @throws EntityNotFoundException Si el usuario no existe
+     */
+    public void resetPassword(ResetPasswordDto dto) {
+        User user = userService.findById(dto.getUserId());
 
-        usuario.setPassword(passwordEncoder.encode(String.valueOf(usuario.getId())));
-        usuario.setCambiarPass(true);
-        usuarioRepository.save(usuario);
-
-        // Registrar reset de contraseña en auditoría
-        auditoriaService.registrarAccion(usuario, AccionAuditoria.RESET_PASSWORD,
-                "USUARIO", usuario.getId(), "Reset de contraseña por administrador",
-                null, null, CategoriaAuditoria.SECURITY, SeveridadAuditoria.HIGH);
-    }
-
-    // MÉTODOS PRIVADOS/UTILIDADES
-    // Método auxiliar para obtener la IP del cliente
-    private String getClientIpAddress() {
-        try {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
-                    .getRequestAttributes();
-            if (attributes != null) {
-                HttpServletRequest request = attributes.getRequest();
-                String xfHeader = request.getHeader("X-Forwarded-For");
-                if (xfHeader == null) {
-                    return request.getRemoteAddr();
-                }
-                return xfHeader.split(",")[0].trim();
-            }
-        } catch (Exception e) {
-            // Ignorar si no hay contexto de request
-        }
-        return "UNKNOWN";
+        user.setPassword(passwordEncoder.encode(String.valueOf(user.getId())));
+        user.setChangePassword(true);
+        userService.save(user);
     }
 }

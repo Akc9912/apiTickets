@@ -1,7 +1,5 @@
 package com.poo.miapi.module.auth.controller;
 
-
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -9,20 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import com.poo.miapi.module.auth.service.AuthService;
 import com.poo.miapi.module.auth.dto.LoginRequestDto;
 import com.poo.miapi.module.auth.dto.LoginResponseDto;
-import com.poo.miapi.module.audit.service.AuditoriaService;
 import com.poo.miapi.module.auth.dto.ChangePasswordDto;
 import com.poo.miapi.module.auth.dto.ResetPasswordDto;
-import com.poo.miapi.module.user.model.Usuario;
-import com.poo.miapi.shared.events.enums.AccionAuditoria;
-import com.poo.miapi.shared.events.enums.CategoriaAuditoria;
-import com.poo.miapi.shared.events.enums.SeveridadAuditoria;
-import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.enums.UserRole;
+import com.poo.miapi.module.user.model.User;
 
-
-import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import java.util.Map;
+
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,164 +26,77 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Autenticación", description = "Endpoints para autenticación y gestión de contraseñas")
+@Tag(name = "Authentication", description = "Endpoints for authentication and password management")
 public class AuthController {
 
     private final AuthService authService;
-    private final AuditoriaService auditoriaService;
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthController.class);
 
-    public AuthController(AuthService authService, AuditoriaService auditoriaService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.auditoriaService = auditoriaService;
     }
 
     // POST /api/auth/login
     @PostMapping("/login")
-    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y devuelve un token JWT")
+    @Operation(summary = "Login", description = "Authenticates a user and returns a JWT token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login exitoso", content = @Content(schema = @Schema(implementation = LoginResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
-            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+            @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = LoginResponseDto.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     public ResponseEntity<?> login(
-            @Parameter(description = "Credenciales de login") @RequestBody @Valid LoginRequestDto request,
-            HttpServletRequest httpRequest) {
-        logger.info("[AuthController] POST /login datos: {}", request);
-
+            @Parameter(description = "Login credentials") @RequestBody @Valid LoginRequestDto request) {
         try {
             LoginResponseDto response = authService.login(request);
-
-            // Auditar login exitoso
-            auditoriaService.registrarAccion(
-                    null, // No tenemos el usuario aún
-                    AccionAuditoria.LOGIN,
-                    "USUARIO",
-                    null,
-                    "Login exitoso para: " + request.getEmail(),
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.LOW);
-
-            logger.info("[AuthController] Respuesta: {}", response);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
-            // Auditar login fallido
-            auditoriaService.registrarAccion(
-                    null,
-                    AccionAuditoria.LOGIN_FAILED,
-                    "USUARIO",
-                    null,
-                    "Login fallido para: " + request.getEmail() + " - Motivo: " + ex.getMessage(),
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.HIGH);
-
-            logger.warn("[AuthController] Login fallido: {}", ex.getMessage());
-            return ResponseEntity.status(401).body(java.util.Map.of("error", "Credenciales inválidas"));
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
         }
     }
 
-    // POST /api/auth/cambiar-password
-    @PostMapping("/cambiar-password")
-    @Operation(summary = "Cambiar contraseña", description = "Permite al usuario cambiar su contraseña actual")
+    // POST /api/auth/change-password
+    @PostMapping("/change-password")
+    @Operation(summary = "Change password", description = "Allows user to change their current password")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Contraseña cambiada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o contraseña actual incorrecta"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Password changed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data or incorrect current password"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<String> cambiarPassword(
-            @Parameter(description = "Datos para cambiar la contraseña") @RequestBody @Valid ChangePasswordDto dto,
-            HttpServletRequest httpRequest,
-            @Parameter(hidden = true) @AuthenticationPrincipal Usuario usuarioAutenticado) {
-        logger.info("[AuthController] POST /cambiar-password datos: {}", dto);
-
+    public ResponseEntity<String> changePassword(
+            @Parameter(description = "Password change data") @RequestBody @Valid ChangePasswordDto dto,
+            @Parameter(hidden = true) @AuthenticationPrincipal User authenticatedUser) {
         try {
-            authService.cambiarPassword(dto);
-
-            // Auditar cambio de contraseña
-            auditoriaService.registrarAccion(
-                    usuarioAutenticado,
-                    AccionAuditoria.CHANGE_PASSWORD,
-                    "USUARIO",
-                    dto.getUserId(),
-                    "Cambio de contraseña exitoso",
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.MEDIUM);
-
-            logger.info("[AuthController] Contraseña actualizada correctamente");
-            return ResponseEntity.ok("Contraseña actualizada correctamente");
+            authService.changePassword(dto);
+            return ResponseEntity.ok("Password updated successfully");
         } catch (Exception ex) {
-            // Auditar fallo en cambio de contraseña
-            auditoriaService.registrarAccion(
-                    usuarioAutenticado,
-                    AccionAuditoria.CHANGE_PASSWORD,
-                    "USUARIO",
-                    dto.getUserId(),
-                    "Fallo en cambio de contraseña: " + ex.getMessage(),
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.HIGH);
             throw ex;
         }
     }
 
-    // POST /api/auth/reiniciar-password
-    @PostMapping("/reiniciar-password")
-    @Operation(summary = "Reiniciar contraseña", description = "Reinicia la contraseña de un usuario (funcionalidad administrativa)")
+    // POST /api/auth/reset-password
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password", description = "Resets a user's password (administrative functionality)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Contraseña reiniciada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Password reset successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data"),
+            @ApiResponse(responseCode = "403", description = "Not authorized"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<String> reiniciarPassword(
-            @Parameter(description = "Datos para reiniciar la contraseña") @RequestBody @Valid ResetPasswordDto dto,
-            @Parameter(hidden = true) @AuthenticationPrincipal Usuario usuarioAutenticado,
-            HttpServletRequest httpRequest) {
-        logger.info("[AuthController] POST /reiniciar-password datos: {}", dto);
-
-        if (usuarioAutenticado == null || usuarioAutenticado.getRol() == null) {
-            return ResponseEntity.status(403).body("No autorizado");
+    public ResponseEntity<String> resetPassword(
+            @Parameter(description = "Password reset data") @RequestBody @Valid ResetPasswordDto dto,
+            @Parameter(hidden = true) @AuthenticationPrincipal User authenticatedUser) {
+        if (authenticatedUser == null || authenticatedUser.getRole() == null) {
+            return ResponseEntity.status(403).body("Not authorized");
         }
-        Rol rol = usuarioAutenticado.getRol();
-        if (!rol.canManageUsers()) {
-            return ResponseEntity.status(403).body("Solo admin o superadmin pueden reiniciar contraseñas");
+
+        UserRole role = authenticatedUser.getRole();
+        if (role != UserRole.ADMIN && role != UserRole.SUPERADMIN) {
+            return ResponseEntity.status(403).body("Only admin or superadmin can reset passwords");
         }
 
         try {
-            authService.reiniciarPassword(dto);
-
-            // Auditar reinicio de contraseña
-            auditoriaService.registrarAccion(
-                    usuarioAutenticado,
-                    AccionAuditoria.RESET_PASSWORD,
-                    "USUARIO",
-                    dto.getUserId(),
-                    "Reinicio de contraseña exitoso por admin",
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.HIGH);
-
-            logger.info("[AuthController] Contraseña reiniciada correctamente");
-            return ResponseEntity.ok("Contraseña reiniciada correctamente");
+            authService.resetPassword(dto);
+            return ResponseEntity.ok("Password reset successfully");
         } catch (Exception ex) {
-            // Auditar fallo en reinicio de contraseña
-            auditoriaService.registrarAccion(
-                    usuarioAutenticado,
-                    AccionAuditoria.RESET_PASSWORD,
-                    "USUARIO",
-                    dto.getUserId(),
-                    "Fallo en reinicio de contraseña: " + ex.getMessage(),
-                    null,
-                    null,
-                    CategoriaAuditoria.SECURITY,
-                    SeveridadAuditoria.CRITICAL);
             throw ex;
         }
     }

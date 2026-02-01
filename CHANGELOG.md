@@ -9,7 +9,141 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### 📚 En Desarrollo
 
-### 🐞 Fixed
+### � Changed
+
+- **🗂️ Reestructuración de Módulo History**
+  - Módulo `history` eliminado para mejorar arquitectura
+  - `DeveloperIncident` y `DeveloperByTicket` movidos a `module/user/model/`
+  - `TicketEvaluationHistory` movido a `module/ticket/model/`
+  - `DeveloperIncidentResponseDto` movido a `module/user/dto/`
+  - Agregada anotación `@Entity` a todos los modelos de historial
+  - Agregada anotación `@Id` y `@GeneratedValue` a `DeveloperByTicket`
+  - Creados repositorios: `DeveloperIncidentRepository`, `DeveloperByTicketRepository`, `TicketEvaluationHistoryRepository`
+  - Eliminado acoplamiento circular entre módulos
+  - Imports actualizados en `Developer.java`
+
+### �🐞 Fixed
+
+## [1.0.0] - 2026-02-01
+
+### ✨ Added
+
+- **🏗️ Arquitectura Modular Completa**
+  - Reorganización del proyecto por módulos de dominio (auth, user, ticket, history)
+  - Separación clara de responsabilidades por módulo
+  - Estructura escalable y mantenible
+
+- **🎫 Sistema de Solicitudes de Devolución de Tickets**
+  - Modelo `TicketRefundRequest` para gestionar devoluciones
+  - Repository y Service completos para el flujo de devolución
+  - Workflow: Developer solicita → Admin aprueba/rechaza
+  - Estados: PENDING, APPROVED, REJECTED
+  - DTOs: `TicketRefundRequestResponseDto`, `ProcessRefundRequestDto`
+
+- **👥 Sistema de Usuarios Refactorizado**
+  - Jerarquía clara: User (abstract) → Admin, Superadmin, Developer, Support
+  - Services especializados por tipo de usuario
+  - Repositories específicos para cada rol
+  - Controllers dedicados para cada tipo de usuario
+
+### 🔄 Changed
+
+- **🌍 Renombrado de Modelos a Inglés**
+  - `Tecnico` → `Developer`
+  - `Trabajador` → `Support`
+  - `SuperAdmin` → `Superadmin`
+  - `Usuario` → `User`
+  - `EstadoTicket` → `TicketStatus`
+  - `Rol` → `UserRole`
+
+- **📝 API Endpoints en Inglés**
+  - Todos los endpoints renombrados con nombres descriptivos en inglés
+  - Rutas versionadas: `/v1/` en todos los endpoints
+  - Nomenclatura RESTful consistente
+  - Documentación Swagger actualizada al inglés
+
+- **🏛️ Controllers Refactorizados**
+  - `AuthController`: Login, change password, reset password
+  - `UserController`: Gestión de perfil personal
+  - `AdminController`: Gestión de usuarios y solicitudes de devolución
+  - `SuperadminController`: CRUD completo de usuarios
+  - `DeveloperController`: Tomar, resolver y devolver tickets
+  - `SupportController`: Evaluar tickets
+  - `TicketController`: CRUD de tickets con autorización
+
+- **⚙️ Services Simplificados**
+  - `AuthService`: Responsabilidad única de autenticación
+  - `UserService`: Operaciones CRUD de usuarios
+  - `TicketService`: Gestión completa de tickets
+  - `TicketRefundRequestService`: Workflow de devoluciones
+  - Services especializados: `AdminService`, `SuperadminService`, `DeveloperService`, `SupportService`
+
+- **🗄️ Modelo de Datos Mejorado**
+  - Campo `developer` agregado a `Ticket` con relación `@ManyToOne`
+  - Anotaciones JPA completas en `TicketRefundRequest`
+  - Métodos getter/setter consistentes en todos los modelos
+  - Eliminación de código duplicado
+
+### 🗑️ Removed
+
+- **🔇 Eliminación de Logs**
+  - Removido Logger y LoggerFactory de todos los archivos
+  - Eliminados statements de logging (info, error, debug)
+  - Código más limpio y enfocado en lógica de negocio
+
+- **🧹 Limpieza de Dependencias**
+  - Eliminadas dependencias innecesarias en services
+  - AuthService ya no depende de múltiples repositories
+  - TicketService simplificado sin dependencias de auditoría
+
+- **📊 Módulos No Implementados**
+  - Referencias a sistema de auditoría eliminadas
+  - Referencias a sistema de notificaciones eliminadas
+  - Referencias a sistema de estadísticas eliminadas
+
+### 🔧 Fixed
+
+- **✅ Consistencia de DTOs**
+  - `@JsonTypeName` actualizado para coincidir con UserRole enum
+  - `SupportResponseDto`: "TRABAJADOR" → "SUPPORT"
+  - `DeveloperResponseDto`: "TECNICO" → "DEVELOPER"
+  - `SuperadminResponseDto`: "SUPER_ADMIN" → "SUPERADMIN"
+
+- **🔐 Autenticación Mejorada**
+  - `@AuthenticationPrincipal User` en lugar de `Authentication`
+  - Validación de roles simplificada
+  - Eliminación de casting complejo de UserDetails
+
+### 🔐 Security
+
+- **🛡️ Autorización por Roles**
+  - Validación de roles en cada endpoint
+  - `AccessDeniedException` para accesos no autorizados
+  - Permisos granulares por tipo de operación
+
+### 🏗️ Technical
+
+- **🔄 DataInitializer Actualizado**
+  - Métodos en inglés: `createSuperadmin()`, `createAdmin()`, `createDeveloper()`, `createSupport()`
+  - Eliminación de logs
+  - Emails actualizados: `developer@sistema.com`, `support@sistema.com`
+  - Métodos setter actualizados: `setChangePassword()` en lugar de `setCambiarPass()`
+
+- **📖 Documentación Completa**
+  - README.md completamente reescrito
+  - Arquitectura modular documentada
+  - Todos los endpoints documentados con ejemplos
+  - Guía de instalación actualizada
+  - Stack tecnológico detallado
+
+### 📊 Statistics
+
+- **Archivos Modificados**: 30+ archivos
+- **Controllers Refactorizados**: 7 controllers
+- **Services Refactorizados**: 10+ services
+- **DTOs Actualizados**: 15+ DTOs
+- **Nuevos Archivos**: TicketRefundRequest, TicketRefundRequestService, TicketRefundRequestRepository
+- **Líneas de Código**: ~3000+ líneas refactorizadas
 
 ## [1.0.1] - 2025-08-08
 
@@ -145,6 +279,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ## Enlaces
 
 - [Unreleased]: https://github.com/Akc9912/apiTickets/compare/v1.0.0...HEAD
-- [1.0.0]: https://github.com/Akc9912/apiTickets/compare/v0.2.0...v1.0.0
+- [1.0.0]: https://github.com/Akc9912/apiTickets/releases/tag/v1.0.0
+- [1.0.1]: https://github.com/Akc9912/apiTickets/compare/v1.0.0...v1.0.1
 - [0.2.0]: https://github.com/Akc9912/apiTickets/compare/v0.1.0...v0.2.0
 - [0.1.0]: https://github.com/Akc9912/apiTickets/releases/tag/v0.1.0

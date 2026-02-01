@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.model.User;
 
 import java.security.Key;
 import java.util.Date;
@@ -29,11 +29,11 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(Usuario usuario) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(usuario.getEmail())
-                .claim("id", usuario.getId())
-                .claim("rol", usuario.getTipoUsuario())
+                .setSubject(user.getEmail())
+                .claim("id", user.getId())
+                .claim("rol", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -61,9 +61,9 @@ public class JwtService {
     }
 
     // Para compatibilidad con tu lógica anterior
-    public boolean validateToken(String token, Usuario usuario) {
+    public boolean validateToken(String token, User user) {
         final String email = extractEmail(token);
-        return (email.equals(usuario.getEmail()) && !isTokenExpired(token));
+        return (email.equals(user.getEmail()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

@@ -1,26 +1,28 @@
 package com.poo.miapi.module.user.model;
 
+import com.poo.miapi.module.user.enums.UserRole;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "super_admin")
-@DiscriminatorValue("SUPER_ADMIN")
-public class SuperAdmin extends Usuario {
+@Table(name = "superadmin")
+@DiscriminatorValue("SUPERADMIN")
+public class Superadmin extends User {
 
-    public SuperAdmin() {
+    public Superadmin() {
         super();
-        this.setRol(Rol.SUPER_ADMIN);
+        this.setRole(UserRole.SUPERADMIN);
     }
 
-    public SuperAdmin(String nombre, String apellido, String email) {
+    public Superadmin(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.setRol(Rol.SUPER_ADMIN);
+        this.setRole(UserRole.SUPERADMIN);
     }
 
     @Override
-    public String getTipoUsuario() {
+    public String getUserType() {
         return "SUPERADMIN";
     }
 }

@@ -2,7 +2,7 @@ package com.poo.miapi.module.auth.dto;
 
 
 
-import com.poo.miapi.module.user.dto.UsuarioResponseDto;
+import com.poo.miapi.module.user.dto.UserResponseDto;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -10,12 +10,12 @@ public class LoginResponseDto {
     @NotBlank(message = "El token es obligatorio")
     private String token;
 
-    private UsuarioResponseDto usuario;
+    private UserResponseDto usuario;
 
     public LoginResponseDto() {
     }
 
-    public LoginResponseDto(String token, UsuarioResponseDto usuario) {
+    public LoginResponseDto(String token, UserResponseDto usuario) {
         this.token = token;
         this.usuario = usuario;
     }
@@ -29,11 +29,11 @@ public class LoginResponseDto {
         this.token = token;
     }
 
-    public UsuarioResponseDto getUsuario() {
+    public UserResponseDto getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(UsuarioResponseDto usuario) {
+    public void setUsuario(UserResponseDto usuario) {
         this.usuario = usuario;
     }
 }

@@ -6,45 +6,45 @@ import jakarta.validation.constraints.NotNull;
 public class TicketRequestDto {
 
     @NotBlank(message = "El título es obligatorio")
-    private String titulo;
+    private String tittle;
 
     @NotBlank(message = "La descripción es obligatoria")
-    private String descripcion;
+    private String description;
 
-    @NotNull(message = "El ID del trabajador es obligatorio")
-    private int idTrabajador;
+    @NotNull(message = "El ID del creador es obligatorio")
+    private int creatorId;
 
     public TicketRequestDto() {
     }
 
-    public TicketRequestDto(String titulo, String descripcion, int idTrabajador) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.idTrabajador = idTrabajador;
+    public TicketRequestDto(String tittle, String description, int creatorId) {
+        this.tittle = tittle;
+        this.description = description;
+        this.creatorId = creatorId;
     }
 
     // Getters y setters
-    public String getTitulo() {
-        return titulo;
+    public String getTittle() {
+        return tittle;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getIdTrabajador() {
-        return idTrabajador;
+    public int getCreatorId() {
+        return creatorId;
     }
 
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 }

@@ -1,5 +1,7 @@
 package com.poo.miapi.module.user.model;
 
+import com.poo.miapi.module.user.enums.UserRole;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -7,20 +9,20 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "admin")
 @DiscriminatorValue("ADMIN")
-public class Admin extends Usuario {
+public class Admin extends User {
 
     public Admin() {
         super();
-        this.setRol(Rol.ADMIN);
+        this.setRole(UserRole.ADMIN);
     }
 
     public Admin(String nombre, String apellido, String email) {
         super(nombre, apellido, email);
-        this.setRol(Rol.ADMIN);
+        this.setRole(UserRole.ADMIN);
     }
 
     @Override
-    public String getTipoUsuario() {
+    public String getUserType() {
         return "ADMIN";
     }
 }

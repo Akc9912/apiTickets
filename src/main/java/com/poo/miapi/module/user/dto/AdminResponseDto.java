@@ -1,17 +1,17 @@
 package com.poo.miapi.module.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.poo.miapi.module.user.model.Rol;
+import com.poo.miapi.module.user.enums.UserRole;
 
 @JsonTypeName("ADMIN")
-public class AdminResponseDto extends UsuarioResponseDto {
+public class AdminResponseDto extends UserResponseDto {
 
 	public AdminResponseDto() {
 		super();
 	}
 
-	public AdminResponseDto(int id, String nombre, String apellido, String email, Rol rol, boolean cambiarPass,
-			boolean activo, boolean bloqueado) {
-		super(id, nombre, apellido, email, rol, cambiarPass, activo, bloqueado);
+	public AdminResponseDto(int id, String name, String lastName, String email, UserRole role, boolean changePassword,
+			boolean active, boolean blocked) {
+		super(id, name, lastName, email, role, changePassword, active, blocked);
 	}
 }

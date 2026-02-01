@@ -13,7 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.poo.miapi.module.auth.service.JwtService;
-import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.user.model.User;
 
 import java.io.IOException;
 
@@ -54,8 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                     String rol = null;
-                    if (userDetails instanceof Usuario usuario) {
-                        rol = usuario.getRol() != null ? usuario.getRol().name() : "NO_ROLE";
+                    if (userDetails instanceof User user) {
+                        rol = user.getRole() != null ? user.getRole().name() : "NO_ROLE";
                     }
                     logger.info("[JWT Filter] Usuario autenticado: {} Rol: {}", username, rol);
             if (jwtService.isTokenValid(jwt, userDetails)) {

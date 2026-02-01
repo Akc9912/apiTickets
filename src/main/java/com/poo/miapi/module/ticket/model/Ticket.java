@@ -1,12 +1,10 @@
 package com.poo.miapi.module.ticket.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.poo.miapi.module.audit.model.TecnicoPorTicket;
-import com.poo.miapi.module.user.model.Tecnico;
-import com.poo.miapi.module.user.model.Usuario;
+import com.poo.miapi.module.ticket.enums.TicketStatus;
+import com.poo.miapi.module.user.model.User;
+import com.poo.miapi.module.user.model.Developer;
 
 @Entity
 public class Ticket {
@@ -16,116 +14,102 @@ public class Ticket {
     private int id;
 
     @Column(nullable = false)
-    private String titulo;
+    private String tittle;
 
     @Column(nullable = false)
-    private String descripcion;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EstadoTicket estado;
+    private TicketStatus status;
 
     @ManyToOne
     @JoinColumn(name = "id_creador", nullable = false)
-    private Usuario creador;
+    private User creator;
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TecnicoPorTicket> historialTecnicos = new ArrayList<>();
-
-    @Column(nullable = false)
-    private LocalDateTime fechaCreacion;
+    @ManyToOne
+    @JoinColumn(name = "id_developer")
+    private Developer developer;
 
     @Column(nullable = false)
-    private LocalDateTime fechaUltimaActualizacion;
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     public Ticket() {
-        this.estado = EstadoTicket.NO_ATENDIDO;
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaUltimaActualizacion = LocalDateTime.now();
+        this.status = TicketStatus.NOT_ATTENDED;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public Ticket(String titulo, String descripcion, Usuario creador) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.creador = creador;
-        this.estado = EstadoTicket.NO_ATENDIDO;
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaUltimaActualizacion = LocalDateTime.now();
+    public Ticket(String tittle, String description, User creator) {
+        this.tittle = tittle;
+        this.description = description;
+        this.creator = creator;
+        this.status = TicketStatus.NOT_ATTENDED;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public int getId() {
         return id;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public String getTtittle() {
+        return tittle;
     }
 
     public String getDescripcion() {
-        return descripcion;
+        return description;
     }
 
-    public EstadoTicket getEstado() {
-        return estado;
+    public TicketStatus getEstado() {
+        return status;
     }
 
-    public Usuario getCreador() {
-        return creador;
+    public User getCreator() {
+        return creator;
     }
 
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
+    public LocalDateTime getCreationDate() {
+        return createdAt;
     }
 
-    public LocalDateTime getFechaUltimaActualizacion() {
-        return fechaUltimaActualizacion;
+    public LocalDateTime getUpdateDate() {
+        return updatedAt;
     }
 
-    public List<TecnicoPorTicket> getHistorialTecnicos() {
-        return historialTecnicos;
+    public Developer getDeveloper() {
+        return developer;
     }
 
-    public void setCreador(Usuario creador) {
-        this.creador = creador;
+    public TicketStatus getStatus() {
+        return status;
     }
 
-    public void setEstado(EstadoTicket estado) {
-        this.estado = estado;
+    public void setCreador(User creator) {
+        this.creator = creator;
     }
 
-    public void setFechaUltimaActualizacion(LocalDateTime fechaUltimaActualizacion) {
-        this.fechaUltimaActualizacion = fechaUltimaActualizacion;
+    public void setEstado(TicketStatus status) {
+        this.status = status;
     }
 
-    public void agregarEntradaHistorial(TecnicoPorTicket entrada) {
-        historialTecnicos.add(entrada);
-        entrada.setTicket(this);
+    public void setStatus(TicketStatus status) {
+        this.status = status;
     }
 
-    // Devuelve el técnico actualmente asignado (sin fecha de desasignación)
-    public Tecnico getTecnicoActual() {
-        for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
-            TecnicoPorTicket entrada = historialTecnicos.get(i);
-            if (entrada.getFechaDesasignacion() == null) {
-                return entrada.getTecnico();
-            }
-        }
-        return null;
+    public void setDeveloper(Developer developer) {
+        this.developer = developer;
     }
 
-    // Devuelve el último técnico que atendió el ticket, aunque esté desasignado
-    public Tecnico getUltimoTecnicoAtendio() {
-        for (int i = historialTecnicos.size() - 1; i >= 0; i--) {
-            TecnicoPorTicket entrada = historialTecnicos.get(i);
-            if (entrada.getTecnico() != null) {
-                return entrada.getTecnico();
-            }
-        }
-        return null;
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updatedAt = updateDate;
     }
 
     @Override
     public String toString() {
-        return "Ticket #" + id + ": " + titulo + " (" + estado + ")";
+        return "Ticket #" + id + ": " + tittle + " (" + status + ")";
     }
 }

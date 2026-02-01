@@ -5,14 +5,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.poo.miapi.module.user.repository.UsuarioRepository;
+import com.poo.miapi.module.user.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UserRepository usuarioRepository;
 
-    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
+    public CustomUserDetailsService(UserRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         
         // Verificación de seguridad: solo los usuarios INACTIVOS se tratan como si no existieran
         // Los usuarios BLOQUEADOS pueden autenticarse pero no realizar acciones
-        if (!usuario.isActivo()) {
+        if (!usuario.isActive()) {
             throw new UsernameNotFoundException("Usuario no encontrado: " + username);
         }
         

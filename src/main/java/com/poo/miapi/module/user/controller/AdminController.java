@@ -5,148 +5,161 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.AccessDeniedException;
 
-import com.poo.miapi.module.user.dto.UsuarioRequestDto;
-import com.poo.miapi.module.user.dto.UsuarioResponseDto;
-import com.poo.miapi.module.user.model.Usuario;
-import com.poo.miapi.module.user.service.UsuarioService;
-import com.poo.miapi.module.audit.service.SolicitudDevolucionService;
-import com.poo.miapi.module.audit.dto.ProcesarSolicitudDevolucionRequestDto;
-import com.poo.miapi.module.audit.dto.SolicitudDevolucionResponseDto;
-import com.poo.miapi.module.audit.model.SolicitudDevolucion;
+import com.poo.miapi.module.user.dto.UserRequestDto;
+import com.poo.miapi.module.user.dto.UserResponseDto;
+import com.poo.miapi.module.user.model.User;
+import com.poo.miapi.module.user.enums.UserRole;
+import com.poo.miapi.module.user.service.UserService;
+import com.poo.miapi.module.ticket.dto.ProcessRefundRequestDto;
+import com.poo.miapi.module.ticket.dto.TicketRefundRequestResponseDto;
+import com.poo.miapi.module.ticket.service.TicketRefundRequestService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
-@Tag(name = "Administradores", description = "Endpoints para gestión administrativa del sistema")
+@Tag(name = "Admin", description = "Endpoints for administrative system management")
 public class AdminController {
 
-    private final UsuarioService usuarioService;
-    private final SolicitudDevolucionService solicitudDevolucionService;
+    private final UserService userService;
+    private final TicketRefundRequestService refundRequestService;
 
-    public AdminController(UsuarioService usuarioService, SolicitudDevolucionService solicitudDevolucionService) {
-        this.usuarioService = usuarioService;
-        this.solicitudDevolucionService = solicitudDevolucionService;
+    public AdminController(UserService userService, TicketRefundRequestService refundRequestService) {
+        this.userService = userService;
+        this.refundRequestService = refundRequestService;
     }
 
-    // procesar solicitud de devolución - POST
-    // /api/admin/solicitudes-devolucion/{solicitudId}/procesar
-    @PostMapping("/solicitudes-devolucion/{solicitudId}/procesar")
-    public ResponseEntity<SolicitudDevolucionResponseDto> procesarSolicitudDevolucion(
-            @PathVariable int solicitudId,
-            @RequestBody ProcesarSolicitudDevolucionRequestDto requestDto) {
+    // POST /api/admin/v1/return-requests/{requestId}/process - Process refund
+    // request
+    @PostMapping("/v1/return-requests/{requestId}/process")
+    @Operation(summary = "Process ticket return request", description = "Approves or rejects a ticket return request from developers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return request processed successfully"),
+            @ApiResponse(responseCode = "404", description = "Return request not found"),
+            @ApiResponse(responseCode = "403", description = "Not authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data")
+    })
+    public ResponseEntity<TicketRefundRequestResponseDto> processReturnRequestById(
+            @Parameter(description = "Return request ID") @PathVariable int requestId,
+            @Parameter(description = "Process request data") @RequestBody @Valid ProcessRefundRequestDto requestDto,
+            @Parameter(hidden = true) @AuthenticationPrincipal User user) {
+        if (user == null || (user.getRole() != UserRole.ADMIN && user.getRole() != UserRole.SUPERADMIN)) {
+            throw new AccessDeniedException("Not authorized");
+        }
         try {
-            // Procesar solicitud (lógica de negocio existente)
-            SolicitudDevolucionResponseDto dto = solicitudDevolucionService.procesarSolicitudDevolucion(solicitudId,
-                    requestDto.getIdAdmin(), requestDto.isAprobar(), requestDto.getComentario());
-
+            TicketRefundRequestResponseDto dto = refundRequestService.processRefundRequest(
+                    requestId,
+                    requestDto.getAdminId(),
+                    requestDto.getApprove(),
+                    requestDto.getResolutionComment());
             return ResponseEntity.ok(dto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(400).build();
         }
     }
 
-    // PUT /api/admin/usuarios/{id}
-    @PutMapping("/usuarios/{id}")
-    @Operation(summary = "Editar usuario", description = "Edita los datos de un usuario existente", parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a editar", required = true)
-    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioRequestDto.class))), responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuario actualizado", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
+    // PUT /api/admin/v1/users/{id}
+    @PutMapping("/v1/users/{id}")
+    @Operation(summary = "Update user", description = "Updates data of an existing user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UsuarioResponseDto> editarUsuario(@PathVariable int id,
-            @RequestBody UsuarioRequestDto usuarioDto) {
-        UsuarioResponseDto usuarioActualizado = usuarioService.editarDatosUsuario(id, usuarioDto);
-        return ResponseEntity.ok(usuarioActualizado);
+    public ResponseEntity<UserResponseDto> updateUser(
+            @Parameter(description = "User ID") @PathVariable int id,
+            @RequestBody UserRequestDto userDto) {
+        UserResponseDto updatedUser = userService.updateUserData(id, userDto);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    // PUT /api/admin/usuarios/{id}/activar
-    @PutMapping("/usuarios/{id}/activar")
-    @Operation(summary = "Activar usuario", description = "Activa o desactiva el usuario (toggle)", parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a activar/desactivar", required = true)
-    }, responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuario actualizado", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
+    // PUT /api/admin/v1/users/{id}/status/toggle-active
+    @PutMapping("/v1/users/{id}/status/toggle-active")
+    @Operation(summary = "Toggle user active status", description = "Activates or deactivates a user (toggle)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User status updated successfully", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UsuarioResponseDto> activarUsuario(@PathVariable int id) {
-        UsuarioResponseDto resp = usuarioService.setUsuarioActivo(id);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<UserResponseDto> toggleUserActive(
+            @Parameter(description = "User ID") @PathVariable int id) {
+        UserResponseDto response = userService.toggleUserActive(id);
+        return ResponseEntity.ok(response);
     }
 
-    // PUT /api/admin/usuarios/{id}/bloquear
-    @PutMapping("/usuarios/{id}/bloquear")
-    @Operation(summary = "Bloquear usuario", description = "Bloquea o desbloquea el usuario (toggle)", parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a bloquear/desbloquear", required = true)
-    }, responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuario actualizado", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
+    // PUT /api/admin/v1/users/{id}/status/toggle-blocked
+    @PutMapping("/v1/users/{id}/status/toggle-blocked")
+    @Operation(summary = "Toggle user blocked status", description = "Blocks or unblocks a user (toggle)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User status updated successfully", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UsuarioResponseDto> bloquearUsuario(@PathVariable int id) {
-        UsuarioResponseDto resp = usuarioService.setUsuarioBloqueado(id);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<UserResponseDto> toggleUserBlocked(
+            @Parameter(description = "User ID") @PathVariable int id) {
+        UserResponseDto response = userService.toggleUserBlocked(id);
+        return ResponseEntity.ok(response);
     }
 
-    // PUT /api/admin/usuarios/{id}/rol
-    @PutMapping("/usuarios/{id}/rol")
-    @Operation(summary = "Cambiar rol de usuario", description = "Cambia el rol de un usuario existente", parameters = {
-            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID del usuario a cambiar rol", required = true)
-    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioRequestDto.class))), responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Rol cambiado", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UsuarioResponseDto.class)))
+    // PUT /api/admin/v1/users/{id}/role
+    @PutMapping("/v1/users/{id}/role")
+    @Operation(summary = "Update user role", description = "Changes an existing user's role (Admin cannot assign SUPERADMIN role)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User role updated successfully", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "403", description = "Not authorized to assign this role")
     })
-    public ResponseEntity<UsuarioResponseDto> cambiarRolUsuario(@PathVariable int id,
-            @RequestBody UsuarioRequestDto cambiarRolDto) {
-        UsuarioResponseDto resp = usuarioService.cambiarRolUsuario(id, cambiarRolDto);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<UserResponseDto> updateUserRole(
+            @Parameter(description = "User ID") @PathVariable int id,
+            @RequestBody UserRequestDto roleDto) {
+        UserResponseDto response = userService.updateUserRole(id, roleDto);
+        return ResponseEntity.ok(response);
     }
 
-    // GET /api/admin/listar-usuarios
-    @GetMapping("/listar-usuarios")
-    @Operation(summary = "Listar todos los usuarios", description = "Devuelve la lista de todos los usuarios del sistema. Solo Admin y SuperAdmin pueden acceder. Admin no puede ver SuperAdmins.")
-    public ResponseEntity<List<UsuarioResponseDto>> listarUsuarios(
-            @AuthenticationPrincipal Usuario usuarioAutenticado) {
-        try {
-            List<UsuarioResponseDto> usuariosRaw = usuarioService.listarTodosFiltrado(usuarioAutenticado);
-            List<UsuarioResponseDto> usuarios = usuariosRaw.stream()
-                    .map(u -> (UsuarioResponseDto) u)
-                    .toList();
-            return ResponseEntity.ok(usuarios);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(403).body(null);
+    // GET /api/admin/v1/users - Listar todos los usuarios
+    @GetMapping("/v1/users")
+    @Operation(summary = "List all users", description = "Returns the list of all system users (Admin cannot see SuperAdmins)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User list retrieved successfully")
+    })
+    public ResponseEntity<List<UserResponseDto>> listUsers() {
+        List<UserResponseDto> users = userService.findAll();
+        return ResponseEntity.ok(users);
+    }
+
+    // GET /api/admin/v1/users/{id} - Obtener usuario por ID
+    @GetMapping("/v1/users/{id}")
+    @Operation(summary = "Get user details", description = "Retrieves data of a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User data retrieved successfully", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<UserResponseDto> getUser(
+            @Parameter(description = "User ID") @PathVariable int id) {
+        UserResponseDto user = userService.getDetails(id);
+        return ResponseEntity.ok(user);
+    }
+
+    // GET /api/admin/v1/return-requests - List refund requests
+    @GetMapping("/v1/return-requests")
+    @Operation(summary = "List return requests", description = "Retrieves all pending ticket return requests from developers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return requests retrieved successfully"),
+            @ApiResponse(responseCode = "403", description = "Not authorized")
+    })
+    public ResponseEntity<List<TicketRefundRequestResponseDto>> listReturnRequests(
+            @Parameter(hidden = true) @AuthenticationPrincipal User user) {
+        if (user == null || (user.getRole() != UserRole.ADMIN && user.getRole() != UserRole.SUPERADMIN)) {
+            throw new AccessDeniedException("Not authorized");
         }
-    }
-
-    // ver solicitudes de devolución - GET /api/admin/solicitudes-devolucion
-    @GetMapping("/solicitudes-devolucion")
-    public ResponseEntity<List<SolicitudDevolucionResponseDto>> verSolicitudesDevolucion() {
-        List<SolicitudDevolucion> solicitudes = solicitudDevolucionService.verSolicitudesDevolucion();
-        List<SolicitudDevolucionResponseDto> dtos = solicitudes.stream()
-                .map(solicitudDevolucionService::toDto)
-                .toList();
-        return ResponseEntity.ok(dtos);
-    }
-
-    // procesar solicitud de devolución - PUT /api/admin/solicitudes-devolucion
-    @PutMapping("/solicitudes-devolucion")
-    public ResponseEntity<SolicitudDevolucionResponseDto> procesarSolicitudDevolucion(
-            @RequestParam int solicitudId,
-            @RequestParam int idTecnico,
-            @RequestParam boolean aprobar,
-            @RequestParam String comentario) {
-        try {
-            SolicitudDevolucionResponseDto dto = solicitudDevolucionService.procesarSolicitudDevolucion(solicitudId,
-                    idTecnico, aprobar, comentario);
-            return ResponseEntity.ok(dto);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body(null);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(403).body(null);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(400).body(null);
-        }
+        List<TicketRefundRequestResponseDto> requests = refundRequestService.findPendingRequests();
+        return ResponseEntity.ok(requests);
     }
 }
