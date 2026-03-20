@@ -1,13 +1,17 @@
 package com.poo.miapi.module.auth.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(description = "Login request with user credentials")
 public class LoginRequestDto {
+    @Schema(description = "User email address", example = "admin@tickets.com", required = true)
     @NotBlank(message = "El email no puede estar vacío")
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
+    @Schema(description = "User password", example = "password123", required = true)
     @NotBlank(message = "La contraseña no puede estar vacía")
     private String password;
 

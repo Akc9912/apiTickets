@@ -26,8 +26,8 @@ public class UserController {
                 this.userService = userService;
         }
 
-        // GET /api/user/v1/profile
-        @GetMapping("/v1/profile")
+        // GET /api/user/v1/view-profile
+        @GetMapping("/v1/view-profile")
         @Operation(summary = "Get my profile", description = "Retrieves the authenticated user's profile data")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "User profile retrieved successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
@@ -42,8 +42,8 @@ public class UserController {
                 return ResponseEntity.ok(user);
         }
 
-        // PUT /api/user/v1/profile
-        @PutMapping("/v1/profile")
+        // PUT /api/user/v1/update-profile
+        @PutMapping("/v1/update-profile")
         @Operation(summary = "Update my profile", description = "Updates the authenticated user's profile data")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Profile updated successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),

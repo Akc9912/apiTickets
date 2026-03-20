@@ -36,3 +36,5 @@ build/
 
 # Ignorar archivo de configuración sensible
 .env
+
+/engineering

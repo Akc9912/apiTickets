@@ -3,14 +3,17 @@
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-24-orange.svg)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-green.svg)
-![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
-![JWT](https://img.shields.io/badge/JWT-Auth-red.svg)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)
+![Supabase Auth](https://img.shields.io/badge/Supabase-Auth-3ECF8E.svg)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-purple.svg)
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-yellow.svg)
-![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)
+![Migration](https://img.shields.io/badge/Migraci%C3%B3n-35%25-yellow.svg)
+![Version](https://img.shields.io/badge/Version-1.0.0--migration-blue.svg)
 
-**Sistema empresarial de gestión de tickets con arquitectura modular, API RESTful y documentación completa**
+**Sistema de gestión de tickets en migración hacia arquitectura modular con PostgreSQL 16 y Supabase Auth**
+
+⚠️ **Estado Actual:** Realizando migración de stack (MySQL → PostgreSQL) y refactorización modular. Ver [Arquitectura](./architecture.md) y [Plan de Migración](./docs/iteracion-01-migracion-stack-y-arquitectura/README.md)
 
 [🚀 Inicio Rápido](#-instalación-rápida) • [📖 API Docs](#-documentación-de-la-api) • [🏗️ Arquitectura](#️-arquitectura-modular) • [🔐 Seguridad](#-seguridad-jwt)
 
@@ -35,19 +38,37 @@
 
 ## 🎯 Descripción
 
-**ApiTickets** es un sistema de gestión de tickets desarrollado con **Spring Boot 3.5.3** y **Java 24**, diseñado para equipos que necesitan gestionar solicitudes de soporte técnico de manera eficiente. Implementa una arquitectura modular basada en clean code principles con separación clara de responsabilidades.
+**ApiTickets** es un sistema empresarial de gestión de tickets desarrollado con **Spring Boot 3.5.4** y **Java 24** que está siendo migrado hacia una arquitectura completamente modular con **PostgreSQL 16** y **Supabase Auth**.
 
-### ✨ **Características Destacadas**
+El sistema atiende múltiples canales de comunicación (usuarios directos, sistemas externos integrados) con soporte para diferentes roles y niveles de escalamiento de prioridad.
 
-- 🏗️ **Arquitectura Modular**: Organización por módulos (auth, user, ticket, history)
-- 🔐 **Autenticación JWT**: Sistema seguro con tokens de autenticación
-- 👥 **Gestión de Roles**: 4 niveles jerárquicos (Superadmin, Admin, Developer, Support)
-- 📝 **API RESTful Completa**: Documentación automática con Swagger/OpenAPI 3.0
-- 🎫 **Workflow de Tickets**: Estados, asignaciones y solicitudes de devolución
-- 🔍 **Código Limpio**: Sin logging innecesario, código en inglés
+### ✨ **Características Principales**
+
+- 🏗️ **Arquitectura Modular**: Organización por dominios (auth, account, ticket, support, product*)
+- 🔐 **Autenticación Supabase**: Identidad centralizada, sin gestión de contraseñas en backend
+- 🆔 **UUID First**: IDs como UUID en toda la base de datos
+- 👥 **Gestión de Roles**: Superadmin, Admin, Developer, Support (definidos en Supabase)
+- 📝 **API RESTful**: Documentación automática con Swagger/OpenAPI 3.0
+- 🎫 **Workflow de Tickets**: Prioridades, asignaciones, escalamientos automáticos
+- 🔌 **Integración de Sistemas**: Recepción de mensajes desde sistemas externos
+- 🔍 **Código Limpio**: Patrones SOLID, límites modulares automatizados en CI
+- 📊 **Plan futuro**: Notificaciones en tiempo real, eventos, auditoría
+
+### 📍 **Estado de la Migración**
+
+| Aspecto | Progreso | Estado |
+|--------|----------|--------|
+| Stack (MySQL → PostgreSQL) | ████░░░░░░ 40% | 🟡 En curso |
+| Autenticación (JWT local → Supabase Auth) | ██████░░░░ 60% | 🟡 En integración |
+| Arquitectura (legacy → modular) | ███░░░░░░░ 30% | 🟡 Reorganización |
+| Tests automatizados | ████░░░░░░ 35% | 🟡 Expansión |
+| **Migración General** | ███░░░░░░░ **35%** | 🟡 **En Progreso** |
+
+Ver [Plan Detallado de Migración](./docs/iteracion-01-migracion-stack-y-arquitectura/README.md) para más información.
 
 ### 🌐 **Acceso Rápido**
 - **Swagger UI**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **OpenAPI JSON**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 - **OpenAPI JSON**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
 ---
@@ -122,13 +143,22 @@ src/main/java/com/poo/miapi/
 
 ### **🗂️ Modelo de Datos**
 
-#### **Jerarquía de Usuarios**
+### **🗣️ Gestión de Identidad: Supabase Auth**
+
+**Importante:** A partir de esta versión, la gestión completa de usuarios se delega a **Supabase Auth**:
+
 ```
-User (abstract)
-├── Admin
-├── Superadmin
-├── Developer
-└── Support
+🔑 Supabase Auth (Autoridad de Identidad)
+  √ Usuarios y contraseñas
+  √ Tokens JWT (emitidos por Supabase)
+  √ MFA y recuperación
+  √ Roles y claims
+      → Backend (Consumidor)
+         ✔️ Valida tokens
+         ✔️ Mantiene perfil local
+         ✔️ Autoriza operaciones
+         × NO genera tokens
+         × NO gestiona contraseñas
 ```
 
 | Entidad | Descripción | Campos Clave |
@@ -149,7 +179,8 @@ User (abstract)
 
 - ☕ **Java 24** ([OpenJDK 24](https://jdk.java.net/24/))
 - 📦 **Maven 3.9+**
-- 🗄️ **MySQL 8.0+**
+- � **PostgreSQL 16**
+- 🔑 **Cuenta Supabase** (para Auth)
 
 ### **⚡ Pasos de Instalación**
 
@@ -158,24 +189,38 @@ User (abstract)
 git clone https://github.com/Akc9912/apiTickets.git
 cd apiTickets
 
-# 2. Crear base de datos
-mysql -u root -p < create_database.sql
+# 2. Crear base de datos PostgreSQL
+createdb apitickets
 
-# 3. Configurar application.properties
-# Editar src/main/resources/application.properties
+# 3. Ejecutar schema DDL
+psql apitickets < create_database.sql
+
+# 4. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con credenciales de Supabase y PostgreSQL
+
+# 5. Compilar y ejecutar
+./mvnw clean install
+./mvnw spring-boot:run
 ```
 
 **Configuración Mínima (`application.properties`):**
 
 ```properties
-# Database
-spring.datasource.url=jdbc:mysql://localhost:3306/apiticket
-spring.datasource.username=root
+# Database PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/apitickets
+spring.datasource.username=postgres
 spring.datasource.password=tu_password
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-# JPA
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Supabase Auth
+supabase.url=${SUPABASE_URL:https://your-project.supabase.co}
+supabase.anon.key=${SUPABASE_ANON_KEY:your-anon-key}
+supabase.jwt.secret=${SUPABASE_JWT_SECRET:your-jwt-secret}
 
 # JWT
 jwt.secret=tu_clave_secreta_jwt_minimo_256_bits

@@ -4,8 +4,10 @@ import com.poo.miapi.module.ticket.dto.TicketResponseDto;
 import com.poo.miapi.module.ticket.enums.TicketStatus;
 import com.poo.miapi.module.ticket.model.Ticket;
 import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.dto.DeveloperResponseDto;
 import com.poo.miapi.module.user.dto.SupportResponseDto;
 import com.poo.miapi.module.user.dto.UserRequestDto;
+import com.poo.miapi.module.user.dto.UserResponseDto;
 import com.poo.miapi.module.user.model.Support;
 import com.poo.miapi.module.user.repository.SupportRepository;
 
@@ -97,7 +99,7 @@ public class SupportService {
      * 
      * @param ticketId  Ticket ID
      * @param supportId Support ID evaluando
-     * @param approve   true para aceptar (FINALIZED), false para rechazar
+     * @param approve   true para aceptar (CLOSED), false para rechazar
      *                  (REOPENED)
      * @param comment   Comentario de evaluación
      * @return Ticket actualizado
@@ -121,7 +123,7 @@ public class SupportService {
 
         // Actualizar el estado según la evaluación
         if (approve) {
-            ticket.setStatus(TicketStatus.FINALIZED);
+            ticket.setStatus(TicketStatus.CLOSED);
         } else {
             ticket.setStatus(TicketStatus.REOPENED);
         }
@@ -135,11 +137,29 @@ public class SupportService {
     private TicketResponseDto mapTicketToDto(Ticket ticket) {
         return new TicketResponseDto(
                 ticket.getId(),
-                ticket.getTtittle(),
-                ticket.getDescripcion(),
+                ticket.getTitle(),
+                ticket.getDescription(),
                 ticket.getStatus(),
-                null,
-                null,
+                ticket.getCreator() != null ? new UserResponseDto(
+                        ticket.getCreator().getId(),
+                        ticket.getCreator().getName(),
+                        ticket.getCreator().getLastName(),
+                        ticket.getCreator().getEmail(),
+                        ticket.getCreator().getRole(),
+                        ticket.getCreator().isChangePassword(),
+                        ticket.getCreator().isActive(),
+                        ticket.getCreator().isBlocked()) : null,
+                ticket.getDeveloper() != null ? new DeveloperResponseDto(
+                        ticket.getDeveloper().getId(),
+                        ticket.getDeveloper().getName(),
+                        ticket.getDeveloper().getLastName(),
+                        ticket.getDeveloper().getEmail(),
+                        ticket.getDeveloper().getRole(),
+                        ticket.getDeveloper().isChangePassword(),
+                        ticket.getDeveloper().isActive(),
+                        ticket.getDeveloper().isBlocked(),
+                        ticket.getDeveloper().getFailures(),
+                        ticket.getDeveloper().getWarnings()) : null,
                 ticket.getCreationDate(),
                 ticket.getUpdateDate());
     }

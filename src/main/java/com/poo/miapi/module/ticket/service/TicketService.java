@@ -8,6 +8,7 @@ import com.poo.miapi.module.ticket.dto.TicketResponseDto;
 import com.poo.miapi.module.ticket.enums.TicketStatus;
 import com.poo.miapi.module.ticket.model.Ticket;
 import com.poo.miapi.module.ticket.repository.TicketRepository;
+import com.poo.miapi.module.user.dto.DeveloperResponseDto;
 import com.poo.miapi.module.user.dto.UserResponseDto;
 import com.poo.miapi.module.user.model.Support;
 import com.poo.miapi.module.user.model.User;
@@ -47,13 +48,15 @@ public class TicketService {
      * Find ticket by ID
      * 
      * @param id Ticket ID
-     * @return Ticket DTO
+     * @return Ticket
      * @throws EntityNotFoundException if ticket not found
      */
-    public TicketResponseDto findById(int id) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
-        return mapToDto(ticket);
+    public Ticket findById(int id) {
+        Ticket ticket = ticketRepository.findById(id);
+        if (ticket == null) {
+            throw new EntityNotFoundException("Ticket not found");
+        }
+        return ticket;
     }
 
     /**
@@ -74,7 +77,7 @@ public class TicketService {
      * @return List of ticket DTOs
      */
     public List<TicketResponseDto> findByStatus(TicketStatus status) {
-        return ticketRepository.findByEstado(status).stream()
+        return ticketRepository.findByStatus(status).stream()
                 .map(this::mapToDto)
                 .toList();
     }
@@ -111,7 +114,7 @@ public class TicketService {
      * @return List of ticket DTOs
      */
     public List<TicketResponseDto> searchByTitle(String keyword) {
-        return ticketRepository.findByTittleContainingIgnoreCase(keyword).stream()
+        return ticketRepository.findByTitleContainingIgnoreCase(keyword).stream()
                 .map(this::mapToDto)
                 .toList();
     }
@@ -125,10 +128,13 @@ public class TicketService {
      * @throws EntityNotFoundException if ticket not found
      */
     public TicketResponseDto updateStatus(int ticketId, TicketStatus newStatus) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+        Ticket ticket = ticketRepository.findById(ticketId);
 
-        ticket.setEstado(newStatus);
+        if (ticket == null) {
+            throw new EntityNotFoundException("Ticket not found");
+        }
+
+        ticket.setStatus(newStatus);
         ticket.setUpdateDate(LocalDateTime.now());
         Ticket updated = ticketRepository.save(ticket);
         return mapToDto(updated);
@@ -140,6 +146,7 @@ public class TicketService {
      * @param ticket Ticket entity
      * @return Saved ticket DTO
      */
+    @SuppressWarnings("null")
     public TicketResponseDto save(Ticket ticket) {
         Ticket saved = ticketRepository.save(ticket);
         return mapToDto(saved);
@@ -181,8 +188,10 @@ public class TicketService {
      * @return true if ticket belongs to user
      */
     public boolean isTicketOwnedByUser(int ticketId, int userId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+        Ticket ticket = ticketRepository.findById(ticketId);
+        if (ticket == null) {
+            throw new EntityNotFoundException("Ticket not found");
+        }
         return ticket.getCreator() != null && ticket.getCreator().getId() == userId;
     }
 
@@ -195,12 +204,14 @@ public class TicketService {
      * @return Reopened ticket DTO
      */
     public TicketResponseDto reopenTicket(int ticketId, String comment, int userId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+        Ticket ticket = ticketRepository.findById(ticketId);
+        if (ticket == null) {
+            throw new EntityNotFoundException("Ticket not found");
+        }
         User user = userService.findById(userId);
 
-        if (ticket.getEstado() != TicketStatus.FINALIZED) {
-            throw new IllegalArgumentException("Ticket is not finalized, cannot reopen");
+        if (ticket.getStatus() != TicketStatus.CLOSED) {
+            throw new IllegalArgumentException("Ticket is not closed, cannot reopen");
         }
 
         UserRole role = user.getRole();
@@ -216,7 +227,7 @@ public class TicketService {
             throw new SecurityException("You do not have permission to reopen tickets");
         }
 
-        ticket.setEstado(TicketStatus.REOPENED);
+        ticket.setStatus(TicketStatus.REOPENED);
         ticket.setUpdateDate(LocalDateTime.now());
         ticketRepository.save(ticket);
 
@@ -246,12 +257,27 @@ public class TicketService {
 
         return new TicketResponseDto(
                 ticket.getId(),
-                ticket.getTtittle(),
-                ticket.getDescripcion(),
-                ticket.getEstado(),
+                ticket.getTitle(),
+                ticket.getDescription(),
+                ticket.getStatus(),
                 creatorDto,
-                null, // Developer will be set by DeveloperService
+                ticket.getDeveloper() != null ? new DeveloperResponseDto(
+                        ticket.getDeveloper().getId(),
+                        ticket.getDeveloper().getName(),
+                        ticket.getDeveloper().getLastName(),
+                        ticket.getDeveloper().getEmail(),
+                        ticket.getDeveloper().getRole(),
+                        ticket.getDeveloper().isChangePassword(),
+                        ticket.getDeveloper().isActive(),
+                        ticket.getDeveloper().isBlocked(),
+                        ticket.getDeveloper().getFailures(),
+                        ticket.getDeveloper().getWarnings()) : null,
                 ticket.getCreationDate(),
                 ticket.getUpdateDate());
+    }
+
+    public List<TicketResponseDto> findByAssignee(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByAssignee'");
     }
 }

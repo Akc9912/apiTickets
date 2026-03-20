@@ -37,27 +37,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        // Lista de rutas públicas que no requieren autenticación
+        String requestPath = request.getRequestURI();
+        if (isPublicPath(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
-                logger.info("[JWT Filter] Método: {} Endpoint: {}", request.getMethod(), request.getRequestURI());
+
+        logger.info("[JWT Filter] Método: {} Endpoint: {}", request.getMethod(), request.getRequestURI());
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.warn("No se encontró el header Authorization o no es Bearer. Request: {} {}", request.getMethod(), request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
+
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);
         logger.info("JWT extraído: {}", jwt);
         logger.info("Email extraído del token: {}", username);
         logger.info("Authentication actual en SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication());
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                    String rol = null;
-                    if (userDetails instanceof User user) {
-                        rol = user.getRole() != null ? user.getRole().name() : "NO_ROLE";
-                    }
-                    logger.info("[JWT Filter] Usuario autenticado: {} Rol: {}", username, rol);
+            String rol = null;
+            if (userDetails instanceof User user) {
+                rol = user.getRole() != null ? user.getRole().name() : "NO_ROLE";
+            }
+            logger.info("[JWT Filter] Usuario autenticado: {} Rol: {}", username, rol);
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 logger.info("Token válido para usuario: {}", username);
                 UsernamePasswordAuthenticationToken authToken = jwtService.getAuthentication(jwt, userDetails);
@@ -69,7 +82,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             logger.warn("No se pudo extraer el usuario del token o ya existe autenticación en el contexto.");
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Verifica si la ruta es pública y no requiere autenticación
+     */
+    private boolean isPublicPath(String path) {
+        return path.startsWith("/api/auth/") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/api-docs") ||
+                path.startsWith("/swagger-resources") ||
+                path.startsWith("/webjars/") ||
+                path.startsWith("/actuator/") ||
+                path.equals("/") ||
+                path.equals("/index.html");
     }
 
 }

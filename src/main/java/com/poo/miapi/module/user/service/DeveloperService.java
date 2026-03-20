@@ -1,17 +1,16 @@
 package com.poo.miapi.module.user.service;
 
+import com.poo.miapi.module.ticket.model.Ticket;
+import com.poo.miapi.module.ticket.service.TicketService;
 import com.poo.miapi.module.user.dto.DeveloperResponseDto;
 import com.poo.miapi.module.user.dto.UserRequestDto;
 import com.poo.miapi.module.user.model.Developer;
 import com.poo.miapi.module.user.repository.DeveloperRepository;
-import com.poo.miapi.module.user.enums.UserRole;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.poo.miapi.shared.util.PasswordHelper;
 
 import java.util.List;
@@ -21,16 +20,17 @@ public class DeveloperService {
 
     private final DeveloperRepository developerRepository;
     private final PasswordEncoder passwordEncoder;
-    private static final Logger logger = LoggerFactory.getLogger(DeveloperService.class);
+    private final TicketService ticketService;
 
     @Value("${app.default-password}")
     private String defaultPassword;
 
     public DeveloperService(
             DeveloperRepository developerRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, TicketService ticketService) {
         this.developerRepository = developerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.ticketService = ticketService;
     }
 
     // MÉTODOS PÚBLICOS
@@ -159,7 +159,12 @@ public class DeveloperService {
 
     // Operaciones sobre tickets (pendiente de implementación de negocio)
     public void takeTicket(int developerId, int ticketId) {
-        throw new UnsupportedOperationException("Tomar ticket no implementado en DeveloperService");
+        Ticket t = ticketService.findById(ticketId);
+        Developer d = developerRepository.findById(developerId);
+
+        
+
+
     }
 
     public void resolveTicket(int developerId, int ticketId, String comment) {

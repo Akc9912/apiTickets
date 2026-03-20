@@ -14,7 +14,7 @@ public class Ticket {
     private int id;
 
     @Column(nullable = false)
-    private String tittle;
+    private String title;
 
     @Column(nullable = false)
     private String description;
@@ -24,11 +24,11 @@ public class Ticket {
     private TicketStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "id_creador", nullable = false)
+    @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
     @ManyToOne
-    @JoinColumn(name = "id_developer")
+    @JoinColumn(name = "developer_id", nullable = true)
     private Developer developer;
 
     @Column(nullable = false)
@@ -38,16 +38,16 @@ public class Ticket {
     private LocalDateTime updatedAt;
 
     public Ticket() {
-        this.status = TicketStatus.NOT_ATTENDED;
+        this.status = TicketStatus.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Ticket(String tittle, String description, User creator) {
-        this.tittle = tittle;
+    public Ticket(String title, String description, User creator) {
+        this.title = title;
         this.description = description;
         this.creator = creator;
-        this.status = TicketStatus.NOT_ATTENDED;
+        this.status = TicketStatus.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -56,15 +56,15 @@ public class Ticket {
         return id;
     }
 
-    public String getTtittle() {
-        return tittle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getDescripcion() {
+    public String getDescription() {
         return description;
     }
 
-    public TicketStatus getEstado() {
+    public TicketStatus getStatus() {
         return status;
     }
 
@@ -84,16 +84,8 @@ public class Ticket {
         return developer;
     }
 
-    public TicketStatus getStatus() {
-        return status;
-    }
-
-    public void setCreador(User creator) {
+    public void setCreator(User creator) {
         this.creator = creator;
-    }
-
-    public void setEstado(TicketStatus status) {
-        this.status = status;
     }
 
     public void setStatus(TicketStatus status) {
@@ -110,6 +102,11 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "Ticket #" + id + ": " + tittle + " (" + status + ")";
+        return "Ticket #" + id + ": " + title + " (" + status + ")";
+    }
+
+    public Ticket orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
     }
 }

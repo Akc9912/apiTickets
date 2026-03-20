@@ -53,17 +53,19 @@ public class TicketRefundRequestService {
         }
 
         // Validar ticket
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found with ID: " + ticketId));
+        Ticket ticket = ticketRepository.findById(ticketId);
+        if (ticket == null) {
+            throw new EntityNotFoundException("Ticket not found");
+        }
 
         // Validar que el ticket esté asignado al desarrollador
         if (ticket.getDeveloper() == null || ticket.getDeveloper().getId() != developerId) {
             throw new IllegalStateException("Ticket is not assigned to this developer");
         }
 
-        // Validar que el ticket esté en estado ATTENDED
-        if (ticket.getStatus() != TicketStatus.ATTENDED) {
-            throw new IllegalStateException("Only tickets in ATTENDED status can be returned");
+        // Validar que el ticket esté en estado IN_PROGRESS
+        if (ticket.getStatus() != TicketStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Only tickets in IN_PROGRESS status can be returned");
         }
 
         // Validar que no exista una solicitud pendiente para este ticket
@@ -141,11 +143,11 @@ public class TicketRefundRequestService {
      * refundRequest.setResolutionDate(LocalDateTime.now());
      * refundRequest.setResolutionComment(resolutionComment);
      * 
-     * // Si se aprueba, liberar el ticket (cambiar a NOT_ATTENDED y eliminar
+     * // Si se aprueba, liberar el ticket (cambiar a PENDING y eliminar
      * asignación)
      * if (approve) {
      * Ticket ticket = refundRequest.getTicket();
-     * ticket.setStatus(TicketStatus.NOT_ATTENDED);
+     * ticket.setStatus(TicketStatus.PENDING);
      * ticket.setDeveloper(null);
      * ticketRepository.save(ticket);
      * }
@@ -225,11 +227,11 @@ public class TicketRefundRequestService {
         refundRequest.setResolutionDate(LocalDateTime.now());
         refundRequest.setResolutionComment(resolutionComment);
 
-        // Si se aprueba, liberar el ticket (cambiar a NOT_ATTENDED y eliminar
+        // Si se aprueba, liberar el ticket (cambiar a PENDING y eliminar
         // asignación)
         if (approve) {
             Ticket ticket = refundRequest.getTicket();
-            ticket.setStatus(TicketStatus.NOT_ATTENDED);
+            ticket.setStatus(TicketStatus.PENDING);
             ticket.setDeveloper(null);
             ticketRepository.save(ticket);
         }

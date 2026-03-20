@@ -25,5 +25,5 @@ public interface DeveloperRepository extends JpaRepository<Developer, Integer> {
 
     List<Developer> findByRole(UserRole role);
 
-    Optional<Developer> findById(Long id);
+    Developer findById(int id);
 }

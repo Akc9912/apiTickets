@@ -28,7 +28,7 @@ public class DeveloperController {
 
         // POST /api/developer/v1/tickets/{ticketId}/take - Tomar ticket
         @PostMapping("/v1/tickets/{ticketId}/take")
-        @Operation(summary = "Take ticket", description = "Allows a developer to take unattended or reopened tickets")
+        @Operation(summary = "Take ticket", description = "Allows a developer to take pending or reopened tickets")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Ticket taken successfully"),
                         @ApiResponse(responseCode = "404", description = "Developer or ticket not found"),

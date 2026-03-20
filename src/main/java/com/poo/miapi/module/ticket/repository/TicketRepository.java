@@ -11,16 +11,18 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
-  List<Ticket> findByEstado(TicketStatus estado);
+  List<Ticket> findByStatus(TicketStatus status);
 
   List<Ticket> findByCreatorId(int creator_id);
 
-  List<Ticket> findByTittleContainingIgnoreCase(String word);
+  List<Ticket> findByTitleContainingIgnoreCase(String word);
 
   // Buscar tickets por estado y creador
   List<Ticket> findByStatusAndCreatorId(TicketStatus status, int creator_id);
 
   // Métodos para estadísticas básicas
   long countByStatus(TicketStatus status);
+
+  Ticket findById(int id);
 
 }

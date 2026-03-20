@@ -30,7 +30,7 @@ public class SupportController {
     // POST /api/support/v1/tickets/{ticketId}/evaluate - Validación final del
     // support
     @PostMapping("/v1/tickets/{ticketId}/evaluate")
-    @Operation(summary = "Evaluate ticket solution", description = "Final support validation: accepts the solution (FINALIZED) or rejects it (REOPENED)")
+    @Operation(summary = "Evaluate ticket solution", description = "Final support validation: accepts the solution (CLOSED) or rejects it (REOPENED)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket evaluated successfully", content = @Content(schema = @Schema(implementation = TicketResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Ticket not found"),

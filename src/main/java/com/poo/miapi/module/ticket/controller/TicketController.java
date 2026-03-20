@@ -115,4 +115,19 @@ public class TicketController {
                 }
                 return ticketService.reopenTicket(id, comment, user.getId());
         }
+
+        // GET /api/tickets/v1/developer/available-tickets - Developer: view available tickets
+        @GetMapping("/v1/developer/available-tickets")
+        @Operation(summary = "List available tickets (Developer)", description = "Returns tickets assigned to the authenticated developer.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Ticket list", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketResponseDto.class))),
+                        @ApiResponse(responseCode = "403", description = "Not authorized", content = @Content)
+        })
+        public List<TicketResponseDto> listAvailableTicketsDeveloper(
+                        @Parameter(hidden = true) @AuthenticationPrincipal User user) {
+                if (user == null || user.getRole() != UserRole.DEVELOPER) {
+                        throw new AccessDeniedException("Not authorized");
+                }
+                return ticketService.findByStatus(TicketStatus.PENDING);
+        }
 }

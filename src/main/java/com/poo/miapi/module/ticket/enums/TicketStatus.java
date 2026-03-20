@@ -1,10 +1,10 @@
 package com.poo.miapi.module.ticket.enums;
 
 public enum TicketStatus {
-    NOT_ATTENDED("Not Attended"),
-    ATTENDED("Attended"),
+    PENDING("Pending"),
+    IN_PROGRESS("In Progress"),
     RESOLVED("Resolved"),
-    FINALIZED("Finalized"),
+    CLOSED("Closed"),
     REOPENED("Reopened");
 
     private final String displayName;
@@ -35,17 +35,17 @@ public enum TicketStatus {
 
     // Verifica si el estado permite asignación de técnico
     public boolean canBeAssigned() {
-        return this == NOT_ATTENDED || this == REOPENED;
+        return this == PENDING || this == REOPENED;
     }
 
     // Verifica si el ticket está en proceso activo
     public boolean isActive() {
-        return this == NOT_ATTENDED || this == ATTENDED || this == RESOLVED || this == REOPENED;
+        return this == PENDING || this == IN_PROGRESS || this == RESOLVED || this == REOPENED;
     }
 
     // Verifica si el ticket está cerrado
     public boolean isClosed() {
-        return this == FINALIZED;
+        return this == CLOSED;
     }
 
     // Verifica si el estado permite evaluación por parte del trabajador
