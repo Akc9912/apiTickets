@@ -12,7 +12,7 @@
 	<artifactId>miapi</artifactId>
 	<version>1.0.0</version>
 	<name>miapi</name>
-	<description>Api tickets - Sistema de gestión de tickets con documentación Swagger</description>
+	<description>Api tickets - Sistema de gestión de tickets</description>
 	<url/>
 	<licenses>
 		<license/>

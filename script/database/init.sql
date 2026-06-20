@@ -16,66 +16,27 @@ CREATE DATABASE tickets_system
 USE tickets_system;
 
 -- ============================================
--- MODULE: USER
--- Tablas relacionadas con usuarios y roles
+-- DOMAIN: USER
 -- ============================================
 
--- Tabla base: User (con herencia JOINED)
-CREATE TABLE user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_role VARCHAR(20) NOT NULL COMMENT 'Discriminador para herencia: ADMIN, SUPERADMIN, DEVELOPER, SUPPORT',
-    name VARCHAR(100) NOT NULL,
+CREATE TABLE users (
+    id UUID NOT NULL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL COMMENT 'Rol del usuario: ADMIN, SUPERADMIN, DEVELOPER, SUPPORT',
-    change_password BOOLEAN DEFAULT TRUE,
-    active BOOLEAN DEFAULT TRUE,
-    blocked BOOLEAN DEFAULT FALSE,
+    role ENUM("SUPERADMIN", "ADMIN", "USER")
+    enabled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_email (email),
-    INDEX idx_role (role),
-    INDEX idx_active (active)
+    deleted_at TIMESTAMP DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabla: Admin (hereda de User)
-CREATE TABLE admin (
-    id INT PRIMARY KEY,
-    
-    CONSTRAINT fk_admin_user FOREIGN KEY (id) 
-        REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ============================================
+-- DOMAIN: USER
+-- ============================================
 
--- Tabla: SuperAdmin (hereda de User)
-CREATE TABLE superadmin (
-    id INT PRIMARY KEY,
-    
-    CONSTRAINT fk_superadmin_user FOREIGN KEY (id) 
-        REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabla: Support (hereda de User)
-CREATE TABLE support (
-    id INT PRIMARY KEY,
-    
-    CONSTRAINT fk_support_user FOREIGN KEY (id) 
-        REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabla: Developer (hereda de User)
-CREATE TABLE developer (
-    id INT PRIMARY KEY,
-    warnings INT DEFAULT 0 COMMENT 'Número de advertencias',
-    failures INT DEFAULT 0 COMMENT 'Número de fallos',
-    
-    CONSTRAINT fk_developer_user FOREIGN KEY (id) 
-        REFERENCES user(id) ON DELETE CASCADE,
-    
-    INDEX idx_warnings (warnings),
-    INDEX idx_failures (failures)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
 -- MODULE: TICKET
@@ -83,7 +44,7 @@ CREATE TABLE developer (
 -- ============================================
 
 -- Tabla: Ticket
-CREATE TABLE ticket (
+CREATE TABLE tickets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
