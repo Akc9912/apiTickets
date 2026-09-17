@@ -57,4 +57,9 @@ public class User {
     @Column(name = "deleted_at")
     @Builder.Default
     private LocalDateTime deletedAt = null;
+
+    public User orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
 }

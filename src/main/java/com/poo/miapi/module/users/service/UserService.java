@@ -8,34 +8,32 @@ import org.springframework.stereotype.Service;
 import com.poo.miapi.module.users.dto.UserRequestDto;
 import com.poo.miapi.module.users.dto.UserResponseDto;
 import com.poo.miapi.module.users.enums.UserRole;
+import com.poo.miapi.module.users.enums.UserStatus;
 import com.poo.miapi.module.users.model.User;
 import com.poo.miapi.module.users.repository.UserRepository;
 import com.poo.miapi.shared.util.PasswordHelper;
 
 import java.util.List;
+import java.util.UUID;
+
+import lombok.*;
 
 @Service
+@AllArgsConstructor 
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.default-password}")
-    private String defaultPassword;
+    // CREATE
 
-    public UserService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     // MÉTODOS PÚBLICOS
     // Buscar usuario por ID
-    public User findById(int id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-    }
+    public User findById(UUID id) {
+        return userRepository.findByIdAndDeletedAtIsNull(id)
+            .orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado."));
+     }
 
     // Buscar usuario por email
     public User findByEmail(String email) {
@@ -50,19 +48,13 @@ public class UserService {
                 .toList();
     }
 
-    // Listar usuarios activos
-    public List<UserResponseDto> findActive() {
-        return userRepository.findByActiveTrue().stream()
+    // Listar usuarios por estado
+    public List<UserResponseDto> findByStatus(UserStatus status) {
+        return userRepository.findByStatus(status).stream()
                 .map(this::mapToUserDto)
                 .toList();
     }
 
-    // Listar usuarios bloqueados
-    public List<UserResponseDto> findBlocked() {
-        return userRepository.findByBlockedTrue().stream()
-                .map(this::mapToUserDto)
-                .toList();
-    }
 
     // Obtener datos del usuario
     public UserResponseDto getDetails(int userId) {
@@ -93,10 +85,9 @@ public class UserService {
     }
 
     // Cambiar estado activo del usuario
-    public UserResponseDto toggleUserActive(int userId) {
+    public UserResponseDto changeStatus(UUID userId, UserStatus newStatus) {
         User user = findById(userId);
-        boolean newState = !user.isActive();
-        user.setActive(newState);
+        user.setStatus(newStatus);
         userRepository.save(user);
         return mapToUserDto(user);
     }

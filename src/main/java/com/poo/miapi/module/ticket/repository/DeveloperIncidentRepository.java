@@ -1,4 +1,4 @@
-package com.poo.miapi.module.users.repository;
+package com.poo.miapi.module.ticket.repository;
 
 import java.util.List;
 

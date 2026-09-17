@@ -1,51 +1,20 @@
 package com.poo.miapi.module.users.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.poo.miapi.module.users.enums.UserRole;
+import com.poo.miapi.module.users.enums.UserStatus;
 import com.poo.miapi.module.users.model.User;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
-    Optional<User> findByEmail(String email);
+    User findByIdAndDeletedAtIsNull(UUID id);
 
-    boolean existsByEmail(String email);
+    List<User> findByDeletedAtIsNull();
 
-    @Query(value = "SELECT COUNT(*) FROM user WHERE email = :email", nativeQuery = true)
-    long countByEmail(@Param("email") String email);
-
-    @Transactional
-    @Modifying
-    @Query(value = "DELETE FROM user WHERE email = :email", nativeQuery = true)
-    void deleteByEmail(@Param("email") String email);
-
-    List<User> findByActiveTrue();
-
-    List<User> findByBlockedTrue();
-
-    int countByActiveTrue();
-
-    List<User> findByNameContainingIgnoreCase(String name);
-
-    List<User> findByRole(UserRole role);
-
-    List<User> findByLastNameContainingIgnoreCase(String lastName);
-
-    // Métodos para SuperAdminService
-    int countByRole(UserRole role);
-
-    int countByRoleAndActiveTrue(UserRole role);
-
-    int countByBlockedTrue();
-
-    List<User> findByRoleIn(List<UserRole> roles);
+    List<User> findByStatus(UserStatus status);
 }
