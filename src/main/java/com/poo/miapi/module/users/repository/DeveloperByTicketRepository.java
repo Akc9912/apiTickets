@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.poo.miapi.module.users.model.DeveloperByTicket;
+import com.poo.miapi.module.ticket.model.DeveloperByTicket;
 
 @Repository
 public interface DeveloperByTicketRepository extends JpaRepository<DeveloperByTicket, Integer> {

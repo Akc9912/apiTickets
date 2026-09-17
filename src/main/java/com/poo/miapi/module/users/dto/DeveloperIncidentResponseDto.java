@@ -2,8 +2,8 @@ package com.poo.miapi.module.users.dto;
 
 import java.time.LocalDateTime;
 
+import com.poo.miapi.module.ticket.model.DeveloperIncident;
 import com.poo.miapi.module.users.enums.DeveloperIncidentType;
-import com.poo.miapi.module.users.model.DeveloperIncident;
 
 public class DeveloperIncidentResponseDto {
     private int id;

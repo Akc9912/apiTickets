@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.poo.miapi.module.ticket.model.DeveloperIncident;
 import com.poo.miapi.module.users.enums.DeveloperIncidentType;
-import com.poo.miapi.module.users.model.DeveloperIncident;
 
 @Repository
 public interface DeveloperIncidentRepository extends JpaRepository<DeveloperIncident, Integer> {

@@ -1,11 +1,10 @@
-package com.poo.miapi.module.users.model;
+package com.poo.miapi.module.ticket.model;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
 import com.poo.miapi.module.ticket.enums.TicketStatus;
-import com.poo.miapi.module.ticket.model.Ticket;
 
 @Entity
 @Table(name = "developer_by_ticket")

@@ -1,10 +1,9 @@
-package com.poo.miapi.module.users.model;
+package com.poo.miapi.module.ticket.model;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-import com.poo.miapi.module.ticket.model.Ticket;
 import com.poo.miapi.module.users.enums.DeveloperIncidentType;
 
 @Entity
