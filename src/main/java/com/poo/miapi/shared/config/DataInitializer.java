@@ -5,11 +5,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.poo.miapi.module.user.model.Admin;
-import com.poo.miapi.module.user.model.Superadmin;
-import com.poo.miapi.module.user.model.Developer;
-import com.poo.miapi.module.user.model.Support;
-import com.poo.miapi.module.user.repository.UserRepository;
+import com.poo.miapi.module.users.model.Admin;
+import com.poo.miapi.module.users.model.Developer;
+import com.poo.miapi.module.users.model.Superadmin;
+import com.poo.miapi.module.users.model.Support;
+import com.poo.miapi.module.users.repository.UserRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {

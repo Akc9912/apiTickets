@@ -13,7 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.poo.miapi.module.auth.service.JwtService;
-import com.poo.miapi.module.user.model.User;
+import com.poo.miapi.module.users.model.User;
 
 import java.io.IOException;
 

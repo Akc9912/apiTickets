@@ -14,11 +14,11 @@ import com.poo.miapi.module.ticket.model.Ticket;
 import com.poo.miapi.module.ticket.model.TicketRefundRequest;
 import com.poo.miapi.module.ticket.repository.TicketRefundRequestRepository;
 import com.poo.miapi.module.ticket.repository.TicketRepository;
-import com.poo.miapi.module.user.dto.UserResponseDto;
-import com.poo.miapi.module.user.model.Admin;
-import com.poo.miapi.module.user.model.Developer;
-import com.poo.miapi.module.user.model.User;
-import com.poo.miapi.module.user.service.UserService;
+import com.poo.miapi.module.users.dto.UserResponseDto;
+import com.poo.miapi.module.users.model.Admin;
+import com.poo.miapi.module.users.model.Developer;
+import com.poo.miapi.module.users.model.User;
+import com.poo.miapi.module.users.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
 

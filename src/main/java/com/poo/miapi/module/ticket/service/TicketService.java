@@ -8,12 +8,12 @@ import com.poo.miapi.module.ticket.dto.TicketResponseDto;
 import com.poo.miapi.module.ticket.enums.TicketStatus;
 import com.poo.miapi.module.ticket.model.Ticket;
 import com.poo.miapi.module.ticket.repository.TicketRepository;
-import com.poo.miapi.module.user.dto.DeveloperResponseDto;
-import com.poo.miapi.module.user.dto.UserResponseDto;
-import com.poo.miapi.module.user.model.Support;
-import com.poo.miapi.module.user.model.User;
-import com.poo.miapi.module.user.enums.UserRole;
-import com.poo.miapi.module.user.service.UserService;
+import com.poo.miapi.module.users.dto.DeveloperResponseDto;
+import com.poo.miapi.module.users.dto.UserResponseDto;
+import com.poo.miapi.module.users.enums.UserRole;
+import com.poo.miapi.module.users.model.Support;
+import com.poo.miapi.module.users.model.User;
+import com.poo.miapi.module.users.service.UserService;
 
 import java.util.List;
 import java.time.LocalDateTime;

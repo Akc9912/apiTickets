@@ -3,8 +3,8 @@ package com.poo.miapi.module.ticket.dto;
 import java.time.LocalDateTime;
 
 import com.poo.miapi.module.ticket.enums.TicketStatus;
-import com.poo.miapi.module.user.dto.DeveloperResponseDto;
-import com.poo.miapi.module.user.dto.UserResponseDto;
+import com.poo.miapi.module.users.dto.DeveloperResponseDto;
+import com.poo.miapi.module.users.dto.UserResponseDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

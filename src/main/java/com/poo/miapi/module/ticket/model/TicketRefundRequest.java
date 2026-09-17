@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.poo.miapi.module.ticket.enums.RefundRequestStatus;
-import com.poo.miapi.module.user.model.Admin;
-import com.poo.miapi.module.user.model.Developer;
+import com.poo.miapi.module.users.model.Admin;
+import com.poo.miapi.module.users.model.Developer;
 
 @Entity
 @Table(name = "ticket_refund_requests")

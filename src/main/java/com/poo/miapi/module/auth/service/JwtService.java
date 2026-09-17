@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.poo.miapi.module.user.model.User;
+import com.poo.miapi.module.users.model.User;
 
 import java.security.Key;
 import java.util.Date;

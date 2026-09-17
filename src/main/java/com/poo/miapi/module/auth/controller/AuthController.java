@@ -5,12 +5,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.poo.miapi.module.auth.service.AuthService;
+import com.poo.miapi.module.users.enums.UserRole;
+import com.poo.miapi.module.users.model.User;
 import com.poo.miapi.module.auth.dto.LoginRequestDto;
 import com.poo.miapi.module.auth.dto.LoginResponseDto;
 import com.poo.miapi.module.auth.dto.ChangePasswordDto;
 import com.poo.miapi.module.auth.dto.ResetPasswordDto;
-import com.poo.miapi.module.user.enums.UserRole;
-import com.poo.miapi.module.user.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

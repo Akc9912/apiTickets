@@ -2,9 +2,9 @@ package com.poo.miapi.module.ticket.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import com.poo.miapi.module.users.model.User;
 
-import com.poo.miapi.module.user.model.User;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ticket_evaluation_history")

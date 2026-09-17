@@ -3,8 +3,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import com.poo.miapi.module.ticket.enums.TicketStatus;
-import com.poo.miapi.module.user.model.User;
-import com.poo.miapi.module.user.model.Developer;
+import com.poo.miapi.module.users.model.Developer;
+import com.poo.miapi.module.users.model.User;
 
 @Entity
 public class Ticket {

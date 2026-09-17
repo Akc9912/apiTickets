@@ -1,7 +1,8 @@
 package com.poo.miapi.module.auth.dto;
 
+import com.poo.miapi.module.users.dto.UserResponseDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.poo.miapi.module.user.dto.UserResponseDto;
 import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Login response with JWT token and user information")

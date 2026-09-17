@@ -4,9 +4,9 @@ import com.poo.miapi.module.ticket.dto.TicketRequestDto;
 import com.poo.miapi.module.ticket.dto.TicketResponseDto;
 import com.poo.miapi.module.ticket.enums.TicketStatus;
 import com.poo.miapi.module.ticket.service.TicketService;
-import com.poo.miapi.module.user.model.User;
-import com.poo.miapi.module.user.enums.UserRole;
-import com.poo.miapi.module.user.service.UserService;
+import com.poo.miapi.module.users.enums.UserRole;
+import com.poo.miapi.module.users.model.User;
+import com.poo.miapi.module.users.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,13 +1,13 @@
 package com.poo.miapi.module.auth.service;
 
 import com.poo.miapi.module.auth.dto.*;
-import com.poo.miapi.module.user.dto.*;
-import com.poo.miapi.module.user.model.Admin;
-import com.poo.miapi.module.user.model.Superadmin;
-import com.poo.miapi.module.user.model.Developer;
-import com.poo.miapi.module.user.model.Support;
-import com.poo.miapi.module.user.model.User;
-import com.poo.miapi.module.user.service.UserService;
+import com.poo.miapi.module.users.dto.*;
+import com.poo.miapi.module.users.model.Admin;
+import com.poo.miapi.module.users.model.Developer;
+import com.poo.miapi.module.users.model.Superadmin;
+import com.poo.miapi.module.users.model.Support;
+import com.poo.miapi.module.users.model.User;
+import com.poo.miapi.module.users.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

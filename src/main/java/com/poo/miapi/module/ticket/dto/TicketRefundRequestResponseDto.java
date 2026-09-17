@@ -3,7 +3,7 @@ package com.poo.miapi.module.ticket.dto;
 import java.time.LocalDateTime;
 
 import com.poo.miapi.module.ticket.enums.RefundRequestStatus;
-import com.poo.miapi.module.user.dto.UserResponseDto;
+import com.poo.miapi.module.users.dto.UserResponseDto;
 
 public class TicketRefundRequestResponseDto {
 
