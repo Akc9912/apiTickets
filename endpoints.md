@@ -17,95 +17,186 @@
 
 ## Autenticación
 
-### 🔓 POST `/api/auth/login`
-**Descripción:** Autentica un usuario y devuelve un token JWT.
+Prefijo `/api/auth/v1`, siguiendo el patrón `/api/{scope}/v1` que usa el resto de la API. Las
+rutas anteriores (login, change-password y reset-password bajo `/api/auth/` sin versión) **ya
+no existen**.
 
-**Acceso:** Público (no requiere autenticación)
+Los tokens los emite **este backend**, no Supabase. El objetivo documentado en
+`architecture.md` de delegar la identidad a Supabase Auth quedó descartado.
+
+> ⚠️ La aplicación **no arranca sin `JWT_SECRET`** de 32+ caracteres. `JwtService` valida el
+> largo al construirse: HS256 exige 256 bits y firmar con menos no es aceptable.
+
+> 🔑 `logout` y `change-password` exigen token; el resto es público. La lista vive en
+> `shared/security/PublicEndpoints` y es de coincidencia exacta, no por prefijo.
+
+### Modelo de tokens
+
+| | Access token | Refresh token |
+|---|---|---|
+| Forma | JWT firmado HS256 | opaco, 256 bits aleatorios |
+| Vida | 15 min (`jwt.access-token-expiration-minutes`) | 30 días (`jwt.refresh-token-expiration-days`) |
+| En la base | no se persiste | sólo su SHA-256 |
+| Revocable | **no** | sí, por `revoked_at` |
+| Claims | `sub` = email, `uid` = UUID, `role` | — |
+
+- **Rotación**: cada uso de refresh revoca el token presentado y emite uno nuevo.
+- **Reuso**: presentar un refresh ya rotado **revoca todas las sesiones del usuario**, incluida
+  la sana. No hay forma de distinguir al legítimo del ladrón, y perder la sesión es preferible
+  a dejarla en manos de quien la robó.
+- Cambiar o resetear la contraseña revoca todas las sesiones.
+- Una cuenta suspendida o inactiva deja de autenticar **en el request siguiente**, aunque su
+  access token siga vigente: el filtro chequea el estado en cada request.
+
+---
+
+### 🔓 POST `/api/auth/v1/register`
+**Descripción:** Crea la cuenta en `PENDING_VERIFICATION` y manda por mail un código de 6
+dígitos. **No hay login automático.**
 
 **Request Body:**
 ```json
 {
-  "email": "admin@tickets.com",
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
   "password": "password123"
 }
 ```
-
-**Campos requeridos:**
-- `email` (String): Email del usuario. Formato válido requerido.
-- `password` (String): Contraseña del usuario.
+- `firstName`, `email` y `password` son obligatorios. `password` entre 8 y 72 caracteres.
 
 **Respuestas:**
-- `200 OK`: Login exitoso
+- `202 Accepted`: cuenta creada, código enviado. **No 201**: la cuenta existe pero todavía no
+  puede operar.
+- `400 Bad Request`: datos inválidos, o el email ya está registrado. Un usuario dado de baja
+  sigue ocupando su email.
+
+---
+
+### 🔓 POST `/api/auth/v1/verify-email`
+**Descripción:** Consume el código y pasa la cuenta a `ACTIVE`.
+
+**Request Body:**
+```json
+{ "email": "ada@example.com", "code": "123456" }
+```
+
+El email no es redundante: el hash del código se calcula mezclado con el id del usuario, así
+que para validarlo hay que saber de quién es.
+
+**Respuestas:**
+- `204 No Content`: cuenta verificada
+- `400 Bad Request`: código incorrecto, expirado (15 min) o ya usado. **Al tercer intento
+  fallido el código se quema** y hay que pedir otro.
+- `404 Not Found`: el email no corresponde a ninguna cuenta
+
+---
+
+### 🔓 POST `/api/auth/v1/resend-code`
+**Descripción:** Emite un código nuevo e invalida el anterior: nunca hay dos válidos a la vez.
+
+**Request Body:** `{ "email": "ada@example.com" }`
+
+**Respuestas:**
+- `202 Accepted` **siempre**, exista o no la cuenta y esté o no ya verificada.
+
+---
+
+### 🔓 POST `/api/auth/v1/login`
+**Descripción:** Autentica y devuelve el par de tokens más el perfil.
+
+**Request Body:** `{ "email": "ada@example.com", "password": "password123" }`
+
+**Respuestas:**
+- `200 OK`:
   ```json
   {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "userId": 1,
-    "email": "admin@tickets.com",
-    "role": "ADMIN"
+    "tokens": {
+      "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+      "refreshToken": "rR3fr35hT0k3n...",
+      "tokenType": "Bearer",
+      "expiresInSeconds": 900
+    },
+    "user": { "id": "...", "firstName": "Ada", "email": "ada@example.com",
+              "globalRole": "USER", "status": "ACTIVE" }
   }
   ```
-- `401 Unauthorized`: Credenciales inválidas
-- `400 Bad Request`: Datos inválidos
+- `400 Bad Request`: credenciales inválidas, o la cuenta no está `ACTIVE`. Email inexistente y
+  contraseña incorrecta devuelven **el mismo error**, y con el mismo tiempo de respuesta, para
+  que el endpoint no sirva para averiguar qué cuentas existen.
 
 ---
 
-### 🔒 POST `/api/auth/change-password`
-**Descripción:** Permite a un usuario cambiar su contraseña actual.
+### 🔓 POST `/api/auth/v1/refresh`
+**Descripción:** Rota el refresh token.
 
-**Acceso:** Usuarios autenticados
+**Request Body:** `{ "refreshToken": "rR3fr35hT0k3n..." }`
 
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+**Respuestas:**
+- `200 OK`: par nuevo (`accessToken`, `refreshToken`, `tokenType`, `expiresInSeconds`)
+- `400 Bad Request`: token inválido, expirado o **reusado**. En el caso de reuso, además, se
+  revocan todas las sesiones del usuario.
+
+---
+
+### 🔓 POST `/api/auth/v1/forgot-password`
+**Descripción:** Manda por mail un token de recuperación, válido 24 h.
+
+**Request Body:** `{ "email": "ada@example.com" }`
+
+**Respuestas:**
+- `202 Accepted` **siempre**, exista o no el email. Si respondiera distinto, cualquiera podría
+  usar este endpoint como verificador de cuentas registradas.
+
+---
+
+### 🔓 POST `/api/auth/v1/reset-password`
+**Descripción:** Consume el token de recuperación y fija la contraseña nueva.
+
+**Request Body:** `{ "token": "...", "newPassword": "nuevapass1" }`
+
+El token identifica al usuario por sí mismo: no lleva email ni id.
+
+**Respuestas:**
+- `204 No Content`: contraseña actualizada y **todas las sesiones revocadas**
+- `400 Bad Request`: token inválido, expirado o ya usado; o contraseña de menos de 8 caracteres
+
+---
+
+### 🔒 POST `/api/auth/v1/logout`
+**Descripción:** Revoca el refresh token presentado. Idempotente.
+
+**Acceso:** `USER`, `ADMIN`, `SUPERADMIN`
+
+**Request Body:** `{ "refreshToken": "..." }`
+
+**Respuestas:**
+- `204 No Content` · `401 Unauthorized` · `403 Forbidden`
+
+---
+
+### 🔒 POST `/api/auth/v1/change-password`
+**Descripción:** Cambia la contraseña del usuario autenticado.
+
+**Acceso:** `USER`, `ADMIN`, `SUPERADMIN`
 
 **Request Body:**
 ```json
-{
-  "userId": 1,
-  "newPassword": "newPassword123"
-}
+{ "currentPassword": "password123", "newPassword": "nuevapass1" }
 ```
 
-**Campos requeridos:**
-- `userId` (Integer): ID del usuario.
-- `newPassword` (String): Nueva contraseña.
+**Sin `userId`.** El usuario sale del token. La versión anterior lo recibía en el body y, con
+todo `/api/auth/` abierto, permitía a cualquiera sin autenticarse cambiar la contraseña de
+cualquier usuario. Mandar un `userId` en el body hoy no tiene ningún efecto.
+
+Y exige la contraseña actual, que antes no se verificaba.
 
 **Respuestas:**
-- `200 OK`: Contraseña actualizada exitosamente
-- `400 Bad Request`: Datos inválidos o contraseña actual incorrecta
-- `404 Not Found`: Usuario no encontrado
+- `204 No Content`: contraseña actualizada y el resto de las sesiones revocadas
+- `400 Bad Request`: la contraseña actual es incorrecta, o la nueva es igual a la actual
+- `401 Unauthorized`: no autenticado · `403 Forbidden`: sin rol
 
 ---
-
-### 🔒 POST `/api/auth/reset-password`
-**Descripción:** Restablece la contraseña de un usuario (funcionalidad administrativa).
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Request Body:**
-```json
-{
-  "userId": 5
-}
-```
-
-**Campos requeridos:**
-- `userId` (Integer): ID del usuario cuya contraseña se restablecerá.
-
-**Respuestas:**
-- `200 OK`: Contraseña restablecida exitosamente
-- `403 Forbidden`: Solo admin o superadmin pueden restablecer contraseñas
-- `404 Not Found`: Usuario no encontrado
-- `400 Bad Request`: Datos inválidos
-
----
-
 ## Usuarios
 
 Un solo controller (`UserController`) sirve dos árboles: perfil propio y administración.

@@ -356,6 +356,11 @@ Migrar a Supabase Auth como proveedor de identidad:
 
 - Backend valida tokens emitidos por Supabase
 - Backend deja de gestionar contraseñas
+> ⚠️ **Descartado.** Se decidió que el backend emita y rote sus propios access y refresh
+> tokens. Lo que sigue en esta sección describe un objetivo que ya no se va a implementar;
+> `module/auth` gestiona credenciales y tokens localmente. Ver la sección de Autenticación de
+> `endpoints.md` para el diseño vigente.
+
 - Backend desacopla identidad de `module/user` hacia `module/account`
 
 ---

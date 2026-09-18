@@ -146,7 +146,11 @@ src/main/java/com/poo/miapi/
 
 ### **🗣️ Gestión de Identidad: Supabase Auth**
 
-**Importante:** A partir de esta versión, la gestión completa de usuarios se delega a **Supabase Auth**:
+> ⚠️ **Esto quedó descartado.** El backend emite y rota sus propios tokens (access + refresh),
+> y sigue siendo dueño de las contraseñas. El bloque de abajo describe un objetivo que no se va
+> a implementar. Diseño vigente: sección de Autenticación de [endpoints.md](./endpoints.md).
+
+**Objetivo original (no implementado):** delegar la gestión de usuarios a **Supabase Auth**:
 
 ```
 🔑 Supabase Auth (Autoridad de Identidad)

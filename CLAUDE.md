@@ -5,22 +5,22 @@ los hechos que no se deducen rápido leyendo el código, y las trampas que cuest
 
 ## Estado: el build está roto
 
-`mvn compile` falla con **59 errores únicos**. No es una regresión nueva: es deuda del
-refactor que unificó las subclases de usuario.
+`mvn compile` falla con **45 errores únicos, todos en `module/ticket`**.
 
-- **`module/users` es el único módulo limpio.** Compila con 0 errores.
-- Los 59 errores están en `module/ticket` (41), `module/auth` (10) y
-  `shared/config/DataInitializer` (4). Todos referencian las clases eliminadas `Admin`,
-  `Developer`, `Support`, `Superadmin`, los DTOs viejos (`UserResponseDto`, `UserRequestDto`,
-  `DeveloperResponseDto`) y los roles `DEVELOPER`/`SUPPORT`, que ya no existen en `UserRole`.
+- **`module/users`, `module/auth` y `shared/` compilan con 0 errores.**
+- Los 45 restantes referencian las clases eliminadas `Admin`, `Developer`, `Support`,
+  `Superadmin`, los DTOs viejos (`UserResponseDto`, `DeveloperResponseDto`) y los roles
+  `DEVELOPER`/`SUPPORT`, que ya no existen en `UserRole`.
+- `shared/config/DataInitializer` **fue eliminado**: sembraba usuarios con las subclases
+  borradas y se decidió no usarlo más.
 
-**59 es un piso, no el total.** javac aborta después de la fase de resolución y nunca analiza
-los cuerpos de los métodos. Cuando se resuelvan los símbolos van a aparecer una segunda ola:
-`user.getRole()` (hoy es `getGlobalRole()`), `user.setPassword()`, `user.isActive()`,
-`user.setChangePassword()`, `UserRole.SUPPORT`, el cast `(UserDetails) usuario` en
-`CustomUserDetailsService` y `userRepository.findByEmail()`.
+**45 es un piso, no el total.** javac aborta después de la fase de resolución y nunca analiza
+los cuerpos de los métodos. Cuando se resuelvan los símbolos de ticket van a aparecer una
+segunda ola: `user.getRole()` (hoy es `getGlobalRole()`), `UserRole.SUPPORT`, y los
+`instanceof Support`.
 
-No tomes un conteo de errores estable como señal de que no avanzaste.
+No tomes un conteo de errores estable como señal de que no avanzaste: arreglar `auth` bajó el
+total de 59 a 45, pero varios de sus errores nunca habían estado contados.
 
 ## Comandos
 
@@ -78,16 +78,57 @@ Una sola entidad `User`, sin subclases. El rol es el enum `globalRole`
 - `createdAt`/`updatedAt` son `NOT NULL` sin default y los llenan `@PrePersist`/`@PreUpdate`
   de la entidad.
 
-## Dos decisiones abiertas que bloquean todo
+## Decisión de auth: tokens locales, no Supabase
 
-1. **Modelo del principal.** `User` no implementa `UserDetails` y nadie emite authorities.
-   Hay que elegir entre que la entidad lo implemente o introducir un `UserPrincipal` aparte.
-   Hasta entonces **los 9 endpoints de `users` responden 403** — falla cerrado, es
-   intencional. `getAuthorities()` tiene que devolver **`ROLE_ADMIN`, con prefijo**;
-   `hasAnyRole` lo agrega solo y `ADMIN` pelado no alcanza.
-2. **Ids de ticket.** Las entidades de ticket usan `int` y no pueden tener FK a
-   `users.id` (`binary(16)`). O migran a UUID, o referencian al usuario por una columna sin
-   relación JPA. Hasta resolverlo, las tablas de ticket no tienen integridad referencial.
+`architecture.md`, `README.md`, `next_steps.md` y `docs/iteracion-01-.../fase-3-*` dicen que
+Supabase Auth emite los tokens y que el backend "NO genera tokens". **Eso quedó descartado:**
+el backend emite y rota access y refresh tokens. Si leés esos documentos, esa parte está vieja.
+
+## Modelo del principal: resuelto
+
+`module/auth/security/UserPrincipal` implementa `UserDetails` envolviendo un `User`, para no
+acoplar la entidad JPA a Spring Security. Emite el authority como **`ROLE_` + `globalRole`**:
+`hasAnyRole` agrega ese prefijo solo, y `ADMIN` pelado da 403 sin explicación visible.
+
+Sólo una cuenta `ACTIVE` y no borrada está habilitada, y `SUSPENDED` cuenta como bloqueada. El
+filtro JWT lo chequea en cada request: el access token no es revocable, así que suspender a
+alguien tiene efecto inmediato aunque su token siga vigente.
+
+## Queda una decisión abierta
+
+**Ids de ticket.** Las entidades de ticket usan `int` y no pueden tener FK a `users.id`
+(`binary(16)`). O migran a UUID, o referencian al usuario por una columna sin relación JPA.
+Hasta resolverlo, las tablas de ticket no tienen integridad referencial.
+
+## Convenciones del módulo auth
+
+- **`module/auth/api/AuthApi` es el contrato de entrada.** `AuthController` depende de la
+  interfaz, no de `AuthService`.
+- **La app no arranca sin `JWT_SECRET`.** `JwtService` valida el largo del secreto al construir
+  el bean, no en el primer login: HS256 exige 256 bits, y el default del
+  `application.properties` tiene 16 caracteres a propósito, para que falle fuerte y temprano en
+  vez de firmar con un secreto débil. Exportá `JWT_SECRET` con 32+ caracteres.
+- **`/api/auth/**` ya NO es `permitAll` en bloque.** La lista de rutas públicas vive en
+  `shared/security/PublicEndpoints` y es **coincidencia exacta**, usada tanto por
+  `SecurityConfig` como por `JwtAuthenticationFilter`. `logout` y `change-password` requieren
+  token. Si agregás un endpoint público, va ahí y en ningún otro lado.
+- **Nunca loguees el token.** El filtro lo hacía en INFO. Los eventos de seguridad van por
+  `SecurityAuditLog` (logger `security`) y no incluyen tokens ni secretos.
+- **Los tokens se guardan hasheados con SHA-256, nunca en claro.** No uses BCrypt para esto
+  aunque `next_steps.md` lo sugiera: saltea, así que rompe el UNIQUE de la columna y la
+  búsqueda por hash.
+  - El código de verificación es de 6 dígitos, así que su hash se calcula sobre
+    `userId + ":" + código`. Sin mezclar el usuario, dos personas con el mismo código
+    colisionarían contra el UNIQUE. Por eso `verify-email` pide el email además del código.
+- **`consumeVerificationCode` y `rotateRefreshToken` llevan
+  `@Transactional(noRollbackFor = IllegalArgumentException.class)`.** No es cosmético: las dos
+  guardan algo (el contador de intentos, la revocación en cascada) y **después** lanzan. Con el
+  rollback por defecto se perdía justo ese efecto, y ni el límite de intentos ni la defensa
+  contra el reuso de refresh tokens hacían nada.
+- **`register` no es `@Transactional` a propósito.** Compone pasos transaccionales y termina
+  mandando un mail, que es irreversible: en una sola transacción el mail saldría antes del
+  commit.
+- jjwt está en 0.13.0 con la API nueva (`Jwts.parser().verifyWith(...)`), no la de 0.11.x.
 
 ## Convenciones del módulo users
 

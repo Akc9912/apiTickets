@@ -9,15 +9,40 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### 📚 En Desarrollo
 
-- **⚠️ El build está roto.** `mvn compile` falla con 59 errores en `module/ticket`,
-  `module/auth` y `shared/config/DataInitializer`, que siguen referenciando las subclases
-  de usuario eliminadas (`Admin`, `Developer`, `Support`, `Superadmin`), los DTOs viejos y
-  los roles `DEVELOPER`/`SUPPORT`. `module/users` compila limpio.
-- **⚠️ Los endpoints de `users` responden 403.** `User` no implementa `UserDetails` y nadie
-  emite authorities `ROLE_*`. Falla cerrado a propósito. Decisión pendiente: que la entidad
-  implemente `UserDetails` o introducir un `UserPrincipal` aparte.
+- **⚠️ El build está roto.** `mvn compile` falla con 45 errores, **todos en `module/ticket`**,
+  que sigue referenciando las subclases de usuario eliminadas (`Admin`, `Developer`, `Support`),
+  los DTOs viejos y los roles `DEVELOPER`/`SUPPORT`. `module/users`, `module/auth` y `shared/`
+  compilan limpios. `module/ticket` quedó explícitamente fuera de alcance por ahora.
+- **⚠️ La aplicación no arranca sin `JWT_SECRET`** de 32+ caracteres: `JwtService` valida el
+  largo del secreto al construir el bean, en vez de fallar en el primer login.
+- **⚠️ Sin prueba end-to-end.** Con el build roto la app no levanta, así que `auth` está
+  verificado con arneses aislados (130 checks: persistencia de tokens, reglas de rol, rutas,
+  esquema contra MySQL real), no con el flujo corriendo contra la aplicación.
+- **⚠️ Sin rate limiting.** `forgot-password` y `resend-code` son públicos y disparan envío de
+  mails. Bloqueante para producción; los límites ya están decididos en `1.2.md`.
 
 ### ✨ Added
+
+- **🔐 Módulo `auth` reconstruido** — misma estructura que `users` (`api/AuthApi` como contrato,
+  DTOs en `api/dto/request|response`), con 9 endpoints bajo `/api/auth/v1`:
+  - `register` (202, sin login automático) · `verify-email` · `resend-code` · `login` ·
+    `refresh` · `forgot-password` · `reset-password` · `logout` 🔒 · `change-password` 🔒
+  - **Access + refresh tokens emitidos por el backend.** Access: JWT HS256 de 15 min, sin
+    persistir. Refresh: opaco de 256 bits, 30 días, en DB sólo su SHA-256, con **rotación en
+    cada uso**. Reusar un refresh ya rotado **revoca todas las sesiones del usuario**
+  - Verificación de cuenta con código de 6 dígitos, 15 min, máximo 3 intentos tras los cuales el
+    código se quema. Recuperación de contraseña con token de 24 h
+  - `forgot-password` y `resend-code` responden 202 exista o no la cuenta, y el login devuelve el
+    mismo error para email inexistente y contraseña incorrecta: el módulo no se puede usar para
+    descubrir qué emails están registrados
+  - Entidades `AuthToken` y `RefreshToken` mapeando las tablas que el esquema ya tenía
+  - `EmailSender` como puerto, con una implementación de desarrollo que escribe el código en el
+    log. **No usar en producción**
+  - `SecurityAuditLog` con los 5 eventos definidos en `1.3.md`, sin tokens ni secretos
+
+- **🪪 `UserPrincipal`** en `module/auth/security`: implementa `UserDetails` envolviendo un
+  `User`, para no acoplar la entidad JPA a Spring Security. Emite el authority como
+  `ROLE_ + globalRole`. Cierra la decisión que bloqueaba los endpoints de `users`
 
 - **🚪 Contrato de entrada al módulo users**
   - Nueva interfaz `module/users/api/UserApi` con los 15 métodos del módulo; `UserService`
@@ -47,6 +72,17 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### � Changed
 
+- **⛔ Supabase Auth descartado.** `architecture.md`, `README.md`, `next_steps.md` y
+  `docs/iteracion-01-.../fase-3-*` definían que Supabase emitiera los tokens y que el backend
+  "NO genera tokens". Se decidió lo contrario: tokens locales con rotación. Los documentos
+  quedaron marcados
+- **🗑️ `DataInitializer` eliminado.** Sembraba 4 usuarios con las subclases borradas y una
+  contraseña hardcodeada; se decidió no usarlo más
+- **⬆️ jjwt `0.11.5` → `0.13.0`**, con la API vigente (`Jwts.parser().verifyWith(...)`,
+  `Jwts.SIG.HS256`). La anterior estaba deprecada en bloque
+- **🧭 Rutas de auth versionadas**: `/api/auth/...` → `/api/auth/v1/...`, consistente con
+  `/api/user/v1/` y `/api/admin/v1/`. Los 3 endpoints anteriores dejan de existir
+
 - **⬆️ Actualización de stack**
   - Spring Boot `3.5.3` → `4.1.1` (última estable; `4.2.0-M1` es milestone)
   - Java `24` → `21`
@@ -74,6 +110,27 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
     `PUT /users/{id}/status/{status}`
 
 ### �🐞 Fixed
+
+- **🚨 Cambio de contraseña sin autenticar (crítico).** `POST /api/auth/change-password` recibía
+  el `userId` en el body, el controller ignoraba el `@AuthenticationPrincipal` que recibía, y
+  `SecurityConfig` dejaba `/api/auth/**` entero en `permitAll`. Sumado, **cualquiera sin
+  autenticarse podía cambiar la contraseña de cualquier usuario**. No era explotable porque el
+  proyecto no compila. Ahora el usuario sale del token, se exige la contraseña actual, y la lista
+  de rutas públicas vive en `shared/security/PublicEndpoints` con coincidencia exacta, compartida
+  entre `SecurityConfig` y `JwtAuthenticationFilter` para que no haya dos copias que se
+  desincronicen
+- **🚨 `resetPassword` fijaba la contraseña al id del usuario** (`String.valueOf(user.getId())`),
+  un valor que la propia API expone. Reemplazado por recuperación con token por mail
+- **🚨 El filtro JWT escribía el access token completo en el log**, en nivel INFO. Eliminado; el
+  resto de su log ruidoso pasó a DEBUG
+- **🔧 Contador de intentos y revocación en cascada se perdían por rollback.**
+  `consumeVerificationCode` y `rotateRefreshToken` guardaban su efecto y **después** lanzaban la
+  excepción, así que con el rollback por defecto de `@Transactional` ni el límite de 3 intentos
+  ni la defensa contra el reuso de refresh tokens hacían nada. Resuelto con
+  `noRollbackFor = IllegalArgumentException.class`, verificado con un contexto Spring real
+- **🔧 `JwtService` ignoraba `jwt.expiration-ms`** y hardcodeaba 10 horas en un campo. Ahora lee
+  la configuración, y **valida el largo del secreto al arrancar** en vez de fallar en el primer
+  login: con menos de 32 caracteres la aplicación no levanta
 
 - **🗄️ Scripts SQL reescritos** — ninguno de los dos anteriores pasaba de su primera tabla,
   verificado contra MySQL 8.0.46 real:

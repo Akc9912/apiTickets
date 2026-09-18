@@ -81,6 +81,16 @@ Las plantillas de los cinco tipos de arnés están en `plantillas.md`.
 
 ## Trampas
 
+**Recompilá las fuentes del proyecto antes de cada corrida, no sólo el arnés.** Si editás una
+clase y compilás únicamente el `.java` del arnés, seguís corriendo el `.class` viejo y las
+conclusiones salen al revés: un arreglo correcto aparece como que no funciona. Cuando un
+resultado contradiga lo que acabás de escribir, sospechá del bytecode antes que del código.
+
+**Aislá el mecanismo antes de dudar del código.** Si un comportamiento de framework no aparece
+(una anotación que parece ignorada, un proxy que no se aplica), escribí un probe mínimo que
+ejercite sólo ese mecanismo con un caso conocido de éxito y otro de fracaso. Distingue en un
+paso si el problema es tuyo o del montaje.
+
 **`standaloneSetup` no ejercita `@PreAuthorize`.** La seguridad de método es AOP y la aplica el
 contenedor. Con MockMvc standalone verificás ruteo y binding, nada más. Para las reglas de rol
 hace falta un `AnnotationConfigApplicationContext` con `@EnableMethodSecurity` y el controller

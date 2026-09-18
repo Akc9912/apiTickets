@@ -1,6 +1,7 @@
 package com.poo.miapi.shared.config;
 
 import com.poo.miapi.shared.security.JwtAuthenticationFilter;
+import com.poo.miapi.shared.security.PublicEndpoints;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,11 +45,14 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/").permitAll()
-                .requestMatchers("/api-docs/**", "/api-docs", "/v3/api-docs/**", "/v3/api-docs").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/webjars/**").permitAll()
+                // Sólo los endpoints de auth que tienen que ser públicos, enumerados uno
+                // por uno. Antes acá decía "/api/auth/**", y con change-password recibiendo
+                // el userId en el body eso permitía cambiar la contraseña de cualquier
+                // usuario sin autenticarse. La lista vive en PublicEndpoints para que no
+                // vuelva a haber dos copias que se desincronicen.
+                .requestMatchers(PublicEndpoints.authPublicPatterns()).permitAll()
+                .requestMatchers(PublicEndpoints.infraPatterns()).permitAll()
+                .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/index.html").permitAll()
                 // Defensa en profundidad: el rol ya se exige con @PreAuthorize en cada

@@ -36,12 +36,12 @@
 **Deliverables:** (estado real verificado, no aspiracional)
 - ✅ `architecture.md` actualizado (fuente de verdad)
 - ✅ `iteracion-01-migracion-stack-y-arquitectura/` completado
-- ❌ Backend compila sin errores — `mvn compile` falla con 59 errores en `ticket`, `auth` y
-  `DataInitializer`. `module/users` sí compila limpio.
+- ❌ Backend compila sin errores — `mvn compile` falla con 45 errores, todos en
+  `module/ticket`. `module/users`, `module/auth` y `shared/` compilan limpios.
 - ❌ PostgreSQL 16 configurado — el pom sólo trae `mysql-connector-j` y
   `application.properties` sigue con el driver de MySQL
-- ❌ Supabase Auth integrado — `AuthService` sigue validando password local y `JwtService`
-  sigue emitiendo tokens propios
+- ⛔ Supabase Auth integrado — **descartado**: se decidió que el backend emita y rote sus
+  propios access y refresh tokens. Ya no es un objetivo pendiente sino una dirección abandonada
 - ❌ Módulos con límites verificados en CI — no hay `.github/workflows` ni ArchUnit en el
   proyecto
 
@@ -54,6 +54,12 @@
 - ❌ Sistema de eventos completo
 
 ---
+
+> ⚠️ **Parcialmente implementado y con un cambio de rumbo.** El módulo `auth` ya tiene
+> registro con verificación por mail, recuperación de contraseña, y access + refresh tokens con
+> rotación y detección de reuso. **Los tokens los emite el backend, no Supabase:** la
+> integración con Supabase Auth quedó descartada. Además, el registro pide la contraseña en el
+> alta, no después de verificar como se diseñó más abajo.
 
 ### 🟡 **Iteración 02: Autenticación Segura** (FUTURA, v1.1.0)
 
@@ -235,7 +241,7 @@ app.mail.from=${EMAIL_FROM:noreply@tickets.com}
 - [ ] Crear `PasswordResetToken` entity en `module/auth/model/`
 - [ ] Crear repositorios en `module/auth/repository/`
 - [ ] Agregar campos a `User` entity (ya existe en `module/user/model/`)
-  - `emailVerified: Boolean`
+  - ~~`emailVerified: Boolean`~~ (rechazado: el enum `status` con PENDING_VERIFICATION/ACTIVE ya lo cubre)
   - `accountActive: Boolean`
 
 #### Fase 1.1.3: Servicios
@@ -1124,7 +1130,7 @@ EXTERNAL_API_SECRET=your-secret-key
 
 ### Seguridad
 - Nunca almacenar códigos de verificación en texto plano
-- Usar BCrypt para tokens
+- Usar BCrypt para contraseñas. Para TOKENS se usa SHA-256, no BCrypt: BCrypt saltea, así que rompe el UNIQUE de token_hash y la búsqueda por hash
 - Implementar rate limiting en todos los endpoints sensibles
 - Logs de auditoría para acciones críticas
 

@@ -64,18 +64,25 @@ CREATE TABLE IF NOT EXISTS users (
 -- =============================================
 -- DOMINIO: AUTH
 --
--- Estas dos tablas están por delante del código: todavía no existen entidades JPA que las
--- mapeen. Sostienen la validación de cuenta por mail y los refresh tokens (Iteración 02).
--- Al crear las entidades, revisar que los tipos sigan coincidiendo.
+-- Mapeadas por module/auth/model/AuthToken y RefreshToken. Los tipos salen de lo que
+-- genera Hibernate 7 para esas entidades; verificado con hbm2ddl=validate.
+-- Las dos guardan SHA-256 del token, nunca el valor.
 -- =============================================
 
+-- token_hash guarda SHA-256 hex de (user_id + ':' + código), no del código solo: un código
+-- de 6 dígitos tiene un millón de valores y dos usuarios podrían colisionar contra el UNIQUE.
 CREATE TABLE IF NOT EXISTS auth_tokens (
     id         binary(16)  NOT NULL,
     user_id    binary(16)  NOT NULL,
     token_type enum('VERIFICATION','PASSWORD_RESET') NOT NULL,
     token_hash varchar(64) NOT NULL,
     expires_at datetime(6) NOT NULL,
-    used       boolean     NOT NULL DEFAULT FALSE,
+    -- bit(1) y no boolean: Hibernate genera `bit` para un boolean de Java, y con
+    -- ddl-auto=update una diferencia de tipo la reconcilia por su cuenta.
+    used       bit(1)      NOT NULL DEFAULT b'0',
+    -- Intentos fallidos del código. Sin esta columna el máximo de 3 intentos que define
+    -- next_steps.md:1039 no tiene dónde persistirse.
+    attempts   smallint    NOT NULL DEFAULT 0,
     created_at datetime(6) NOT NULL,
 
     PRIMARY KEY (id),
