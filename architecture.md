@@ -6,8 +6,8 @@
 
 **Backend Spring Boot para Sistema de Tickets**
 
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.3-6DB33F?style=for-the-badge&logo=spring-boot)](https://spring.io/)
-[![Java](https://img.shields.io/badge/Java-24-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=for-the-badge&logo=spring-boot)](https://spring.io/)
+[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![JWT](https://img.shields.io/badge/JWT-Local-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 
@@ -65,14 +65,14 @@ Backend Spring Boot funcional con **MySQL + JWT local + gestión de usuarios int
 
 | Área                      | Estado actual                             | Progreso hacia objetivo | Evidencia                                                                          |
 | ------------------------- | ----------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------- |
-| Build                     | FUNCIONAL                                 | ✅ 100%                 | `./mvnw -DskipTests compile` en verde (`BUILD SUCCESS`)                            |
+| Build                     | ROTO                                      | ❌ 0%                   | `mvn compile` falla con 59 errores en `ticket`, `auth` y `DataInitializer`          |
 | Base de datos (actual)    | MySQL 8 activo                            | ✅ 100%                 | `application.properties` con `com.mysql.cj.jdbc.Driver` + `create_database.sql`    |
 | Migración DB a PostgreSQL | No iniciada en código                     | ❌ 0%                   | No hay driver PostgreSQL en `pom.xml` ni datasource PostgreSQL activo              |
 | Seguridad (actual)        | JWT local activo                          | ✅ 100%                 | `module/auth/service/JwtService.java` genera y valida tokens                       |
 | Migración a Supabase Auth | No iniciada en código                     | ❌ 0%                   | `AuthService` sigue validando password local y gestiona reset/cambio de contraseña |
-| Gestión de usuarios       | Interna (tabla `user` + subtipos)         | ✅ 100%                 | `create_database.sql` y `module/user` activos                                      |
-| Refactor `user`→`account` | Objetivo definido, implementación parcial | 🟡 15%                  | Diseño documentado, código fuente actual conserva `module/user`                    |
-| Módulo Ticket             | Funcional en esquema legacy               | 🟡 40%                  | Controladores/servicios/repositorios activos en `module/ticket`                    |
+| Gestión de usuarios       | Interna, entidad única con rol global     | ✅ 100%                 | `module/users` compila y expone 9 endpoints vía `UserApi`                          |
+| Refactor de `user`        | Completado como `users` unificado         | ✅ 100%                 | Subclases eliminadas, rol por enum `globalRole`, ids UUID, contrato `UserApi`       |
+| Módulo Ticket             | No compila tras el refactor de `users`    | 🔴 30%                  | Usa `Admin`/`Developer`/`Support` y DTOs eliminados; pendiente de migrar           |
 | Módulos Post-MVP          | Solo diseño                               | 🟡 10%                  | `support`, `product`, `notification` aún no existen en código                      |
 | Tests Automatizados       | Parcial funcional                         | 🟡 35%                  | Suite presente, cobertura de servicios/controladores todavía incompleta            |
 
@@ -86,10 +86,16 @@ Backend Spring Boot funcional con **MySQL + JWT local + gestión de usuarios int
 
 ### Bloqueadores Actuales
 
-1. Finalizar migración de módulo `account` (renombramiento completo de `user`)
-2. Desacoplar `ticket` de entidades de `account` (usar IDs en lugar de relaciones JPA)
-3. Implementar módulos Post-MVP (`support`, `product`, `notification`)
-4. Expandir tests de servicio/controlador
+1. **Compilación**: `ticket`, `auth` y `DataInitializer` referencian las subclases
+   eliminadas (`Admin`, `Developer`, `Support`, `Superadmin`), los DTOs viejos y los roles
+   `DEVELOPER`/`SUPPORT`. 59 errores pendientes.
+2. **Modelo del principal**: `User` no implementa `UserDetails` y nadie emite authorities
+   `ROLE_*`, así que los 9 endpoints de `users` responden 403. Hay que decidir entre que la
+   entidad implemente `UserDetails` o introducir un `UserPrincipal` aparte.
+3. **Migrar consumidores a `UserApi`** en lugar de inyectar `UserService`.
+4. Desacoplar `ticket` del usuario (referenciar por UUID en lugar de relación JPA).
+5. Implementar módulos Post-MVP (`support`, `product`, `notification`).
+6. Expandir tests de servicio/controlador.
 
 ### Reglas Operativas
 
@@ -168,7 +174,7 @@ Backend Spring Boot funcional con **MySQL + JWT local + gestión de usuarios int
 | #   | Módulo            | Tablas DB actuales                                                                                           | Responsabilidad                                           |
 | --- | ----------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
 | 1   | **Auth Module**   | `user` (indirecto)                                                                                           | Login, emisión/validación JWT, cambio/reset de contraseña |
-| 2   | **User Module**   | `user`, `admin`, `superadmin`, `support`, `developer`                                                        | Gestión de usuarios, roles y ciclo de vida                |
+| 2   | **Users Module**  | `users` (entidad única, rol en `global_role`)                                                                | Gestión de usuarios, roles y ciclo de vida                |
 | 3   | **Ticket Module** | `ticket`, `ticket_refund_requests`, `ticket_evaluation_history`, `developer_by_ticket`, `developer_incident` | Operación y flujo de tickets                              |
 
 ### 🧩 Módulos OBJETIVO (Post-Migración)
@@ -191,7 +197,7 @@ src/main/java/com/poo/miapi/
 │
 ├── module/
 │   ├── auth/                     → login + JWT local
-│   ├── user/                     → gestión de usuarios y roles
+│   ├── users/                    → gestión de usuarios y roles (contrato: api/UserApi)
 │   └── ticket/                   → operación de tickets
 │
 └── shared/
@@ -244,14 +250,26 @@ src/main/java/com/poo/miapi/
 **Ejemplo de comunicación entre módulos:**
 
 ```java
-// ❌ EVITAR: Import directo entre módulos
-import com.poo.miapi.module.account.service.AccountService;
+// ❌ EVITAR: Import directo del service de otro módulo
+import com.poo.miapi.module.users.service.UserService;
 
-// ✅ CORRECTO: Usar interfaces/eventos o llamadas REST internas
-public interface AccountContract {
-    UserProfileDto getUserProfile(UUID userId);
-}
+// ✅ CORRECTO: depender del contrato del módulo
+import com.poo.miapi.module.users.api.UserApi;
 ```
+
+**Implementado hoy:** `module/users/api/UserApi.java` es el contrato de entrada al módulo
+users, y `UserService` lo implementa. Los consumidores deben inyectar `UserApi`, no
+`UserService`.
+
+Tres métodos del contrato (`findById`, `findByEmail`, `save`) todavía exponen la entidad
+`User` en vez de un DTO. Es una excepción documentada y deliberada: `Ticket` referencia al
+usuario con `@ManyToOne` y necesita la entidad JPA real, y `auth` la necesita para firmar
+el JWT. Se pueden sacar cuando `ticket` pase a referenciar por UUID y `auth` tenga sus
+propias operaciones de password en el contrato.
+
+> ⚠️ Pendiente: `AuthService`, `TicketService`, `TicketRefundRequestService` y
+> `TicketController` siguen inyectando `UserService` directamente. Funciona porque es el
+> mismo bean, pero el límite modular no se respeta hasta que migren a `UserApi`.
 
 ### Escalabilidad
 
@@ -274,7 +292,7 @@ El esquema actual está documentado en [create_database.sql](create_database.sql
 
 **Entidades principales implementadas hoy:**
 
-- Usuarios y roles: `user`, `admin`, `superadmin`, `support`, `developer`
+- Usuarios y roles: `users` (entidad única; el rol vive en la columna `global_role`)
 - Tickets: `ticket`, `ticket_refund_requests`, `ticket_evaluation_history`
 - Operación de developers: `developer_by_ticket`, `developer_incident`
 
@@ -340,8 +358,11 @@ Migrar a Supabase Auth como proveedor de identidad:
 
 | Tecnología            | Versión | Propósito                |
 | --------------------- | ------- | ------------------------ |
-| **Spring Boot**       | 3.5.3   | Framework principal      |
-| **Java**              | 24      | Lenguaje                 |
+| **Spring Boot**       | 4.1.1   | Framework principal      |
+| **Java**              | 21      | Lenguaje                 |
+| **Spring Framework**  | 7.0.9   | Núcleo (vía Boot)        |
+| **Spring Security**   | 7.1.1   | Seguridad (vía Boot)     |
+| **Hibernate ORM**     | 7.4.5   | JPA provider (vía Boot)  |
 | **Spring Data JPA**   | -       | ORM y repositories       |
 | **MySQL Connector/J** | Runtime | Conexión a MySQL         |
 | **Spring Security**   | -       | Seguridad y JWT          |
@@ -371,7 +392,7 @@ Migrar a Supabase Auth como proveedor de identidad:
 ### Prerrequisitos
 
 ```bash
-✅ Java 24
+✅ Java 21
 ✅ Maven 3.x
 ✅ MySQL 8.x
 ✅ JWT_SECRET configurado

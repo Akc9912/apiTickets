@@ -27,17 +27,23 @@
 
 **Módulos MVP en esta iteración:**
 1. **module/auth** → Validador de tokens Supabase (NO generador)
-2. **module/account** → Perfil de usuario (renombrado de user, desacoplado de auth)
+2. **module/users** → Perfil de usuario y administración. El refactor se resolvió como
+   `users` unificado (entidad única + `globalRole`, contrato `api/UserApi`), no como el
+   `module/account` que se había planeado. El módulo está implementado y compila.
 3. **module/ticket** → CRUD de tickets con UUID, desacoplado de account
 4. **shared/** → Componentes comunes, contratos
 
-**Deliverables:**
+**Deliverables:** (estado real verificado, no aspiracional)
 - ✅ `architecture.md` actualizado (fuente de verdad)
 - ✅ `iteracion-01-migracion-stack-y-arquitectura/` completado
-- ✅ Backend compila sin errores
-- ✅ PostgreSQL 16 configurado
-- ✅ Supabase Auth integrado
-- ✅ Módulos con límites verificados en CI
+- ❌ Backend compila sin errores — `mvn compile` falla con 59 errores en `ticket`, `auth` y
+  `DataInitializer`. `module/users` sí compila limpio.
+- ❌ PostgreSQL 16 configurado — el pom sólo trae `mysql-connector-j` y
+  `application.properties` sigue con el driver de MySQL
+- ❌ Supabase Auth integrado — `AuthService` sigue validando password local y `JwtService`
+  sigue emitiendo tokens propios
+- ❌ Módulos con límites verificados en CI — no hay `.github/workflows` ni ArchUnit en el
+  proyecto
 
 **NO entra en esta iteración:**
 - ❌ module/support (v1.2)

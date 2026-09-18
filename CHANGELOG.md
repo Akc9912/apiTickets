@@ -9,7 +9,82 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### 📚 En Desarrollo
 
+- **⚠️ El build está roto.** `mvn compile` falla con 59 errores en `module/ticket`,
+  `module/auth` y `shared/config/DataInitializer`, que siguen referenciando las subclases
+  de usuario eliminadas (`Admin`, `Developer`, `Support`, `Superadmin`), los DTOs viejos y
+  los roles `DEVELOPER`/`SUPPORT`. `module/users` compila limpio.
+- **⚠️ Los endpoints de `users` responden 403.** `User` no implementa `UserDetails` y nadie
+  emite authorities `ROLE_*`. Falla cerrado a propósito. Decisión pendiente: que la entidad
+  implemente `UserDetails` o introducir un `UserPrincipal` aparte.
+
+### ✨ Added
+
+- **🚪 Contrato de entrada al módulo users**
+  - Nueva interfaz `module/users/api/UserApi` con los 15 métodos del módulo; `UserService`
+    la implementa
+  - `findById`, `findByEmail` y `save` exponen la entidad `User` como excepción documentada
+    al contrato en DTOs: `Ticket` la referencia con `@ManyToOne` y `auth` la necesita para
+    firmar el JWT
+  - Pendiente: los consumidores todavía inyectan `UserService` en lugar de `UserApi`
+
+- **🧑‍💼 Service y endpoints de users completos**
+  - `UserService` implementado: alta, lecturas por id/email/rol/estado, búsqueda por
+    nombre, update parcial, cambio de estado y baja lógica
+  - `UserController` unificado con 9 endpoints: 2 de perfil propio (`/api/user/v1`) y 7 de
+    administración (`/api/admin/v1/users`)
+  - DTOs `UserResponse` y `UpdateUserRequest` en `module/users/api/dto`
+
+- **🔒 Autorización por roles**
+  - `@EnableMethodSecurity` habilitado en `SecurityConfig` — sin esto Spring ignoraba los
+    `@PreAuthorize` en silencio y los endpoints de administración quedaban abiertos
+  - `@PreAuthorize` por método: `hasAnyRole('ADMIN','SUPERADMIN')` en administración,
+    `hasAnyRole('USER','ADMIN','SUPERADMIN')` en perfil propio
+  - Regla por URL para `/api/admin/**` en `SecurityConfig` como defensa en profundidad
+
+- **⏱️ Timestamps automáticos en `User`**
+  - `@PrePersist`/`@PreUpdate`: `createdAt` y `updatedAt` son `NOT NULL` sin default, así
+    que todo insert fallaba por constraint
+
 ### � Changed
+
+- **⬆️ Actualización de stack**
+  - Spring Boot `3.5.3` → `4.1.1` (última estable; `4.2.0-M1` es milestone)
+  - Java `24` → `21`
+  - Hibernate ORM `6.6.x` → `7.4.5.Final` y Spring Security `6.5.x` → `7.1.1`, ambos vía
+    el parent de Boot
+  - springdoc-openapi `2.5.0` → `3.1.1`: la línea 2.x no soporta Spring Framework 7
+  - Verificado que el upgrade no introdujo errores de compilación: el set de errores es
+    idéntico al de Boot 3.5.3 sobre Java 21
+
+- **🗄️ Repositorio de usuarios**
+  - `findByRoleAndDeletedAtIsNull` → `findByGlobalRoleAndDeletedAtIsNull`: la propiedad se
+    llama `globalRole`, el nombre viejo tumbaba el arranque de Spring
+  - `findByStatus` → `findByStatusAndDeletedAtIsNull` y búsquedas por nombre unificadas en
+    `searchActiveByName`: a las tres les faltaba el filtro de baja lógica
+  - Búsquedas por id y email devuelven `Optional<User>`
+  - Nuevo `existsByEmail`, que deliberadamente **no** filtra `deletedAt`: el `UNIQUE` de
+    email aplica a la tabla completa, así que un usuario dado de baja sigue ocupando su
+    email
+
+- **🧭 Rutas de usuarios**
+  - Eliminado el árbol `/api/superadmin/v1/users`: un solo árbol `/api/admin/v1/users`
+    cubre ADMIN y SUPERADMIN
+  - `/api/user/v1/profile` → `/api/user/v1/view-profile` y `/api/user/v1/update-profile`
+  - Reemplazados `toggle-active`/`toggle-blocked`/`{id}/role` por
+    `PUT /users/{id}/status/{status}`
+
+### �🐞 Fixed
+
+- **🔧 Dialecto de Hibernate**: `MySQL8Dialect` fue eliminado en Hibernate 7 y hacía fallar
+  el arranque. Se quitó la property: Hibernate autodetecta el dialecto desde la metadata
+  JDBC
+- **🔧 `mainClass` en el pom**: estaba configurado en `maven-compiler-plugin`, que no
+  conoce ese parámetro (warning en cada build). Movido a `spring-boot-maven-plugin`
+- **🔧 `UpdateUserRequest` no se podía deserializar**: `@Builder` suprime el constructor sin
+  argumentos y Jackson devolvía 500 en todo `PUT /update-profile`. Agregados
+  `@NoArgsConstructor`/`@AllArgsConstructor`
+- **🔧 Nombres explícitos en `@PathVariable`/`@RequestParam`**: sin ellos el ruteo depende
+  del flag `-parameters` del compilador
 
 - **🗂️ Reestructuración de Módulo History**
   - Módulo `history` eliminado para mejorar arquitectura

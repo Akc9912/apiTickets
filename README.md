@@ -2,8 +2,8 @@
 
 <div align="center">
 
-![Java](https://img.shields.io/badge/Java-24-orange.svg)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green.svg)
+![Java](https://img.shields.io/badge/Java-21-orange.svg)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.1-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)
 ![Supabase Auth](https://img.shields.io/badge/Supabase-Auth-3ECF8E.svg)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-purple.svg)
@@ -38,7 +38,7 @@
 
 ## 🎯 Descripción
 
-**ApiTickets** es un sistema empresarial de gestión de tickets desarrollado con **Spring Boot 3.5.4** y **Java 24** que está siendo migrado hacia una arquitectura completamente modular con **PostgreSQL 16** y **Supabase Auth**.
+**ApiTickets** es un sistema empresarial de gestión de tickets desarrollado con **Spring Boot 4.1.1** y **Java 21** que está siendo migrado hacia una arquitectura completamente modular con **PostgreSQL 16** y **Supabase Auth**.
 
 El sistema atiende múltiples canales de comunicación (usuarios directos, sistemas externos integrados) con soporte para diferentes roles y niveles de escalamiento de prioridad.
 
@@ -77,7 +77,7 @@ Ver [Plan Detallado de Migración](./docs/iteracion-01-migracion-stack-y-arquite
 
 ### 🔐 **Seguridad y Autenticación**
 - **JWT Authentication**: Tokens seguros para autenticación de usuarios
-- **Autorización por Roles**: 4 roles con permisos específicos (SUPERADMIN, ADMIN, DEVELOPER, SUPPORT)
+- **Autorización por Roles**: 3 roles globales (SUPERADMIN, ADMIN, USER) vía `@PreAuthorize`
 - **BCrypt Password Hashing**: Contraseñas encriptadas con algoritmo BCrypt
 - **Validación de Entrada**: Bean Validation en todos los DTOs
 - **Spring Security**: Configuración robusta de seguridad
@@ -116,7 +116,7 @@ src/main/java/com/poo/miapi/
 │   ├── dto/                  # LoginDto, ChangePasswordDto
 │   └── service/              # AuthService, JwtService
 │
-├── 👥 module/user/           # Gestión de usuarios
+├── 👥 module/users/          # Gestión de usuarios (contrato: api/UserApi)
 │   ├── controller/           # UserController, AdminController, etc.
 │   ├── dto/                  # UserRequestDto, UserResponseDto
 │   ├── enums/                # UserRole
@@ -177,7 +177,7 @@ src/main/java/com/poo/miapi/
 
 ### **📋 Prerrequisitos**
 
-- ☕ **Java 24** ([OpenJDK 24](https://jdk.java.net/24/))
+- ☕ **Java 21** ([OpenJDK 21](https://jdk.java.net/21/))
 - 📦 **Maven 3.9+**
 - � **PostgreSQL 16**
 - 🔑 **Cuenta Supabase** (para Auth)
@@ -269,31 +269,24 @@ La API incluye documentación completa generada automáticamente con Swagger/Ope
 | POST | `/api/auth/change-password` | Cambiar contraseña propia |
 | POST | `/api/auth/reset-password` | Resetear contraseña (Admin) |
 
-#### **👑 Superadmin (`/api/superadmin/v1`)**
+#### **⚙️ Administración de usuarios (`/api/admin/v1`)**
+
+Requiere `ADMIN` o `SUPERADMIN`. No hay árbol `/api/superadmin`: con rol global en una
+entidad única, un solo árbol cubre los dos roles.
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| POST | `/users` | Crear cualquier tipo de usuario |
-| GET | `/users` | Listar todos los usuarios |
-| GET | `/users/role/{role}` | Filtrar usuarios por rol |
-| GET | `/users/active` | Listar usuarios activos |
-| GET | `/users/blocked` | Listar usuarios bloqueados |
-| PUT | `/users/{id}/activate` | Activar usuario |
-| PUT | `/users/{id}/deactivate` | Desactivar usuario |
-| DELETE | `/users/{id}` | Eliminar usuario |
-
-#### **⚙️ Admin (`/api/admin/v1`)**
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| PUT | `/users/{id}` | Actualizar datos de usuario |
-| PUT | `/users/{id}/status/toggle-active` | Toggle estado activo |
-| PUT | `/users/{id}/status/toggle-blocked` | Toggle estado bloqueado |
-| PUT | `/users/{id}/role` | Cambiar rol de usuario |
-| GET | `/users` | Listar usuarios |
-| GET | `/users/{id}` | Obtener usuario específico |
+| GET | `/users?includeDeleted=` | Listar usuarios (activos, u opcionalmente todos) |
+| GET | `/users/{id}` | Obtener usuario por UUID |
+| GET | `/users/filter/role/{role}` | Filtrar por rol global |
+| GET | `/users/filter/status/{status}` | Filtrar por estado |
+| GET | `/users/search?name=` | Buscar por nombre o apellido |
+| PUT | `/users/{id}/status/{status}` | Cambiar estado (`DELETED` no; usar DELETE) |
+| DELETE | `/users/{id}` | Baja lógica (soft delete), 204 |
 | GET | `/return-requests` | Listar solicitudes de devolución |
 | POST | `/return-requests/{id}/process` | Procesar solicitud de devolución |
+
+> 🚫 El alta de usuarios **no tiene endpoint**: el registro vive en `module/auth`.
 
 #### **🎫 Tickets (`/api/tickets/v1`)**
 
@@ -319,12 +312,12 @@ La API incluye documentación completa generada automáticamente con Swagger/Ope
 |--------|----------|-------------|
 | POST | `/tickets/{ticketId}/evaluate` | Evaluar solución de ticket |
 
-#### **👤 User (`/api/user/v1`)**
+#### **👤 Perfil propio (`/api/user/v1`)**
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/profile` | Ver perfil propio |
-| PUT | `/profile` | Actualizar perfil propio |
+| GET | `/view-profile` | Ver perfil propio |
+| PUT | `/update-profile` | Actualizar perfil propio (parcial: firstName, lastName, phone) |
 
 ---
 
@@ -333,11 +326,11 @@ La API incluye documentación completa generada automáticamente con Swagger/Ope
 ### **🛡️ Características de Seguridad**
 
 - ✅ **JWT Authentication**: Tokens seguros con HS256
-- ✅ **Spring Security 6.5**: Framework de seguridad robusto
+- ✅ **Spring Security 7.1**: Framework de seguridad robusto
 - ✅ **BCrypt Password Hashing**: Contraseñas encriptadas
 - ✅ **Bean Validation**: Validación de entrada en DTOs
 - ✅ **SQL Injection Prevention**: JPA/Hibernate
-- ✅ **Authorization por Roles**: `@AuthenticationPrincipal`
+- ✅ **Authorization por Roles**: `@PreAuthorize` + `@EnableMethodSecurity`
 
 ### **🔑 Flujo de Autenticación**
 
@@ -357,7 +350,7 @@ POST /api/auth/login
 }
 
 # 2. Usar token en requests
-GET /api/user/v1/profile
+GET /api/user/v1/view-profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
@@ -367,10 +360,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 | Rol | Código | Permisos | Endpoints Principales |
 |-----|--------|----------|----------------------|
-| **Superadmin** | `SUPERADMIN` | 🔓 Total | `/api/superadmin/*` - CRUD completo de usuarios |
-| **Admin** | `ADMIN` | 🔐 Gestión | `/api/admin/*` - Gestión de usuarios y solicitudes |
-| **Developer** | `DEVELOPER` | 🔧 Técnico | `/api/developer/*` - Tomar y resolver tickets |
-| **Support** | `SUPPORT` | 📝 Usuario | `/api/support/*` - Crear y evaluar tickets |
+| **Superadmin** | `SUPERADMIN` | 🔓 Total | `/api/admin/*` - Administración de usuarios |
+| **Admin** | `ADMIN` | 🔐 Gestión | `/api/admin/*` - Usuarios y solicitudes |
+| **User** | `USER` | 👤 Propio | `/api/user/*` - Su propio perfil |
+
+Los roles `DEVELOPER` y `SUPPORT` fueron eliminados al unificar las subclases de usuario en
+una entidad única con `globalRole`. Las secciones de Developer y Support de esta
+documentación describen código pendiente de migrar.
+
+> ⚠️ `hasAnyRole` espera los authorities con prefijo: `ROLE_ADMIN`, no `ADMIN`.
 
 ---
 
@@ -378,10 +376,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
-| **Java** | 24 | Lenguaje principal |
-| **Spring Boot** | 3.5.3 | Framework backend |
-| **Spring Security** | 6.5.1 | Seguridad y autenticación |
-| **Spring Data JPA** | 3.5.3 | Persistencia |
+| **Java** | 21 | Lenguaje principal |
+| **Spring Boot** | 4.1.1 | Framework backend |
+| **Spring Framework** | 7.0.9 | Núcleo (vía Boot) |
+| **Spring Security** | 7.1.1 | Seguridad y autenticación |
+| **Hibernate ORM** | 7.4.5 | JPA provider (vía Boot) |
+| **Spring Data JPA** | - | Persistencia |
 | **MySQL** | 8.0+ | Base de datos |
 | **JWT (jjwt)** | 0.12.6 | Tokens de autenticación |
 | **Swagger/OpenAPI** | 2.7.0 | Documentación API |

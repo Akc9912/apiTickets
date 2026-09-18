@@ -2,13 +2,17 @@
 
 ## Índice
 1. [Autenticación](#autenticación)
-2. [Usuario - Perfil](#usuario---perfil)
-3. [SuperAdmin](#superadmin)
-4. [Admin](#admin)
-5. [Developer](#developer)
-6. [Support](#support)
-7. [Tickets](#tickets)
+2. [Usuarios](#usuarios)
+3. [Admin - Solicitudes de Devolución](#admin---solicitudes-de-devolución)
+4. [Developer](#developer)
+5. [Support](#support)
+6. [Tickets](#tickets)
 
+> ⚠️ **Estado de esta documentación.** La sección **Usuarios** refleja el código actual
+> (módulo `users` refactorizado: entidad única con rol global, ids UUID).
+> Las secciones **Admin - Solicitudes de Devolución**, **Developer**, **Support** y
+> **Tickets** describen el esquema legacy (ids enteros, roles `DEVELOPER`/`SUPPORT` que ya
+> no existen en `UserRole`) y **todavía no compilan**: quedan pendientes de migración.
 ---
 
 ## Autenticación
@@ -102,240 +106,220 @@ Authorization: Bearer {token}
 
 ---
 
-## Usuario - Perfil
+## Usuarios
 
-### 🔒 GET `/api/user/v1/profile`
-**Descripción:** Obtiene el perfil del usuario autenticado.
+Un solo controller (`UserController`) sirve dos árboles: perfil propio y administración.
 
-**Acceso:** Usuarios autenticados
+> 🚫 **El alta de usuarios no tiene endpoint.** El registro vive en `module/auth`
+> (`AuthService.register()`), único llamador de `UserApi.create()`. Después del alta la
+> cuenta queda en `PENDING_VERIFICATION` y se valida por mail — no hay login automático.
 
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+> ⚠️ **Todos estos endpoints responden `403` hoy.** Las reglas usan `hasAnyRole`, que exige
+> los authorities `ROLE_USER` / `ROLE_ADMIN` / `ROLE_SUPERADMIN`. Esos authorities salen de
+> `UserDetails.getAuthorities()`, y `User` todavía no implementa `UserDetails`. Falla
+> cerrado a propósito. Al conectarlo, `getAuthorities()` debe devolver `ROLE_ADMIN`, **con
+> el prefijo** — `ADMIN` pelado no alcanza.
 
-**Respuestas:**
-- `200 OK`: Perfil del usuario
-  ```json
-  {
-    "id": 1,
-    "name": "John",
-    "lastName": "Doe",
-    "email": "john@tickets.com",
-    "role": "DEVELOPER",
-    "isActive": true,
-    "isBlocked": false,
-    "createdAt": "2026-01-15T10:30:00",
-    "updatedAt": "2026-02-01T14:20:00"
-  }
-  ```
-- `401 Unauthorized`: No autenticado
+### Representación de usuario
 
----
+Todas las respuestas que devuelven un usuario usan esta forma (`UserResponse`). Nunca
+incluye `passwordHash`.
 
-### 🔒 PUT `/api/user/v1/profile`
-**Descripción:** Actualiza el perfil del usuario autenticado.
-
-**Acceso:** Usuarios autenticados
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Request Body:**
 ```json
 {
-  "name": "John",
-  "lastName": "Doe",
-  "email": "john.doe@tickets.com"
+  "id": "1639a043-2257-4d4b-87b2-6a6d4ff593c5",
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
+  "globalRole": "USER",
+  "status": "ACTIVE"
 }
 ```
 
-**Campos requeridos:**
-- `name` (String): Nombre del usuario.
-- `lastName` (String): Apellido del usuario.
-- `email` (String): Email del usuario. Formato válido requerido.
-
-**Respuestas:**
-- `200 OK`: Perfil actualizado exitosamente
-- `401 Unauthorized`: No autenticado
-- `400 Bad Request`: Datos inválidos
+- `id` (UUID)
+- `globalRole` (String): `SUPERADMIN` | `ADMIN` | `USER`
+- `status` (String): `PENDING_VERIFICATION` | `ACTIVE` | `INACTIVE` | `SUSPENDED` | `DELETED`
 
 ---
 
-## SuperAdmin
+## Perfil propio
 
-### 🔒 POST `/api/superadmin/v1/users`
-**Descripción:** Crea un nuevo usuario con cualquier rol (SUPERADMIN, ADMIN, DEVELOPER, SUPPORT).
+### 🔒 GET `/api/user/v1/view-profile`
+**Descripción:** Devuelve el perfil del usuario autenticado.
 
-**Acceso:** SUPERADMIN únicamente
+**Acceso:** `USER`, `ADMIN`, `SUPERADMIN`
 
 **Headers requeridos:**
 ```
 Authorization: Bearer {token}
 ```
 
-**Request Body:**
+El usuario se resuelve por el email del token (`Authentication.getName()`), no por
+parámetro: no hay forma de pedir el perfil de otro por este endpoint.
+
+**Respuestas:**
+- `200 OK`: `UserResponse`
+- `401 Unauthorized`: No autenticado
+- `403 Forbidden`: Sin rol
+- `404 Not Found`: El usuario del token no existe o está dado de baja
+
+---
+
+### 🔒 PUT `/api/user/v1/update-profile`
+**Descripción:** Actualiza los datos propios. **Update parcial:** los campos ausentes o
+`null` se dejan como están.
+
+**Acceso:** `USER`, `ADMIN`, `SUPERADMIN`
+
+**Request Body:** (`UpdateUserRequest`)
 ```json
 {
-  "name": "Jane",
-  "lastName": "Smith",
-  "email": "jane.smith@tickets.com",
-  "role": "DEVELOPER"
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "phone": "+54 11 5555-5555"
 }
 ```
 
-**Campos requeridos:**
-- `name` (String): Nombre del usuario.
-- `lastName` (String): Apellido del usuario.
-- `email` (String): Email del usuario. Formato válido requerido.
-- `role` (String): Rol del usuario. Valores: SUPERADMIN, ADMIN, DEVELOPER, SUPPORT.
+**Campos (todos opcionales):**
+- `firstName` (String): si viene, no puede ser vacío.
+- `lastName` (String): vacío se guarda como `null`.
+- `phone` (String): vacío se guarda como `null`.
+
+**No editable por acá:**
+- `email`: requiere re-verificación de la cuenta.
+- `password`: va por `/api/auth/change-password`.
+- `globalRole` y `status`: son operaciones de administración.
+- `id`: mandarlo en el body no tiene efecto — el usuario editado sale siempre del token.
 
 **Respuestas:**
-- `201 Created`: Usuario creado exitosamente
-- `400 Bad Request`: Datos inválidos o email duplicado
+- `200 OK`: `UserResponse` actualizado
+- `400 Bad Request`: `firstName` presente pero vacío
+- `401 Unauthorized`: No autenticado
+- `403 Forbidden`: Sin rol
+- `404 Not Found`: El usuario del token no existe o está dado de baja
 
 ---
 
-### 🔒 GET `/api/superadmin/v1/users`
-**Descripción:** Obtiene la lista completa de usuarios del sistema.
+## Administración de usuarios
 
-**Acceso:** SUPERADMIN únicamente
+**Acceso a toda esta sección:** `ADMIN`, `SUPERADMIN`.
 
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+Un único árbol para los dos roles: con rol global en una sola entidad, duplicarlo en
+`/api/superadmin` reintroduciría la duplicación por rol que eliminó el refactor.
+
+Además del `@PreAuthorize` por método, `SecurityConfig` exige el rol por URL para
+`/api/admin/**` como defensa en profundidad.
+
+### 🔒 GET `/api/admin/v1/users`
+**Descripción:** Lista usuarios.
+
+**Query params:**
+- `includeDeleted` (Boolean, default `false`): con `true` incluye los dados de baja.
 
 **Respuestas:**
-- `200 OK`: Lista de usuarios
-  ```json
-  [
-    {
-      "id": 1,
-      "name": "John",
-      "lastName": "Doe",
-      "email": "john@tickets.com",
-      "role": "DEVELOPER",
-      "isActive": true,
-      "isBlocked": false,
-      "createdAt": "2026-01-15T10:30:00",
-      "updatedAt": "2026-02-01T14:20:00"
-    }
-  ]
-  ```
+- `200 OK`: Array de `UserResponse`
+- `401 Unauthorized` / `403 Forbidden`
 
 ---
 
-### 🔒 GET `/api/superadmin/v1/users/filter/role/{role}`
-**Descripción:** Obtiene usuarios filtrados por rol.
-
-**Acceso:** SUPERADMIN únicamente
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+### 🔒 GET `/api/admin/v1/users/{id}`
+**Descripción:** Devuelve un usuario activo por id.
 
 **Parámetros de ruta:**
-- `role` (String): Rol a filtrar. Valores: ADMIN, DEVELOPER, SUPPORT, SUPERADMIN.
-
-**Ejemplo:** `/api/superadmin/v1/users/filter/role/DEVELOPER`
+- `id` (UUID)
 
 **Respuestas:**
-- `200 OK`: Lista de usuarios con el rol especificado
+- `200 OK`: `UserResponse`
+- `400 Bad Request`: El id no es un UUID válido
+- `401 Unauthorized` / `403 Forbidden`
+- `404 Not Found`: No existe o está dado de baja
 
 ---
 
-### 🔒 GET `/api/superadmin/v1/users/filter/status/active`
-**Descripción:** Obtiene todos los usuarios con estado activo.
-
-**Acceso:** SUPERADMIN únicamente
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Respuestas:**
-- `200 OK`: Lista de usuarios activos
-
----
-
-### 🔒 GET `/api/superadmin/v1/users/filter/status/blocked`
-**Descripción:** Obtiene todos los usuarios con estado bloqueado.
-
-**Acceso:** SUPERADMIN únicamente
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Respuestas:**
-- `200 OK`: Lista de usuarios bloqueados
-
----
-
-### 🔒 PUT `/api/superadmin/v1/users/{id}/status/activate`
-**Descripción:** Activa un usuario específico.
-
-**Acceso:** SUPERADMIN únicamente
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+### 🔒 GET `/api/admin/v1/users/filter/role/{role}`
+**Descripción:** Lista usuarios activos con el rol global indicado.
 
 **Parámetros de ruta:**
-- `id` (Integer): ID del usuario a activar.
+- `role`: `SUPERADMIN` | `ADMIN` | `USER`
+
+**Ejemplo:** `/api/admin/v1/users/filter/role/ADMIN`
 
 **Respuestas:**
-- `200 OK`: Usuario activado exitosamente
-- `404 Not Found`: Usuario no encontrado
+- `200 OK`: Array de `UserResponse`
+- `400 Bad Request`: Rol desconocido (p. ej. `DEVELOPER`, que ya no existe)
+- `401 Unauthorized` / `403 Forbidden`
 
 ---
 
-### 🔒 PUT `/api/superadmin/v1/users/{id}/status/deactivate`
-**Descripción:** Desactiva un usuario específico.
-
-**Acceso:** SUPERADMIN únicamente
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+### 🔒 GET `/api/admin/v1/users/filter/status/{status}`
+**Descripción:** Lista usuarios activos en el estado indicado.
 
 **Parámetros de ruta:**
-- `id` (Integer): ID del usuario a desactivar.
+- `status`: `PENDING_VERIFICATION` | `ACTIVE` | `INACTIVE` | `SUSPENDED` | `DELETED`
 
 **Respuestas:**
-- `200 OK`: Usuario desactivado exitosamente
-- `404 Not Found`: Usuario no encontrado
+- `200 OK`: Array de `UserResponse`
+- `400 Bad Request`: Estado desconocido
+- `401 Unauthorized` / `403 Forbidden`
 
 ---
 
-### 🔒 DELETE `/api/superadmin/v1/users/{id}`
-**Descripción:** Elimina permanentemente un usuario del sistema.
+### 🔒 GET `/api/admin/v1/users/search`
+**Descripción:** Búsqueda parcial sobre nombre **y** apellido, sin distinguir mayúsculas.
+Sólo usuarios activos.
 
-**Acceso:** SUPERADMIN únicamente
+**Query params:**
+- `name` (String, opcional): fragmento a buscar. Ausente o vacío devuelve lista vacía,
+  **no** la tabla completa.
 
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
+**Ejemplo:** `/api/admin/v1/users/search?name=love`
+
+**Respuestas:**
+- `200 OK`: Array de `UserResponse`
+- `401 Unauthorized` / `403 Forbidden`
+
+---
+
+### 🔒 PUT `/api/admin/v1/users/{id}/status/{status}`
+**Descripción:** Cambia el estado de un usuario.
 
 **Parámetros de ruta:**
-- `id` (Integer): ID del usuario a eliminar.
+- `id` (UUID)
+- `status`: `PENDING_VERIFICATION` | `ACTIVE` | `INACTIVE` | `SUSPENDED`
+
+**`DELETED` no se acepta acá:** implica una baja lógica, así que va por `DELETE` sobre el
+usuario. Pedirlo devuelve `400`.
+
+**Ejemplo:** `/api/admin/v1/users/{id}/status/SUSPENDED`
 
 **Respuestas:**
-- `204 No Content`: Usuario eliminado exitosamente
-- `404 Not Found`: Usuario no encontrado
+- `200 OK`: `UserResponse` actualizado
+- `400 Bad Request`: Estado desconocido, o `DELETED`
+- `401 Unauthorized` / `403 Forbidden`
+- `404 Not Found`: No existe o está dado de baja
 
 ---
 
-## Admin
+### 🔒 DELETE `/api/admin/v1/users/{id}`
+**Descripción:** Baja lógica (*soft delete*): marca `deletedAt` y deja el estado en
+`DELETED`. La fila **no** se borra.
+
+**Parámetros de ruta:**
+- `id` (UUID)
+
+**Consecuencias:**
+- El usuario desaparece de todas las consultas salvo `GET /users?includeDeleted=true`.
+- **El email sigue ocupado.** El `UNIQUE` de email aplica a la tabla completa, así que no
+  se puede reutilizar para un alta nueva.
+
+**Respuestas:**
+- `204 No Content`: Usuario dado de baja, sin cuerpo de respuesta
+- `401 Unauthorized` / `403 Forbidden`
+- `404 Not Found`: No existe o ya estaba dado de baja
+
+---
+
+## Admin - Solicitudes de Devolución
 
 ### 🔒 POST `/api/admin/v1/return-requests/{requestId}/process`
 **Descripción:** Procesa (aprueba o rechaza) una solicitud de devolución de ticket de desarrolladores.
@@ -371,141 +355,6 @@ Authorization: Bearer {token}
 - `404 Not Found`: Solicitud no encontrada
 - `403 Forbidden`: No autorizado
 - `400 Bad Request`: Datos inválidos
-
----
-
-### 🔒 PUT `/api/admin/v1/users/{id}`
-**Descripción:** Actualiza los datos de un usuario existente.
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Parámetros de ruta:**
-- `id` (Integer): ID del usuario a actualizar.
-
-**Request Body:**
-```json
-{
-  "name": "John",
-  "lastName": "Doe",
-  "email": "john.updated@tickets.com"
-}
-```
-
-**Campos requeridos:**
-- `name` (String): Nombre del usuario.
-- `lastName` (String): Apellido del usuario.
-- `email` (String): Email del usuario.
-
-**Respuestas:**
-- `200 OK`: Usuario actualizado exitosamente
-- `404 Not Found`: Usuario no encontrado
-
----
-
-### 🔒 PUT `/api/admin/v1/users/{id}/status/toggle-active`
-**Descripción:** Activa o desactiva un usuario (toggle).
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Parámetros de ruta:**
-- `id` (Integer): ID del usuario.
-
-**Respuestas:**
-- `200 OK`: Estado del usuario actualizado exitosamente
-- `404 Not Found`: Usuario no encontrado
-
----
-
-### 🔒 PUT `/api/admin/v1/users/{id}/status/toggle-blocked`
-**Descripción:** Bloquea o desbloquea un usuario (toggle).
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Parámetros de ruta:**
-- `id` (Integer): ID del usuario.
-
-**Respuestas:**
-- `200 OK`: Estado del usuario actualizado exitosamente
-- `404 Not Found`: Usuario no encontrado
-
----
-
-### 🔒 PUT `/api/admin/v1/users/{id}/role`
-**Descripción:** Cambia el rol de un usuario existente (Admin no puede asignar rol SUPERADMIN).
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Parámetros de ruta:**
-- `id` (Integer): ID del usuario.
-
-**Request Body:**
-```json
-{
-  "role": "DEVELOPER"
-}
-```
-
-**Campos requeridos:**
-- `role` (String): Nuevo rol. Valores: ADMIN, DEVELOPER, SUPPORT (SUPERADMIN solo para superadmin).
-
-**Respuestas:**
-- `200 OK`: Rol actualizado exitosamente
-- `404 Not Found`: Usuario no encontrado
-- `403 Forbidden`: No autorizado para asignar este rol
-
----
-
-### 🔒 GET `/api/admin/v1/users`
-**Descripción:** Lista todos los usuarios del sistema (Admin no puede ver SuperAdmins).
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Respuestas:**
-- `200 OK`: Lista de usuarios
-
----
-
-### 🔒 GET `/api/admin/v1/users/{id}`
-**Descripción:** Obtiene los datos de un usuario específico.
-
-**Acceso:** ADMIN, SUPERADMIN
-
-**Headers requeridos:**
-```
-Authorization: Bearer {token}
-```
-
-**Parámetros de ruta:**
-- `id` (Integer): ID del usuario.
-
-**Respuestas:**
-- `200 OK`: Datos del usuario
-- `404 Not Found`: Usuario no encontrado
 
 ---
 
@@ -767,10 +616,15 @@ Authorization: Bearer {token}
 - `REOPENED`: Ticket reabierto después de revisión
 
 ### Roles del Sistema
-- `SUPERADMIN`: Acceso completo al sistema, puede crear usuarios con cualquier rol
-- `ADMIN`: Gestión de usuarios (excepto SuperAdmin), procesamiento de solicitudes de devolución
-- `DEVELOPER`: Tomar, resolver y devolver tickets
-- `SUPPORT`: Crear tickets y evaluar soluciones
+
+`UserRole` (campo `globalRole` de la entidad `User`):
+- `SUPERADMIN`: Acceso completo al sistema
+- `ADMIN`: Consulta y baja de usuarios, procesamiento de solicitudes de devolución
+- `USER`: Su propio perfil
+
+Los roles `DEVELOPER` y `SUPPORT` **fueron eliminados** en el refactor que unificó las
+subclases de usuario en una entidad única. Las secciones de Developer, Support y Tickets
+todavía los mencionan porque describen código pendiente de migrar.
 
 ### Autenticación
 Todos los endpoints excepto `/api/auth/login` requieren un token JWT válido en el header:
