@@ -47,7 +47,7 @@ El sistema atiende múltiples canales de comunicación (usuarios directos, siste
 - 🏗️ **Arquitectura Modular**: Organización por dominios (auth, account, ticket, support, product*)
 - 🔐 **Autenticación Supabase**: Identidad centralizada, sin gestión de contraseñas en backend
 - 🆔 **UUID First**: IDs como UUID en toda la base de datos
-- 👥 **Gestión de Roles**: Superadmin, Admin, Developer, Support (definidos en Supabase)
+- 👥 **Gestión de Roles**: Superadmin, Admin, User (enum `globalRole` en la entidad `User`)
 - 📝 **API RESTful**: Documentación automática con Swagger/OpenAPI 3.0
 - 🎫 **Workflow de Tickets**: Prioridades, asignaciones, escalamientos automáticos
 - 🔌 **Integración de Sistemas**: Recepción de mensajes desde sistemas externos
@@ -90,10 +90,10 @@ Ver [Plan Detallado de Migración](./docs/iteracion-01-migracion-stack-y-arquite
 - **Reapertura de Tickets**: Comentarios y justificaciones
 
 ### 👥 **Gestión de Usuarios**
-- **Jerarquía de Roles**: User → Admin, Superadmin, Developer, Support
-- **Estados de Usuario**: Activo, Bloqueado, Cambio de contraseña requerido
-- **CRUD por Roles**: Superadmin puede gestionar todos los usuarios
-- **Servicios Especializados**: Un service por cada tipo de usuario
+- **Entidad Única**: sin subclases; el rol es el enum `globalRole`
+- **Estados de Usuario**: PENDING_VERIFICATION, ACTIVE, INACTIVE, SUSPENDED, DELETED
+- **Baja Lógica**: `deletedAt` como fuente de verdad; el email sigue ocupado
+- **Contrato de Módulo**: `UserApi` como única entrada desde otros módulos
 
 ### 📚 **Documentación y API**
 - **Swagger UI Interactivo**: Prueba endpoints desde el navegador
@@ -116,13 +116,14 @@ src/main/java/com/poo/miapi/
 │   ├── dto/                  # LoginDto, ChangePasswordDto
 │   └── service/              # AuthService, JwtService
 │
-├── 👥 module/users/          # Gestión de usuarios (contrato: api/UserApi)
-│   ├── controller/           # UserController, AdminController, etc.
-│   ├── dto/                  # UserRequestDto, UserResponseDto
-│   ├── enums/                # UserRole
-│   ├── model/                # User, Admin, Superadmin, Developer, Support
-│   ├── repository/           # UserRepository, AdminRepository, etc.
-│   └── service/              # UserService, AdminService, etc.
+├── 👥 module/users/          # Gestión de usuarios
+│   ├── api/                  # UserApi (contrato de entrada al módulo)
+│   │   └── dto/              # CreateUserRequest, UpdateUserRequest, UserResponse
+│   ├── controller/           # UserController (perfil propio + administración)
+│   ├── enums/                # UserRole, UserStatus
+│   ├── model/                # User (entidad única)
+│   ├── repository/           # UserRepository
+│   └── service/              # UserService implements UserApi
 │
 ├── 🎫 module/ticket/         # Gestión de tickets
 │   ├── controller/           # TicketController
@@ -163,11 +164,15 @@ src/main/java/com/poo/miapi/
 
 | Entidad | Descripción | Campos Clave |
 |---------|-------------|--------------|
-| **User** | Clase abstracta base | id, name, lastName, email, password, role, active, blocked |
-| **Admin** | Administrador del sistema | Hereda de User |
-| **Superadmin** | Super administrador | Hereda de User, permisos totales |
-| **Developer** | Técnico que resuelve tickets | Hereda de User |
-| **Support** | Usuario que crea tickets | Hereda de User |
+| **User** | Entidad única de usuario. Sin subclases: el rol es un enum. | id (UUID), firstName, lastName, email, passwordHash, phone, globalRole, status, createdAt, updatedAt, deletedAt |
+
+Las subclases `Admin`, `Superadmin`, `Developer` y `Support` **fueron eliminadas**: el rol
+vive en `globalRole` (`SUPERADMIN` \| `ADMIN` \| `USER`) y el ciclo de vida en `status`
+(`PENDING_VERIFICATION` \| `ACTIVE` \| `INACTIVE` \| `SUSPENDED` \| `DELETED`). La baja es
+lógica vía `deletedAt`.
+
+| Entidad | Descripción | Campos Clave |
+|---------|-------------|--------------|
 | **Ticket** | Ticket de soporte | id, title, description, status, creator, developer |
 | **TicketRefundRequest** | Solicitud de devolución | id, developer, ticket, reason, status |
 
@@ -193,7 +198,7 @@ cd apiTickets
 createdb apitickets
 
 # 3. Ejecutar schema DDL
-psql apitickets < create_database.sql
+mysql -u root -p apiticket < script/database/00-init.sql
 
 # 4. Configurar variables de entorno
 cp .env.example .env
@@ -431,7 +436,7 @@ apiTickets/
 │   ├── application.properties         # Configuración
 │   └── META-INF/
 │
-├── create_database.sql                # Script de base de datos
+├── script/database/                   # Esquema SQL (00-init.sql aplicado, 10-ticket-pending.sql no)
 ├── pom.xml                            # Dependencias Maven
 └── README.md                          # Este archivo
 ```

@@ -1,281 +1,180 @@
--- ============================================
--- Database: tickets_system
--- Version: 1.0.0 (Current Structure)
--- Description: Base de datos para el sistema de tickets con arquitectura modular
--- Created: 2026-02-01
--- ============================================
+-- =============================================
+-- apiTickets — módulo ticket (PENDIENTE, NO SE APLICA)
+--
+-- ⚠️ Este archivo NO se monta en /docker-entrypoint-initdb.d y no debe aplicarse todavía.
+--
+-- Motivo: las entidades de module/ticket no compilan y su modelo de datos quedó
+-- inconsistente con el refactor de `users`. Concretamente:
+--
+--   1. Ticket, TicketRefundRequest, TicketEvaluationHistory, DeveloperByTicket y
+--      DeveloperIncident usan `private int id` con GenerationType.IDENTITY, mientras que
+--      `users.id` pasó a ser UUID -> binary(16). Un `int` no puede tener FK a un
+--      binary(16): la incompatibilidad de tipos no se arregla en el SQL.
+--
+--   2. Los @ManyToOne apuntan a las clases `Developer` y `Admin`, que el refactor eliminó.
+--      Ya no existen las tablas `developer` ni `admin`, así que las FKs de developer_id y
+--      resolved_by_id no tienen destino. Tampoco existen los roles DEVELOPER y SUPPORT en
+--      UserRole.
+--
+-- Por eso las FKs hacia usuarios están comentadas más abajo en lugar de inventadas: emitir
+-- DDL que contradiga las entidades sería peor que dejar la decisión explícita. Las tablas
+-- de acá se pueden crear (el DDL es válido), pero quedan sin integridad referencial contra
+-- `users` hasta que se resuelva la migración.
+--
+-- Decisión pendiente, en este orden:
+--   a. Migrar los ids de ticket de `int` a UUID (coherente con `users`), o dejarlos `int` y
+--      referenciar al usuario por una columna `binary(16)` sin relación JPA.
+--   b. Reemplazar `Developer`/`Admin` por `User` + chequeo de rol, y decidir qué significa
+--      "developer asignado" ahora que no hay subclases.
+--   c. Recién entonces descomentar las FKs y renombrar este archivo a 10-ticket.sql.
+--
+-- Lo que sí se corrigió respecto de la versión anterior de este script:
+--   * Nombres de tabla tomados de las anotaciones @Table reales (eran `ticket` y `user`
+--     en singular, que no existen: son `tickets` y `users`).
+--   * `ENUM("A","B")` con comillas dobles -> comillas simples (lo anterior no era SQL
+--     válido salvo con ANSI_QUOTES).
+--   * Faltaba una coma tras la definición de `role`.
+--   * Tipos alineados con las entidades: datetime(6) en vez de TIMESTAMP, ENUM nativo para
+--     los @Enumerated(STRING), TEXT donde la entidad declara columnDefinition = "TEXT".
+--   * Se eliminaron las tres vistas y los dos procedimientos almacenados: referenciaban
+--     columnas y tablas inexistentes (`u.name`, `u.active`, `d.warnings`, `d.failures`,
+--     `developer`, `admin`, `ticket` en singular). Reescribirlos requiere antes (a) y (b).
+--   * Se eliminó el DROP DATABASE del encabezado: un script de init no debe borrar la base.
+-- =============================================
 
--- Eliminar base de datos si existe (¡CUIDADO EN PRODUCCIÓN!)
-DROP DATABASE IF EXISTS tickets_system;
+-- Requiere que 00-init.sql ya haya creado `users`.
 
--- Crear base de datos
-CREATE DATABASE tickets_system
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+-- =============================================
+-- Ticket
+-- Entidad: module/ticket/model/Ticket.java  (sin @Table -> nombre por defecto: tickets)
+-- =============================================
 
-USE tickets_system;
+CREATE TABLE IF NOT EXISTS tickets (
+    id           int          NOT NULL AUTO_INCREMENT,
+    title        varchar(255) NOT NULL,
+    description  varchar(255) NOT NULL,
+    status       enum('PENDING','IN_PROGRESS','RESOLVED','CLOSED','REOPENED') NOT NULL,
+    -- creator_id y developer_id: ver punto 1 del encabezado. Hoy son int y no pueden
+    -- referenciar users.id (binary(16)).
+    creator_id   int          NOT NULL,
+    developer_id int          NULL,
+    created_at   datetime(6)  NOT NULL,
+    updated_at   datetime(6)  NOT NULL,
 
--- ============================================
--- DOMAIN: USER
--- ============================================
+    PRIMARY KEY (id),
+    KEY idx_tickets_status (status),
+    KEY idx_tickets_creator (creator_id),
+    KEY idx_tickets_developer (developer_id),
+    KEY idx_tickets_created_at (created_at)
 
-CREATE TABLE users (
-    id UUID NOT NULL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM("SUPERADMIN", "ADMIN", "USER")
-    enabled BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL
+    -- , CONSTRAINT fk_tickets_creator   FOREIGN KEY (creator_id)   REFERENCES users (id)
+    -- , CONSTRAINT fk_tickets_developer FOREIGN KEY (developer_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================
--- DOMAIN: USER
--- ============================================
+-- =============================================
+-- TicketRefundRequest — solicitudes de devolución
+-- Entidad: module/ticket/model/TicketRefundRequest.java
+-- =============================================
 
+CREATE TABLE IF NOT EXISTS ticket_refund_requests (
+    id                 int          NOT NULL AUTO_INCREMENT,
+    developer_id       int          NOT NULL,
+    ticket_id          int          NOT NULL,
+    reason             varchar(500) NOT NULL,
+    status             enum('PENDING','APPROVED','REJECTED') NOT NULL,
+    request_date       datetime(6)  NOT NULL,
+    resolution_date    datetime(6)  NULL,
+    -- Admin que resolvió la solicitud.
+    resolved_by_id     int          NULL,
+    resolution_comment varchar(500) NULL,
 
+    PRIMARY KEY (id),
+    KEY idx_refund_status (status),
+    KEY idx_refund_developer (developer_id),
+    KEY idx_refund_ticket (ticket_id),
+    KEY idx_refund_request_date (request_date),
 
--- ============================================
--- MODULE: TICKET
--- Tablas relacionadas con tickets
--- ============================================
+    CONSTRAINT fk_refund_ticket FOREIGN KEY (ticket_id)
+        REFERENCES tickets (id) ON DELETE CASCADE
 
--- Tabla: Ticket
-CREATE TABLE tickets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' 
-        COMMENT 'Estados: PENDING, IN_PROGRESS, RESOLVED, CLOSED, REOPENED',
-    creator_id INT NOT NULL,
-    developer_id INT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_ticket_creator FOREIGN KEY (creator_id) 
-        REFERENCES user(id) ON DELETE RESTRICT,
-    CONSTRAINT fk_ticket_developer FOREIGN KEY (developer_id) 
-        REFERENCES developer(id) ON DELETE SET NULL,
-    
-    INDEX idx_status (status),
-    INDEX idx_creator (creator_id),
-    INDEX idx_developer (developer_id),
-    INDEX idx_created_at (created_at)
+    -- , CONSTRAINT fk_refund_developer   FOREIGN KEY (developer_id)   REFERENCES users (id)
+    -- , CONSTRAINT fk_refund_resolved_by FOREIGN KEY (resolved_by_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabla: TicketRefundRequest (Solicitudes de devolución)
-CREATE TABLE ticket_refund_requests (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    developer_id INT NOT NULL,
-    ticket_id INT NOT NULL,
-    reason VARCHAR(500) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' 
-        COMMENT 'Estados: PENDING, APPROVED, REJECTED',
-    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    resolution_date TIMESTAMP NULL,
-    resolved_by_id INT NULL COMMENT 'Admin que resolvió la solicitud',
-    resolution_comment VARCHAR(500) NULL,
-    
-    CONSTRAINT fk_refund_developer FOREIGN KEY (developer_id) 
-        REFERENCES developer(id) ON DELETE CASCADE,
-    CONSTRAINT fk_refund_ticket FOREIGN KEY (ticket_id) 
-        REFERENCES ticket(id) ON DELETE CASCADE,
-    CONSTRAINT fk_refund_resolved_by FOREIGN KEY (resolved_by_id) 
-        REFERENCES admin(id) ON DELETE SET NULL,
-    
-    INDEX idx_status (status),
-    INDEX idx_developer (developer_id),
-    INDEX idx_ticket (ticket_id),
-    INDEX idx_request_date (request_date)
+-- =============================================
+-- TicketEvaluationHistory — historial de evaluaciones
+-- Entidad: module/ticket/model/TicketEvaluationHistory.java
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS ticket_evaluation_history (
+    id              int         NOT NULL AUTO_INCREMENT,
+    -- Usuario que evalúa.
+    user_id         int         NOT NULL,
+    ticket_id       int         NOT NULL,
+    was_approved    boolean     NOT NULL,
+    comments        text        NULL,
+    evaluation_date datetime(6) NOT NULL,
+
+    PRIMARY KEY (id),
+    KEY idx_evaluation_ticket (ticket_id),
+    KEY idx_evaluation_user (user_id),
+    KEY idx_evaluation_date (evaluation_date),
+
+    CONSTRAINT fk_evaluation_ticket FOREIGN KEY (ticket_id)
+        REFERENCES tickets (id) ON DELETE CASCADE
+
+    -- , CONSTRAINT fk_evaluation_user FOREIGN KEY (user_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabla: TicketEvaluationHistory (Historial de evaluaciones)
-CREATE TABLE ticket_evaluation_history (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL COMMENT 'Usuario que evalúa',
-    ticket_id INT NOT NULL,
-    was_approved BOOLEAN NOT NULL,
-    comments TEXT NULL,
-    evaluation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_evaluation_user FOREIGN KEY (user_id) 
-        REFERENCES user(id) ON DELETE CASCADE,
-    CONSTRAINT fk_evaluation_ticket FOREIGN KEY (ticket_id) 
-        REFERENCES ticket(id) ON DELETE CASCADE,
-    
-    INDEX idx_ticket (ticket_id),
-    INDEX idx_user (user_id),
-    INDEX idx_evaluation_date (evaluation_date)
+-- =============================================
+-- DeveloperByTicket — historial de asignaciones
+-- Entidad: module/ticket/model/DeveloperByTicket.java
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS developer_by_ticket (
+    id                int         NOT NULL AUTO_INCREMENT,
+    ticket_id         int         NOT NULL,
+    developer_id      int         NOT NULL,
+    initial_status    enum('PENDING','IN_PROGRESS','RESOLVED','CLOSED','REOPENED') NOT NULL,
+    final_status      enum('PENDING','IN_PROGRESS','RESOLVED','CLOSED','REOPENED') NULL,
+    comment           text        NULL,
+    assignment_date   datetime(6) NOT NULL,
+    unassignment_date datetime(6) NULL,
+
+    PRIMARY KEY (id),
+    KEY idx_dev_ticket_ticket (ticket_id),
+    KEY idx_dev_ticket_developer (developer_id),
+    KEY idx_dev_ticket_assignment_date (assignment_date),
+    -- Asignaciones abiertas: unassignment_date IS NULL.
+    KEY idx_dev_ticket_active (developer_id, unassignment_date),
+
+    CONSTRAINT fk_dev_ticket_ticket FOREIGN KEY (ticket_id)
+        REFERENCES tickets (id) ON DELETE CASCADE
+
+    -- , CONSTRAINT fk_dev_ticket_developer FOREIGN KEY (developer_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabla: DeveloperByTicket (Historial de asignaciones)
-CREATE TABLE developer_by_ticket (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    ticket_id INT NOT NULL,
-    developer_id INT NOT NULL,
-    initial_status VARCHAR(20) NOT NULL,
-    final_status VARCHAR(20) NULL,
-    comment TEXT NULL,
-    assignment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    unassignment_date TIMESTAMP NULL,
-    
-    CONSTRAINT fk_dev_ticket_ticket FOREIGN KEY (ticket_id) 
-        REFERENCES ticket(id) ON DELETE CASCADE,
-    CONSTRAINT fk_dev_ticket_developer FOREIGN KEY (developer_id) 
-        REFERENCES developer(id) ON DELETE CASCADE,
-    
-    INDEX idx_ticket (ticket_id),
-    INDEX idx_developer (developer_id),
-    INDEX idx_assignment_date (assignment_date),
-    INDEX idx_active_assignments (developer_id, unassignment_date)
+-- =============================================
+-- DeveloperIncident — incidentes de developers
+-- Entidad: module/ticket/model/DeveloperIncident.java
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS developer_incident (
+    id                int         NOT NULL AUTO_INCREMENT,
+    developer_id      int         NOT NULL,
+    ticket_id         int         NOT NULL,
+    incident          enum('WARNING','FAILURE') NOT NULL,
+    reason            text        NULL,
+    registration_date datetime(6) NOT NULL,
+
+    PRIMARY KEY (id),
+    KEY idx_incident_developer (developer_id),
+    KEY idx_incident_ticket (ticket_id),
+    KEY idx_incident_type (incident),
+    KEY idx_incident_registration_date (registration_date),
+
+    CONSTRAINT fk_incident_ticket FOREIGN KEY (ticket_id)
+        REFERENCES tickets (id) ON DELETE CASCADE
+
+    -- , CONSTRAINT fk_incident_developer FOREIGN KEY (developer_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabla: DeveloperIncident (Incidentes de developers)
-CREATE TABLE developer_incident (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    developer_id INT NOT NULL,
-    ticket_id INT NOT NULL,
-    incident VARCHAR(50) NOT NULL 
-        COMMENT 'Tipos: WARNING, FAILURE',
-    reason TEXT NULL,
-    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_incident_developer FOREIGN KEY (developer_id) 
-        REFERENCES developer(id) ON DELETE CASCADE,
-    CONSTRAINT fk_incident_ticket FOREIGN KEY (ticket_id) 
-        REFERENCES ticket(id) ON DELETE CASCADE,
-    
-    INDEX idx_developer (developer_id),
-    INDEX idx_ticket (ticket_id),
-    INDEX idx_incident_type (incident),
-    INDEX idx_registration_date (registration_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- ============================================
--- VISTAS ÚTILES
--- ============================================
-
--- Vista: Tickets activos con información del developer
-CREATE VIEW v_active_tickets AS
-SELECT 
-    t.id,
-    t.title,
-    t.description,
-    t.status,
-    CONCAT(u_creator.name, ' ', u_creator.last_name) AS creator_name,
-    u_creator.email AS creator_email,
-    CONCAT(u_dev.name, ' ', u_dev.last_name) AS developer_name,
-    u_dev.email AS developer_email,
-    t.created_at,
-    t.updated_at
-FROM ticket t
-INNER JOIN user u_creator ON t.creator_id = u_creator.id
-LEFT JOIN developer d ON t.developer_id = d.id
-LEFT JOIN user u_dev ON d.id = u_dev.id
-WHERE t.status NOT IN ('CLOSED');
-
--- Vista: Estadísticas de developers
-CREATE VIEW v_developer_stats AS
-SELECT 
-    d.id,
-    CONCAT(u.name, ' ', u.last_name) AS developer_name,
-    u.email,
-    d.warnings,
-    d.failures,
-    COUNT(DISTINCT dbt.ticket_id) AS total_tickets_handled,
-    COUNT(DISTINCT CASE WHEN dbt.unassignment_date IS NULL THEN dbt.ticket_id END) AS active_tickets,
-    COUNT(DISTINCT di.id) AS total_incidents
-FROM developer d
-INNER JOIN user u ON d.id = u.id
-LEFT JOIN developer_by_ticket dbt ON d.id = dbt.developer_id
-LEFT JOIN developer_incident di ON d.id = di.developer_id
-WHERE u.active = TRUE
-GROUP BY d.id, u.name, u.last_name, u.email, d.warnings, d.failures;
-
--- Vista: Solicitudes de devolución pendientes
-CREATE VIEW v_pending_refund_requests AS
-SELECT 
-    trr.id,
-    trr.reason,
-    trr.request_date,
-    t.id AS ticket_id,
-    t.title AS ticket_title,
-    CONCAT(u_dev.name, ' ', u_dev.last_name) AS developer_name,
-    u_dev.email AS developer_email
-FROM ticket_refund_requests trr
-INNER JOIN ticket t ON trr.ticket_id = t.id
-INNER JOIN developer d ON trr.developer_id = d.id
-INNER JOIN user u_dev ON d.id = u_dev.id
-WHERE trr.status = 'PENDING'
-ORDER BY trr.request_date DESC;
-
--- ============================================
--- PROCEDIMIENTOS ALMACENADOS ÚTILES
--- ============================================
-
-DELIMITER //
-
--- Procedimiento: Asignar ticket a developer
-CREATE PROCEDURE sp_assign_ticket_to_developer(
-    IN p_ticket_id INT,
-    IN p_developer_id INT,
-    IN p_comment TEXT
-)
-BEGIN
-    DECLARE v_current_status VARCHAR(20);
-    
-    -- Obtener estado actual del ticket
-    SELECT status INTO v_current_status FROM ticket WHERE id = p_ticket_id;
-    
-    -- Actualizar ticket
-    UPDATE ticket 
-    SET developer_id = p_developer_id,
-        status = 'IN_PROGRESS',
-        updated_at = CURRENT_TIMESTAMP
-    WHERE id = p_ticket_id;
-    
-    -- Registrar en historial
-    INSERT INTO developer_by_ticket (ticket_id, developer_id, initial_status, comment)
-    VALUES (p_ticket_id, p_developer_id, v_current_status, p_comment);
-END //
-
--- Procedimiento: Cerrar asignación de developer
-CREATE PROCEDURE sp_close_developer_assignment(
-    IN p_ticket_id INT,
-    IN p_developer_id INT,
-    IN p_final_status VARCHAR(20),
-    IN p_comment TEXT
-)
-BEGIN
-    UPDATE developer_by_ticket
-    SET final_status = p_final_status,
-        unassignment_date = CURRENT_TIMESTAMP,
-        comment = p_comment
-    WHERE ticket_id = p_ticket_id 
-      AND developer_id = p_developer_id
-      AND unassignment_date IS NULL;
-END //
-
-DELIMITER ;
-
--- ============================================
--- INFORMACIÓN DEL ESQUEMA
--- ============================================
-
--- Versión de la base de datos
-CREATE TABLE schema_version (
-    version VARCHAR(20) PRIMARY KEY,
-    description TEXT,
-    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO schema_version (version, description) 
-VALUES ('1.0.0', 'Estructura base del sistema - Módulos: auth, user, ticket');
-
--- ============================================
--- FIN DEL SCRIPT
--- ============================================

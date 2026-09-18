@@ -13,7 +13,10 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init_ticket_system.sql:/docker-entrypoint-initdb.d/init.sql
+      # Apuntaba a ./init_ticket_system.sql, que no existe en el repo: el contenedor
+      # arrancaba con la base vacía. Se monta un archivo puntual y no el directorio
+      # script/database/ entero, porque 10-ticket-pending.sql todavía no debe aplicarse.
+      - ./script/database/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
     networks:
       - apitickets_network
     healthcheck:

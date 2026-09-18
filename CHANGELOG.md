@@ -75,6 +75,34 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### �🐞 Fixed
 
+- **🗄️ Scripts SQL reescritos** — ninguno de los dos anteriores pasaba de su primera tabla,
+  verificado contra MySQL 8.0.46 real:
+  - `00-init.sql` fallaba en la línea 1 con `ERROR 4028` (`CREATE TABLE tickets_system
+    CHARACTER SET…`, donde iba `CREATE DATABASE`)
+  - `init.sql` fallaba en la línea 22 con `ERROR 1064` (`id UUID`: MySQL no tiene tipo
+    `UUID`), y además tenía `ENUM("A","B")` con comillas dobles y una coma faltante
+  - Tipos de `users` alineados con lo que genera Hibernate 7 desde la entidad:
+    `binary(16)` para el UUID (**no** `char(36)`), `datetime(6)` para los timestamps y
+    `ENUM` nativo para los enums. Verificado con `hbm2ddl=validate` contra MySQL real
+  - `password_hash` de `varchar(50)` a `varchar(255)`: un hash BCrypt ocupa 60 caracteres
+    y se truncaba
+  - `last_name` y `phone` pasan a NULL-ables, como la entidad
+  - Eliminada sintaxis de PostgreSQL que MySQL rechaza: `CREATE INDEX IF NOT EXISTS` e
+    índices parciales (`… WHERE used = FALSE`)
+  - Índices rehechos según las consultas reales de `UserRepository`
+    (`(status, deleted_at)`, `(global_role, deleted_at)`); eliminados los redundantes
+  - `init.sql` renombrado a `10-ticket-pending.sql`: **no se aplica**, porque las entidades
+    de ticket usan ids `int` que no pueden referenciar `users.id` (`binary(16)`) y apuntan a
+    las clases `Developer`/`Admin` eliminadas. Las FKs hacia usuarios quedan comentadas con
+    la decisión documentada
+  - Eliminadas las 3 vistas y los 2 procedimientos almacenados: referenciaban columnas y
+    tablas inexistentes (`u.name`, `u.active`, `d.warnings`, `developer`, `admin`)
+  - Eliminado el `DROP DATABASE IF EXISTS` del encabezado
+
+- **🐳 `docker-compose.yml`**: montaba `./init_ticket_system.sql`, que no existe en el
+  repositorio — el contenedor arrancaba con la base vacía. Ahora monta
+  `./script/database/00-init.sql`
+
 - **🔧 Dialecto de Hibernate**: `MySQL8Dialect` fue eliminado en Hibernate 7 y hacía fallar
   el arranque. Se quitó la property: Hibernate autodetecta el dialecto desde la metadata
   JDBC

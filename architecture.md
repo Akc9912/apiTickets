@@ -66,7 +66,7 @@ Backend Spring Boot funcional con **MySQL + JWT local + gestión de usuarios int
 | Área                      | Estado actual                             | Progreso hacia objetivo | Evidencia                                                                          |
 | ------------------------- | ----------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------- |
 | Build                     | ROTO                                      | ❌ 0%                   | `mvn compile` falla con 59 errores en `ticket`, `auth` y `DataInitializer`          |
-| Base de datos (actual)    | MySQL 8 activo                            | ✅ 100%                 | `application.properties` con `com.mysql.cj.jdbc.Driver` + `create_database.sql`    |
+| Base de datos (actual)    | MySQL 8 activo                            | ✅ 100%                 | `application.properties` con `com.mysql.cj.jdbc.Driver` + `script/database/00-init.sql` |
 | Migración DB a PostgreSQL | No iniciada en código                     | ❌ 0%                   | No hay driver PostgreSQL en `pom.xml` ni datasource PostgreSQL activo              |
 | Seguridad (actual)        | JWT local activo                          | ✅ 100%                 | `module/auth/service/JwtService.java` genera y valida tokens                       |
 | Migración a Supabase Auth | No iniciada en código                     | ❌ 0%                   | `AuthService` sigue validando password local y gestiona reset/cambio de contraseña |
@@ -288,7 +288,15 @@ La arquitectura modular permite:
 
 ### Base de Datos ACTUAL (MySQL 8)
 
-El esquema actual está documentado en [create_database.sql](create_database.sql) y corresponde a MySQL.
+El esquema actual está en [script/database/00-init.sql](script/database/00-init.sql) y corresponde a
+MySQL 8. Los tipos de `users` son exactamente los que genera Hibernate 7 desde la entidad
+(`UUID` → `binary(16)`, `LocalDateTime` → `datetime(6)`, enums de Java → `ENUM` nativo),
+porque `ddl-auto=update` está activo y reconcilia diferencias.
+
+Las tablas del módulo ticket están en
+[script/database/10-ticket-pending.sql](script/database/10-ticket-pending.sql) y **no se
+aplican**: sus entidades usan ids `int` que no pueden referenciar `users.id` (`binary(16)`),
+y apuntan a las clases `Developer`/`Admin` que el refactor eliminó.
 
 **Entidades principales implementadas hoy:**
 
@@ -403,8 +411,8 @@ Migrar a Supabase Auth como proveedor de identidad:
 **MySQL local (estado actual)**
 
 ```bash
-# Ejecutar create_database.sql en tu instancia local
-mysql -u root -p < create_database.sql
+# Ejecutar el script de init en tu instancia local
+mysql -u root -p apiticket < script/database/00-init.sql
 ```
 
 ### 2. Configurar Variables de Entorno
@@ -485,7 +493,7 @@ Este repositorio contiene:
 - Autenticación local activa (JWT generado por backend)
 - Gestión de usuarios interna (tablas `user` y derivadas)
 - Configuración MySQL activa en datasource y driver
-- Script de base de datos MySQL para inicialización (`create_database.sql`)
+- Script de base de datos MySQL para inicialización (`script/database/00-init.sql`)
 
 **Necesita:**
 
@@ -523,7 +531,8 @@ Guía completa de arquitectura modular:
 
 ### 📝 Otros Documentos
 
-- **[create_database.sql](create_database.sql)** - Script de base de datos MySQL actual (init completo)
+- **[script/database/00-init.sql](script/database/00-init.sql)** - Esquema MySQL actual (`users` + auth)
+- **[script/database/10-ticket-pending.sql](script/database/10-ticket-pending.sql)** - Tablas de ticket, pendientes de migración
 
 ---
 
@@ -576,6 +585,6 @@ Ver detalles completos en [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Hecho con ❤️ para la comunidad de usuarios**
 
-[🗄️ Ver Schema DB](create_database.sql) · [📋 Documentacion](docs/iteracion-01-migracion-stack-y-arquitectura/README.md) · [🏗️ Arquitectura](ARCHITECTURE.md)
+[🗄️ Ver Schema DB](script/database/00-init.sql) · [📋 Documentacion](docs/iteracion-01-migracion-stack-y-arquitectura/README.md) · [🏗️ Arquitectura](ARCHITECTURE.md)
 
 </div>
