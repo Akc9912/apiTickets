@@ -58,8 +58,17 @@ public class User {
     @Builder.Default
     private LocalDateTime deletedAt = null;
 
-    public User orElseThrow(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    // createdAt y updatedAt son NOT NULL y no tienen default en la entidad:
+    // sin estos callbacks todo insert falla por constraint.
+    @PrePersist
+    void onPersist() {
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
